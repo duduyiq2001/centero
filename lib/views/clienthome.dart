@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ClientHome extends StatefulWidget {
+  const ClientHome({super.key});
+
   @override
   _ClientHomeState createState() => _ClientHomeState();
 }
@@ -13,7 +15,7 @@ class _ClientHomeState extends State<ClientHome> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("Client Home Page"),
+          title: const Text("Client Home Page"),
         ));
   }
 }
