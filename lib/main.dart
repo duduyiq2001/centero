@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:centero/views/login.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
+import "package:flutter/material.dart";
+// import "package:centero/views/login.dart";
+import "package:centero/views/clienthome.dart";
+// import "package:firebase_core/firebase_core.dart";
+// import "firebase_options.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xff075E54),
       ),
       debugShowCheckedModeBanner: false,
-      home: const Login(),
+      home: const ClientHome(),
     );
   }
 }

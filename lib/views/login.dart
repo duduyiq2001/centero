@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:centero/views/clienthome.dart';
-import 'package:centero/controllers/authentication.dart';
+import "package:flutter/material.dart";
+import "package:centero/views/clienthome.dart";
+import "package:centero/controllers/authentication.dart";
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -33,8 +33,8 @@ class _LoginState extends State<Login> {
                 controller: usernamect,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Username',
-                    hintText: 'Enter valid centero username'),
+                    labelText: "Username",
+                    hintText: "Enter valid centero username"),
               ),
             ),
             Padding(
@@ -46,8 +46,8 @@ class _LoginState extends State<Login> {
                 obscureText: true,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter secure password'),
+                    labelText: "Password",
+                    hintText: "Enter secure password"),
               ),
             ),
             ElevatedButton(
@@ -58,7 +58,7 @@ class _LoginState extends State<Login> {
                 //TODO FORGOT PASSWORD SCREEN GOES HERE
               },
               child: const Text(
-                'Forgot Password',
+                "Forgot Password",
                 style: TextStyle(color: Colors.blue, fontSize: 15),
               ),
             ),
@@ -75,14 +75,14 @@ class _LoginState extends State<Login> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Login failed!'),
+                        content: Text("Login failed!"),
                         duration: Duration(seconds: 2),
                       ),
                     );
                   }
                 },
                 child: const Text(
-                  'Login',
+                  "Login",
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
             const SizedBox(
               height: 130,
             ),
-            const Text('New User? Create Account')
+            const Text("New User? Create Account")
           ],
         ),
       ),
