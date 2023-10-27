@@ -7,6 +7,7 @@ class ClientHome extends StatefulWidget {
   const ClientHome({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ClientHomeState createState() => _ClientHomeState();
 }
 
@@ -40,7 +41,16 @@ class _ClientHomeState extends State<ClientHome> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-            )
+            ),
+            Padding(padding: EdgeInsets.all(25)),
+            ElevatedButton(
+                onPressed: () {},
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(Colors.blue),
+                    padding: MaterialStateProperty.all(EdgeInsets.all(25.0))),
+                child: Text("Touch Here to Talk to my Property Manager")),
+            Padding(padding: EdgeInsets.all(50)),
           ],
         ),
       ),
