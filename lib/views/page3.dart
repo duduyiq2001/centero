@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 // ignore_for_file: library_private_types_in_public_api
 
 import "package:flutter/material.dart";
@@ -15,9 +14,6 @@ class _Page3State extends State<Page3> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(),
-    );
+    return Container();
   }
 }
