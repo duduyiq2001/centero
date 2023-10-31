@@ -2,6 +2,7 @@
 
 import "package:flutter/material.dart";
 import "package:centero/views/page1.dart";
+
 // import "package:footer/footer.dart";
 // import "package:footer/footer_view.dart";
 
@@ -25,7 +26,7 @@ class _ClientHomeState extends State<ClientHome> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            const Text("Powerered By"),
+            const Text("Powered By"),
             Container(
               padding: const EdgeInsets.all(5.0),
               child: Image.asset(

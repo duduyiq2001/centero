@@ -3,6 +3,8 @@
 import "package:flutter/material.dart";
 // import "package:centero/controllers/scaling.dart";
 
+import 'page2.dart';
+
 class Page1 extends StatefulWidget {
   const Page1({super.key});
 
@@ -42,6 +44,12 @@ class _Page1State extends State<Page1> {
           ElevatedButton(
             onPressed: () {
               print("Pressed Call Manager Button");
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Page2()),
+              );
+
             },
             style: ButtonStyle(
               backgroundColor:
