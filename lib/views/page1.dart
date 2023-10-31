@@ -2,7 +2,6 @@
 
 import "package:flutter/material.dart";
 import "package:centero/models/footer.dart";
-// import "package:centero/controllers/scaling.dart";
 import "page2.dart";
 
 class Page1 extends StatefulWidget {
@@ -13,10 +12,6 @@ class Page1 extends StatefulWidget {
 }
 
 class _Page1State extends State<Page1> {
-  var textButtonStyle = const ButtonStyle(
-    foregroundColor: MaterialStatePropertyAll(Colors.black),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,26 +32,17 @@ class _Page1State extends State<Page1> {
             ),
             const Padding(padding: EdgeInsets.all(10.0)),
             const Center(
-              child: Text(
-                "Welcome to Shady Oaks Apartments",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-              ),
+              child: Text("Welcome to Shady Oaks Apartments"),
             ),
             const Padding(padding: EdgeInsets.all(25.0)),
             ElevatedButton(
               onPressed: () {
                 print("Pressed Call Manager Button");
-
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Page2()),
                 );
               },
-              style: ButtonStyle(
-                backgroundColor:
-                    const MaterialStatePropertyAll<Color>(Colors.blue),
-                padding: MaterialStateProperty.all(const EdgeInsets.all(25.0)),
-              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
@@ -78,47 +64,39 @@ class _Page1State extends State<Page1> {
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
                     children: <Widget>[
-                      const Text(
+                      Text(
                         "Other Stuff",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       const Padding(padding: EdgeInsets.all(5.0)),
                       TextButton(
                         onPressed: () {
                           print("Pressed Submit Work Order");
                         },
-                        style: textButtonStyle,
                         child: const Text("Submit Work Order"),
                       ),
                       TextButton(
                         onPressed: () {
                           print("Pressed Reserve Amenity Button");
                         },
-                        style: textButtonStyle,
                         child: const Text("Reserve Amenity"),
                       ),
                       TextButton(
                         onPressed: () {
                           print("Pressed Pay Rent Button");
                         },
-                        style: textButtonStyle,
                         child: const Text("Pay My Rent"),
                       ),
                       TextButton(
                         onPressed: () {
                           print("Pressed Calendar of Events Button");
                         },
-                        style: textButtonStyle,
                         child: const Text("Calendar of Events"),
                       ),
                       TextButton(
                         onPressed: () {
                           print("Pressed Rental Information Button");
                         },
-                        style: textButtonStyle,
                         child: const Text("Rental Information"),
                       ),
                     ],

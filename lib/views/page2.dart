@@ -30,12 +30,9 @@ class _Page2State extends State<Page2> {
               child: Column(
                 children: <Widget>[
                   const Padding(padding: EdgeInsets.all(50.0)),
-                  const Text(
+                  Text(
                     "(Manager Video Feed)",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   // Add more widgets here if needed
                   const Padding(padding: EdgeInsets.all(100.0)),
@@ -47,11 +44,6 @@ class _Page2State extends State<Page2> {
                         MaterialPageRoute(builder: (context) => const Page3()),
                       );
                     },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.blue),
-                      padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(25.0)),
-                    ),
                     child: const Text("End Call"),
                   ),
                 ],

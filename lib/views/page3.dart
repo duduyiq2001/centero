@@ -25,10 +25,12 @@ class _Page3State extends State<Page3> {
           children: [
             const Padding(padding: EdgeInsets.all(10.0)),
             const SizedBox(height: 150),
-            const Center(
-                child: Text("Thanks for chatting!",
-                    style: TextStyle(fontSize: 20.0, color: Colors.black),
-                    textAlign: TextAlign.center)),
+            Center(
+              child: Text(
+                "Thanks for chatting!",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
             const SizedBox(height: 100),
             ElevatedButton(
               onPressed: () {
@@ -38,12 +40,7 @@ class _Page3State extends State<Page3> {
                   MaterialPageRoute(builder: (context) => const Page2()),
                 );
               },
-              style: ButtonStyle(
-                backgroundColor:
-                    const MaterialStatePropertyAll<Color>(Colors.blue),
-                padding: MaterialStateProperty.all(const EdgeInsets.all(25.0)),
-              ),
-              child: const Text("Call Again", style: TextStyle(fontSize: 20.0)),
+              child: const Text("Call Again"),
             ),
             const Padding(padding: EdgeInsets.all(5.0)),
             TextButton(
@@ -55,14 +52,13 @@ class _Page3State extends State<Page3> {
                   MaterialPageRoute(builder: (context) => const Page1()),
                 );
               },
-              style: const ButtonStyle(
-                foregroundColor: MaterialStatePropertyAll(Colors.black),
+              child: Text(
+                "Back to Home Screen",
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              child: const Text("Back to Home Screen"),
             ),
             const SizedBox(height: 100),
-            const Text("Rate this interaction",
-                style: TextStyle(fontSize: 20.0, color: Colors.black)),
+            const Text("Rate this interaction"),
             const SizedBox(height: 25),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               ElevatedButton(
@@ -75,7 +71,7 @@ class _Page3State extends State<Page3> {
                   shape: const CircleBorder(),
                   backgroundColor: Colors.red,
                 ),
-                child: const Text(""),
+                child: null,
               ),
               ElevatedButton(
                 onPressed: () {
@@ -87,7 +83,7 @@ class _Page3State extends State<Page3> {
                   shape: const CircleBorder(),
                   backgroundColor: Colors.orange,
                 ),
-                child: const Text(""),
+                child: null,
               ),
               ElevatedButton(
                 onPressed: () {
@@ -99,7 +95,7 @@ class _Page3State extends State<Page3> {
                   shape: const CircleBorder(),
                   backgroundColor: Colors.yellow,
                 ),
-                child: const Text(""),
+                child: null,
               ),
               ElevatedButton(
                 onPressed: () {
@@ -111,7 +107,7 @@ class _Page3State extends State<Page3> {
                   shape: const CircleBorder(),
                   backgroundColor: Colors.green,
                 ),
-                child: const Text(""),
+                child: null,
               ),
             ])
           ],
