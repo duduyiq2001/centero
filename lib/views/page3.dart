@@ -1,9 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, avoid_print
 
 import "package:flutter/material.dart";
-
-import 'page1.dart';
-import 'page2.dart';
+import "package:centero/models/footer.dart";
+import "page1.dart";
+import "page2.dart";
 
 class Page3 extends StatefulWidget {
   const Page3({super.key});
@@ -17,43 +17,34 @@ class _Page3State extends State<Page3> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Scaffold(
+      bottomSheet: const Footer(),
+      body: Container(
         margin: const EdgeInsets.all(5.0),
         child: Column(
           children: [
             const Padding(padding: EdgeInsets.all(10.0)),
-
-            const SizedBox(height: 150), // for spacing (change later?)
-
+            const SizedBox(height: 150),
             const Center(
-              child: Text(
-                "Thanks for chatting!",
-                style: TextStyle(fontSize: 20.0, color: Colors.black),
-                  textAlign: TextAlign.center
-              )
-
-
-            ),
-
-            const SizedBox(height: 100), // for spacing (change later?)
-
+                child: Text("Thanks for chatting!",
+                    style: TextStyle(fontSize: 20.0, color: Colors.black),
+                    textAlign: TextAlign.center)),
+            const SizedBox(height: 100),
             ElevatedButton(
               onPressed: () {
                 print("Pressed Call Again Button");
-
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Page2()),
+                  MaterialPageRoute(builder: (context) => const Page2()),
                 );
-            },
+              },
               style: ButtonStyle(
                 backgroundColor:
-                const MaterialStatePropertyAll<Color>(Colors.blue),
+                    const MaterialStatePropertyAll<Color>(Colors.blue),
                 padding: MaterialStateProperty.all(const EdgeInsets.all(25.0)),
               ),
-              child: const Text("Call Again", style: TextStyle(fontSize: 20.0))
+              child: const Text("Call Again", style: TextStyle(fontSize: 20.0)),
             ),
-
             const Padding(padding: EdgeInsets.all(5.0)),
             TextButton(
               onPressed: () {
@@ -61,89 +52,71 @@ class _Page3State extends State<Page3> {
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Page1()),
+                  MaterialPageRoute(builder: (context) => const Page1()),
                 );
-
               },
               style: const ButtonStyle(
                 foregroundColor: MaterialStatePropertyAll(Colors.black),
               ),
               child: const Text("Back to Home Screen"),
             ),
-
-            const SizedBox(height: 100), // for spacing (change later?)
-
-            const Text("Rate this interaction", style: TextStyle(fontSize: 20.0, color: Colors.black)),
+            const SizedBox(height: 100),
+            const Text("Rate this interaction",
+                style: TextStyle(fontSize: 20.0, color: Colors.black)),
             const SizedBox(height: 25),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle button press
-                    print("Red rating pressed");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(16.0), // Adjust the padding for the button size
-                    shape: CircleBorder(), // Make the button circular
-                    backgroundColor: Colors.red, // Change the button's background color
-                  ),
-                  child: Text(
-                    ""
-                  ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  // Handle button press
+                  print("Red rating pressed");
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16.0),
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.red,
                 ),
-
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle button press
-                    print("Orange rating pressed");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(16.0), // Adjust the padding for the button size
-                    shape: CircleBorder(), // Make the button circular
-                    backgroundColor: Colors.orange, // Change the button's background color
-                  ),
-                  child: Text(
-                      ""
-                  ),
+                child: const Text(""),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Handle button press
+                  print("Orange rating pressed");
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16.0),
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.orange,
                 ),
-
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle button press
-                    print("Yellow rating pressed");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(16.0), // Adjust the padding for the button size
-                    shape: CircleBorder(), // Make the button circular
-                    backgroundColor: Colors.yellow, // Change the button's background color
-                  ),
-                  child: Text(
-                      ""
-                  ),
+                child: const Text(""),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Handle button press
+                  print("Yellow rating pressed");
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16.0),
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.yellow,
                 ),
-
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle button press
-                    print("Green rating pressed");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(16.0), // Adjust the padding for the button size
-                    shape: CircleBorder(), // Make the button circular
-                    backgroundColor: Colors.green, // Change the button's background color
-                  ),
-                  child: Text(
-                      ""
-                  ),
+                child: const Text(""),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Handle button press
+                  print("Green rating pressed");
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16.0),
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.green,
                 ),
-
-              ]
-            )
-          ]
-        )
-      );
-
+                child: const Text(""),
+              ),
+            ])
+          ],
+        ),
+      ),
+    );
   }
 }
