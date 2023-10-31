@@ -13,6 +13,6 @@ class ClientHome extends StatefulWidget {
 class _ClientHomeState extends State<ClientHome> {
   @override
   Widget build(BuildContext context) {
-    return const Page1();
+    return Page1();
   }
 }

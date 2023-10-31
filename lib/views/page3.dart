@@ -2,18 +2,12 @@
 
 import "package:flutter/material.dart";
 import "package:centero/models/footer.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "page1.dart";
 import "page2.dart";
 
-class Page3 extends StatefulWidget {
+class Page3 extends HookWidget {
   const Page3({super.key});
-
-  @override
-  _Page3State createState() => _Page3State();
-}
-
-class _Page3State extends State<Page3> {
-  int counter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +43,7 @@ class _Page3State extends State<Page3> {
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Page1()),
+                  MaterialPageRoute(builder: (context) => Page1()),
                 );
               },
               child: Text(

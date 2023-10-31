@@ -1,56 +1,81 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print
 
+import "dart:math";
 import "package:flutter/material.dart";
 import "package:centero/models/footer.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "page2.dart";
 
-class Page1 extends StatefulWidget {
+class Page1 extends HookWidget {
   const Page1({super.key});
+  final managerName = "Bob Jones";
 
-  @override
-  _Page1State createState() => _Page1State();
-}
-
-class _Page1State extends State<Page1> {
   @override
   Widget build(BuildContext context) {
+    final onCall = useState(false);
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       bottomSheet: const Footer(),
       body: Container(
         margin: const EdgeInsets.all(5.0),
         child: Column(
           children: [
+            Padding(
+              padding: EdgeInsets.all(height / 20),
+            ),
+            Center(
+              child: Container(
+                width: max(height, width) / 15,
+                height: max(height, width) / 15,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: AssetImage(
+                      (onCall.value) ? "user.png" : "apartmentBuilding.jpg",
+                    ),
+                  ),
+                ),
+              ),
+            ),
             const Padding(padding: EdgeInsets.all(10.0)),
             Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(75.0),
-                child: Image.asset(
-                  "apartmentBuilding.jpg",
-                  width: 150.0,
-                ),
-              ),
-            ),
-            const Padding(padding: EdgeInsets.all(10.0)),
-            const Center(
-              child: Text("Welcome to Shady Oaks Apartments"),
+              child: Text((onCall.value)
+                  ? "$managerName will be with you in just a moment!"
+                  : "Welcome to Shady Oaks Apartments"),
             ),
             const Padding(padding: EdgeInsets.all(25.0)),
-            ElevatedButton(
-              onPressed: () {
-                print("Pressed Call Manager Button");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Page2()),
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Image.asset(
-                  "centeroLogo.jpg",
-                  width: 150.0,
+            if (!onCall.value)
+              ElevatedButton(
+                onPressed: () {
+                  onCall.value = true;
+                  Future.delayed(const Duration(seconds: 3), () {
+                    if (onCall.value) {
+                      onCall.value = false;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Page2()),
+                      );
+                    }
+                  });
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image.asset(
+                    "centeroLogo.jpg",
+                    width: width / 10,
+                  ),
                 ),
               ),
-            ),
+            if (onCall.value)
+              ElevatedButton(
+                onPressed: () {
+                  onCall.value = false;
+                },
+                child: const Text("Cancel Call"),
+              ),
             const Padding(padding: EdgeInsets.all(10.0)),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,

@@ -2,16 +2,12 @@
 
 import "package:flutter/material.dart";
 import "package:centero/models/footer.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "page3.dart";
 
-class Page2 extends StatefulWidget {
+class Page2 extends HookWidget {
   const Page2({super.key});
 
-  @override
-  _Page2State createState() => _Page2State();
-}
-
-class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
