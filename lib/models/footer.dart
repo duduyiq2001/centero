@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:centero/themes.dart";
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
@@ -10,15 +11,29 @@ class Footer extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          const Text("Powered By"),
+          Text(
+            "Powered By",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          Padding(
+              padding: EdgeInsets.only(
+                  right: 10 * CenteroTheme.getValues(context).scaleFactor)),
           Container(
-            padding: const EdgeInsets.all(5.0),
-            child: Image.asset(
-              "centeroBrand.jpg",
-              width: 40.0,
+            width: 0.4 * CenteroTheme.getValues(context).logoSize,
+            height: 0.4 * CenteroTheme.getValues(context).logoSize,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                image: AssetImage("centeroBrand.jpg"),
+              ),
             ),
           ),
-          const Padding(padding: EdgeInsets.all(25.0)),
+          Padding(
+              padding: EdgeInsets.only(
+            left: 25 * CenteroTheme.getValues(context).scaleFactor,
+            top: 0.5 * CenteroTheme.getValues(context).logoSize,
+          )),
         ],
       ),
     );

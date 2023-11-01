@@ -1,9 +1,9 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print
 
-import "package:centero/themes.dart";
-import "package:flutter/material.dart";
-import "package:centero/models/footer.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import "package:flutter/material.dart";
+import "package:centero/themes.dart";
+import "package:centero/models/footer.dart";
 import "page2.dart";
 
 class Page1 extends HookWidget {
@@ -21,8 +21,7 @@ class Page1 extends HookWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(
-                  50.0 * CenteroTheme.getValues(context).scaleFactor),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.height / 20),
             ),
             Center(
               child: Container(
@@ -47,7 +46,7 @@ class Page1 extends HookWidget {
                 (onCall.value)
                     ? "$managerName will be with you in just a moment!"
                     : "Welcome to Shady Oaks Apartments",
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
             ),
             Padding(
@@ -57,7 +56,7 @@ class Page1 extends HookWidget {
               ElevatedButton(
                 onPressed: () {
                   onCall.value = true;
-                  Future.delayed(const Duration(seconds: 3), () {
+                  Future.delayed(const Duration(seconds: 0), () {
                     if (onCall.value) {
                       onCall.value = false;
                       Navigator.push(
@@ -137,7 +136,9 @@ class Page1 extends HookWidget {
                     ],
                   ),
                 ),
-                const Padding(padding: EdgeInsets.all(100.0)),
+                Padding(
+                    padding: EdgeInsets.all(
+                        50 * CenteroTheme.getValues(context).scaleFactor)),
               ],
             ),
           ],

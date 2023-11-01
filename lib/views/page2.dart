@@ -1,8 +1,9 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print
 
 import "package:flutter/material.dart";
-import "package:centero/models/footer.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import "package:centero/themes.dart";
+import "package:centero/models/footer.dart";
 import "page3.dart";
 
 class Page2 extends HookWidget {
@@ -15,26 +16,38 @@ class Page2 extends HookWidget {
       body: Center(
         child: Column(
           children: <Widget>[
-            const Padding(padding: EdgeInsets.all(50.0)),
+            Padding(
+                padding: EdgeInsets.all(
+                    50.0 * CenteroTheme.getValues(context).scaleFactor)),
             Container(
               decoration: BoxDecoration(
                 color: Colors.black12,
                 border: Border.all(width: 1.0, color: Colors.black38),
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(CenteroTheme.getValues(context).borderRadius),
+                ),
               ),
-              padding: const EdgeInsets.all(50.0),
+              padding: EdgeInsets.all(
+                  50.0 * CenteroTheme.getValues(context).scaleFactor),
               child: Column(
                 children: <Widget>[
-                  const Padding(padding: EdgeInsets.all(50.0)),
+                  Padding(
+                      padding: EdgeInsets.all(
+                          25 * CenteroTheme.getValues(context).scaleFactor)),
                   Text(
                     "(Manager Video Feed)",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  // Add more widgets here if needed
-                  const Padding(padding: EdgeInsets.all(100.0)),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 6 * CenteroTheme.getValues(context).spacer,
+                      right: 4 * CenteroTheme.getValues(context).spacer,
+                      left: 4 * CenteroTheme.getValues(context).spacer,
+                      bottom: 6 * CenteroTheme.getValues(context).spacer,
+                    ),
+                  ),
                   ElevatedButton(
                     onPressed: () {
-                      print("Pressed End Call Button");
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const Page3()),
@@ -45,6 +58,9 @@ class Page2 extends HookWidget {
                 ],
               ),
             ),
+            Padding(
+                padding:
+                    EdgeInsets.all(CenteroTheme.getValues(context).footerSize)),
           ],
         ),
       ),

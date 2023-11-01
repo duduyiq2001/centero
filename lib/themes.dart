@@ -5,31 +5,33 @@ class Values {
   double scaleFactor;
   double borderRadius;
   double spacer;
+  double footerSize;
 
-  Values(this.logoSize, this.scaleFactor, this.borderRadius, this.spacer);
+  Values(this.logoSize, this.scaleFactor, this.borderRadius, this.spacer,
+      this.footerSize);
 }
 
 class CenteroTheme {
-  static Values mediumValues = Values(100, 1, 20, 10);
-  static Values protoValues = Values(400, 3, 80, 100);
+  static Values mediumValues = Values(100, 1, 25, 20, 50);
+  static Values protoValues = Values(400, 3, 80, 150, 150);
 
   static final ThemeData mediumScreens = ThemeData(
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-      bodyMedium: TextStyle(fontSize: 20.0),
-      bodySmall: TextStyle(fontSize: 14.0),
+      bodyLarge: TextStyle(fontSize: 28),
+      bodyMedium: TextStyle(fontSize: 20),
+      bodySmall: TextStyle(fontSize: 16),
       headlineLarge: TextStyle(
-        fontSize: 48.0,
+        fontSize: 32,
         fontWeight: FontWeight.bold,
         color: Colors.black,
       ),
       headlineMedium: TextStyle(
-        fontSize: 28.0,
+        fontSize: 24,
         fontWeight: FontWeight.bold,
         color: Colors.black,
       ),
       headlineSmall: TextStyle(
-        fontSize: 20.0,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
         decoration: TextDecoration.underline,
         color: Colors.black,
@@ -55,11 +57,11 @@ class CenteroTheme {
 
   static final ThemeData protoScreens = ThemeData(
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-      bodyMedium: TextStyle(fontSize: 20.0),
-      bodySmall: TextStyle(fontSize: 14.0),
+      bodyLarge: TextStyle(fontSize: 72),
+      bodyMedium: TextStyle(fontSize: 56),
+      bodySmall: TextStyle(fontSize: 48),
       headlineLarge: TextStyle(
-        fontSize: 96,
+        fontSize: 84,
         fontWeight: FontWeight.bold,
         color: Colors.black,
       ),
@@ -81,7 +83,7 @@ class CenteroTheme {
         padding: const MaterialStatePropertyAll(EdgeInsets.all(40)),
         textStyle: const MaterialStatePropertyAll(
           TextStyle(
-            fontSize: 48,
+            fontSize: 64,
           ),
         ),
         shape: MaterialStatePropertyAll(
