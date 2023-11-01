@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print
 
-import "dart:math";
+import "package:centero/themes.dart";
 import "package:flutter/material.dart";
 import "package:centero/models/footer.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -13,8 +13,6 @@ class Page1 extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final onCall = useState(false);
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       bottomSheet: const Footer(),
@@ -23,12 +21,13 @@ class Page1 extends HookWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(height / 20),
+              padding: EdgeInsets.all(
+                  50.0 * CenteroTheme.getValues(context).scaleFactor),
             ),
             Center(
               child: Container(
-                width: max(height, width) / 15,
-                height: max(height, width) / 15,
+                width: CenteroTheme.getValues(context).logoSize,
+                height: CenteroTheme.getValues(context).logoSize,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
@@ -40,13 +39,20 @@ class Page1 extends HookWidget {
                 ),
               ),
             ),
-            const Padding(padding: EdgeInsets.all(10.0)),
+            Padding(
+                padding: EdgeInsets.all(
+                    10.0 * CenteroTheme.getValues(context).scaleFactor)),
             Center(
-              child: Text((onCall.value)
-                  ? "$managerName will be with you in just a moment!"
-                  : "Welcome to Shady Oaks Apartments"),
+              child: Text(
+                (onCall.value)
+                    ? "$managerName will be with you in just a moment!"
+                    : "Welcome to Shady Oaks Apartments",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             ),
-            const Padding(padding: EdgeInsets.all(25.0)),
+            Padding(
+                padding: EdgeInsets.all(
+                    25.0 * CenteroTheme.getValues(context).scaleFactor)),
             if (!onCall.value)
               ElevatedButton(
                 onPressed: () {
@@ -62,10 +68,11 @@ class Page1 extends HookWidget {
                   });
                 },
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(
+                      CenteroTheme.getValues(context).borderRadius),
                   child: Image.asset(
                     "centeroLogo.jpg",
-                    width: width / 10,
+                    width: 1.5 * CenteroTheme.getValues(context).logoSize,
                   ),
                 ),
               ),
@@ -76,7 +83,9 @@ class Page1 extends HookWidget {
                 },
                 child: const Text("Cancel Call"),
               ),
-            const Padding(padding: EdgeInsets.all(10.0)),
+            Padding(
+                padding:
+                    EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -84,7 +93,8 @@ class Page1 extends HookWidget {
                   decoration: BoxDecoration(
                     color: Colors.black12,
                     border: Border.all(width: 1.0, color: Colors.black38),
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    borderRadius: BorderRadius.all(Radius.circular(
+                        8 * CenteroTheme.getValues(context).scaleFactor)),
                   ),
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
