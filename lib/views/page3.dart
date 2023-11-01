@@ -33,9 +33,12 @@ class Page3 extends HookWidget {
                     50 * CenteroTheme.getValues(context).scaleFactor)),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const Page2()),
+                  PageRouteBuilder(
+                    pageBuilder: (context, _, __) => const Page2(),
+                  ),
+                  (route) => false,
                 );
               },
               child: const Text("Call Again"),
@@ -45,9 +48,12 @@ class Page3 extends HookWidget {
                     10 * CenteroTheme.getValues(context).scaleFactor)),
             TextButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const Page1()),
+                  PageRouteBuilder(
+                    pageBuilder: (context, _, __) => const Page1(),
+                  ),
+                  (route) => false,
                 );
               },
               child: Text(

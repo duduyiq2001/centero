@@ -48,9 +48,12 @@ class Page2 extends HookWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => const Page3()),
+                        PageRouteBuilder(
+                          pageBuilder: (context, _, __) => const Page3(),
+                        ),
+                        (route) => false,
                       );
                     },
                     child: const Text("End Call"),

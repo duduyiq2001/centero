@@ -56,12 +56,15 @@ class Page1 extends HookWidget {
               ElevatedButton(
                 onPressed: () {
                   onCall.value = true;
-                  Future.delayed(const Duration(seconds: 0), () {
+                  Future.delayed(const Duration(seconds: 3), () {
                     if (onCall.value) {
                       onCall.value = false;
-                      Navigator.push(
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => const Page2()),
+                        PageRouteBuilder(
+                          pageBuilder: (context, _, __) => const Page2(),
+                        ),
+                        (route) => false,
                       );
                     }
                   });
