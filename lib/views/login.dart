@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:centero/views/clienthome.dart';
-import 'package:centero/controllers/authentication.dart';
+import "package:flutter/material.dart";
+import "package:centero/views/clienthome.dart";
+import "package:centero/controllers/authentication.dart";
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   _LoginState createState() => _LoginState();
 }
@@ -16,23 +18,23 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Centero Login Page"),
+        title: const Text("Centero Login Page"),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 60.0),
+            const Padding(
+              padding: EdgeInsets.only(top: 60.0),
             ),
             Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 controller: usernamect,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Username',
-                    hintText: 'Enter valid centero username'),
+                    labelText: "Username",
+                    hintText: "Enter valid centero username"),
               ),
             ),
             Padding(
@@ -42,10 +44,10 @@ class _LoginState extends State<Login> {
               child: TextField(
                 controller: passwordct,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter secure password'),
+                    labelText: "Password",
+                    hintText: "Enter secure password"),
               ),
             ),
             ElevatedButton(
@@ -55,8 +57,8 @@ class _LoginState extends State<Login> {
               onPressed: () {
                 //TODO FORGOT PASSWORD SCREEN GOES HERE
               },
-              child: Text(
-                'Forgot Password',
+              child: const Text(
+                "Forgot Password",
                 style: TextStyle(color: Colors.blue, fontSize: 15),
               ),
             ),
@@ -69,26 +71,26 @@ class _LoginState extends State<Login> {
                 onPressed: () {
                   if (authenticate(usernamect.text, passwordct.text)) {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => ClientHome()));
+                        MaterialPageRoute(builder: (_) => const ClientHome()));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Login failed!'),
+                      const SnackBar(
+                        content: Text("Login failed!"),
                         duration: Duration(seconds: 2),
                       ),
                     );
                   }
                 },
-                child: Text(
-                  'Login',
+                child: const Text(
+                  "Login",
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 130,
             ),
-            Text('New User? Create Account')
+            const Text("New User? Create Account")
           ],
         ),
       ),
