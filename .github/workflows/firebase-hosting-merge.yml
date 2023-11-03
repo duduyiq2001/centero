@@ -6,6 +6,9 @@ name: Deploy to Firebase Hosting on merge
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 jobs:
   build_and_preview:
     name: Build Flutter (Web)
