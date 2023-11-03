@@ -12,6 +12,8 @@ class Page3 extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final rated = useState(false);
+
     return Scaffold(
       bottomSheet: const Footer(),
       body: Container(
@@ -66,78 +68,77 @@ class Page3 extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    "Rate this interaction",
+                    (!rated.value)
+                        ? "Rate this interaction"
+                        : "Thanks for your feedback!",
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Padding(
                       padding: EdgeInsets.all(
                           25 * CenteroTheme.getValues(context).scaleFactor)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button press
-                          print("Red rating pressed");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(
-                              20 * CenteroTheme.getValues(context).scaleFactor),
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.red,
+                  if (!rated.value)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: () {
+                            rated.value = true;
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(20 *
+                                CenteroTheme.getValues(context).scaleFactor),
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.red,
+                          ),
+                          child: null,
                         ),
-                        child: null,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.all(
-                              5 * CenteroTheme.getValues(context).scaleFactor)),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button press
-                          print("Orange rating pressed");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(
-                              20 * CenteroTheme.getValues(context).scaleFactor),
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.orange,
+                        Padding(
+                            padding: EdgeInsets.all(5 *
+                                CenteroTheme.getValues(context).scaleFactor)),
+                        ElevatedButton(
+                          onPressed: () {
+                            rated.value = true;
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(20 *
+                                CenteroTheme.getValues(context).scaleFactor),
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.orange,
+                          ),
+                          child: null,
                         ),
-                        child: null,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.all(
-                              5 * CenteroTheme.getValues(context).scaleFactor)),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button press
-                          print("Yellow rating pressed");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(
-                              20 * CenteroTheme.getValues(context).scaleFactor),
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.yellow,
+                        Padding(
+                            padding: EdgeInsets.all(5 *
+                                CenteroTheme.getValues(context).scaleFactor)),
+                        ElevatedButton(
+                          onPressed: () {
+                            rated.value = true;
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(20 *
+                                CenteroTheme.getValues(context).scaleFactor),
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.yellow,
+                          ),
+                          child: null,
                         ),
-                        child: null,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.all(
-                              5 * CenteroTheme.getValues(context).scaleFactor)),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button press
-                          print("Green rating pressed");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(
-                              20 * CenteroTheme.getValues(context).scaleFactor),
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.green,
+                        Padding(
+                            padding: EdgeInsets.all(5 *
+                                CenteroTheme.getValues(context).scaleFactor)),
+                        ElevatedButton(
+                          onPressed: () {
+                            rated.value = true;
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(20 *
+                                CenteroTheme.getValues(context).scaleFactor),
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.green,
+                          ),
+                          child: null,
                         ),
-                        child: null,
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   Padding(
                       padding: EdgeInsets.all(
                     CenteroTheme.getValues(context).footerSize +

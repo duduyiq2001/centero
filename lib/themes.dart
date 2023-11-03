@@ -11,6 +11,9 @@ class Values {
       this.footerSize);
 }
 
+const green = Color(0xFF41AF28);
+const black = Color(0xFF221D34);
+
 class CenteroTheme {
   static Values mediumValues = Values(100, 1, 25, 20, 50);
   static Values protoValues = Values(400, 3, 80, 150, 150);
@@ -23,23 +26,23 @@ class CenteroTheme {
       headlineLarge: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: black,
       ),
       headlineMedium: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: black,
       ),
       headlineSmall: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         decoration: TextDecoration.underline,
-        color: Colors.black,
+        color: black,
       ),
     ),
     elevatedButtonTheme: const ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStatePropertyAll(Colors.blue),
+        backgroundColor: MaterialStatePropertyAll(green),
         padding: MaterialStatePropertyAll(EdgeInsets.all(20.0)),
         textStyle: MaterialStatePropertyAll(
           TextStyle(
@@ -50,7 +53,7 @@ class CenteroTheme {
     ),
     textButtonTheme: const TextButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: MaterialStatePropertyAll(Colors.black),
+        foregroundColor: MaterialStatePropertyAll(black),
       ),
     ),
   );
@@ -63,23 +66,23 @@ class CenteroTheme {
       headlineLarge: TextStyle(
         fontSize: 84,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: black,
       ),
       headlineMedium: TextStyle(
         fontSize: 64,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: black,
       ),
       headlineSmall: TextStyle(
         fontSize: 56,
         fontWeight: FontWeight.bold,
         decoration: TextDecoration.underline,
-        color: Colors.black,
+        color: black,
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: const MaterialStatePropertyAll(Colors.blue),
+        backgroundColor: const MaterialStatePropertyAll(green),
         padding: const MaterialStatePropertyAll(EdgeInsets.all(40)),
         textStyle: const MaterialStatePropertyAll(
           TextStyle(
@@ -93,7 +96,7 @@ class CenteroTheme {
     ),
     textButtonTheme: const TextButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: MaterialStatePropertyAll(Colors.black),
+        foregroundColor: MaterialStatePropertyAll(black),
         padding: MaterialStatePropertyAll(EdgeInsets.all(20)),
         textStyle: MaterialStatePropertyAll(
           TextStyle(
