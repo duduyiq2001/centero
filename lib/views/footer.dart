@@ -25,7 +25,7 @@ class Footer extends StatelessWidget {
               shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.contain,
-                image: AssetImage("centeroBrand.jpg"),
+                image: AssetImage("assets/centeroBrand.jpg"),
               ),
             ),
           ),

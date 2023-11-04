@@ -3,7 +3,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:centero/themes.dart";
-import "package:centero/models/footer.dart";
+import "package:centero/views/footer.dart";
 import "page3.dart";
 
 class Page2 extends HookWidget {
