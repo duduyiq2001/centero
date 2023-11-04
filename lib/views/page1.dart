@@ -75,7 +75,7 @@ class Page1 extends HookWidget {
                   borderRadius: BorderRadius.circular(
                       CenteroTheme.getValues(context).borderRadius),
                   child: Image.asset(
-                    "centeroLogo.jpg",
+                    "assets/centeroLogo.jpg",
                     width: 1.5 * CenteroTheme.getValues(context).logoSize,
                   ),
                 ),
