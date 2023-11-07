@@ -322,7 +322,7 @@ class ClientHome extends HookWidget {
     return Scaffold(
       bottomSheet: const Footer(),
       body: Container(
-        margin: const EdgeInsets.all(5),
+        margin: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor),
         child: (pageState.value == PageStates.home)
             ? home
             : (pageState.value == PageStates.call)
