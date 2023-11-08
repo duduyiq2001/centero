@@ -10,7 +10,20 @@ class ManagerHome extends HookWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomSheet: const Footer(),
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Centero Property Administration"),
+        leading: Container(
+          width: 0.4 * CenteroTheme.getValues(context).logoSize,
+          height: 0.4 * CenteroTheme.getValues(context).logoSize,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.contain,
+              image: AssetImage("assets/centeroBrand.jpg"),
+            ),
+          ),
+        ),
+      ),
       body: Container(
         margin: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor),
       ),
