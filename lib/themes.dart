@@ -56,6 +56,9 @@ class CenteroTheme {
         foregroundColor: MaterialStatePropertyAll(black),
       ),
     ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: green,
+    ),
   );
 
   static final ThemeData protoScreens = ThemeData(
@@ -104,6 +107,9 @@ class CenteroTheme {
           ),
         ),
       ),
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: green,
     ),
   );
 
