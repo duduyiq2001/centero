@@ -1,4 +1,3 @@
-import { doc, setDoc } from "firebase/firestore";
 type UserType = "client" | "manager";
 async function store_token(
   device_token: string,
@@ -8,11 +7,13 @@ async function store_token(
 ): Promise<boolean> {
   var storeref: any;
   if (user == "client") {
-    storeref = doc(db_connection, "clientstore");
+    storeref = db_connection.collection("clientstore");
   } else {
-    storeref = doc(db_connection, "managerstore");
+    storeref = db_connection.collection("managerstore");
   }
-  await setDoc(storeref, { uid: uid, device_token: device_token });
+  await storeref
+    .doc(device_token)
+    .set({ uid: uid, device_token: device_token });
   return true;
 }
 

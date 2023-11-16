@@ -9,26 +9,24 @@
 import { logger } from "firebase-functions";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { config_app } from "./firebase_config";
-import { connect_db } from "./database";
+import { initializeApp } from "firebase-admin/app";
 import { authenticate_client } from "./controllers/authentication";
 import { store_token } from "./controllers/storetoken";
-
-const fireapp = admin.initializeApp(config_app);
-
+import { getFirestore } from "firebase-admin/firestore";
+initializeApp();
 export const cliengsignin = functions.https.onRequest(async (req, res) => {
+  //initializeApp();
   try {
-    const { property_name, unit_num, social, device_token } = req.body;
-    logger.log(property_name);
-    const conn = connect_db(fireapp);
-
+    const { property_name, unit_number, social, device_token } = req.body;
+    const conn = await getFirestore();
     const [isValidUser, uid] = await authenticate_client(
       property_name,
-      unit_num,
+      unit_number,
       social,
       conn
     );
-
+    logger.log("ekdmeedde");
+    logger.log([isValidUser, uid]);
     if (isValidUser) {
       admin
         .auth()
@@ -57,10 +55,11 @@ exports.createManagerProfile = functions.auth.user().onCreate((user) => {
 });
 
 exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
+  //initializeApp();
   try {
     const { device_token } = req.body;
 
-    const conn = connect_db(fireapp);
+    const conn = await getFirestore();
 
     const idToken = req.get("Authorization")?.split("Bearer ")[1];
 
