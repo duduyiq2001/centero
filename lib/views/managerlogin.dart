@@ -1,16 +1,17 @@
 import "package:flutter/material.dart";
-import "package:centero/views/clienthome.dart";
-import "package:centero/controllers/authentication.dart";
+import "package:centero/views/managerhome.dart";
+import "package:centero/controllers/managerauthentication.dart";
+import 'package:centero/models/loginresponse.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class ManagerLogin extends StatefulWidget {
+  const ManagerLogin({super.key});
 
   @override
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
-  final TextEditingController usernamect = TextEditingController();
+class _LoginState extends State<ManagerLogin> {
+  final TextEditingController emailct = TextEditingController();
   final TextEditingController passwordct = TextEditingController();
 
   @override
@@ -18,7 +19,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Centero Login Page"),
+        title: const Text("Manager login Page"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -30,11 +31,11 @@ class _LoginState extends State<Login> {
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-                controller: usernamect,
+                controller: emailct,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Username",
-                    hintText: "Enter valid centero username"),
+                    labelText: "Manager email",
+                    hintText: "Enter valid Manageremail"),
               ),
             ),
             Padding(
@@ -47,7 +48,7 @@ class _LoginState extends State<Login> {
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Password",
-                    hintText: "Enter secure password"),
+                    hintText: "Enter Password"),
               ),
             ),
             ElevatedButton(
@@ -68,17 +69,29 @@ class _LoginState extends State<Login> {
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
-                onPressed: () {
-                  if (authenticate(usernamect.text, passwordct.text)) {
+                onPressed: () async {
+                  LoginResponse response =
+                      await managerlogin(emailct.text, passwordct.text);
+                  if (response == LoginResponse.success) {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => const ClientHome()));
+                        MaterialPageRoute(builder: (_) => const ManagerHome()));
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Login failed!"),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
+                    if (response == LoginResponse.devicetokenfailed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("failed to fetch token!"),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                    if (response == LoginResponse.sigininfailed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("invalid credential!"),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
                   }
                 },
                 child: const Text(

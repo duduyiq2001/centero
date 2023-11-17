@@ -1,3 +1,5 @@
+import { logger } from "firebase-functions/v1";
+
 type UserType = "client" | "manager";
 async function store_token(
   device_token: string,
@@ -6,15 +8,20 @@ async function store_token(
   uid: string
 ): Promise<boolean> {
   var storeref: any;
-  if (user == "client") {
-    storeref = db_connection.collection("clientstore");
-  } else {
-    storeref = db_connection.collection("managerstore");
+  try {
+    if (user == "client") {
+      storeref = db_connection.collection("clientstore");
+    } else {
+      storeref = db_connection.collection("managerstore");
+    }
+    await storeref
+      .doc(device_token)
+      .set({ uid: uid, device_token: device_token });
+    return true;
+  } catch (e) {
+    logger.log(e);
+    return false;
   }
-  await storeref
-    .doc(device_token)
-    .set({ uid: uid, device_token: device_token });
-  return true;
 }
 
 export { store_token };

@@ -4,6 +4,9 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
+import "package:centero/controllers/residentauthentication.dart";
+import "package:centero/views/residentlogin.dart";
+import "package:centero/main.dart";
 
 class PageStates {
   static const home = 0;
@@ -147,6 +150,16 @@ class ClientHome extends HookWidget {
                     50 * CenteroTheme.getValues(context).scaleFactor)),
           ],
         ),
+        ElevatedButton(
+            onPressed: () async {
+              await residentlogout();
+              navigatorKey.currentState?.popUntil((route) => route.isFirst);
+              Navigator.push(
+                navigatorKey.currentContext!,
+                MaterialPageRoute(builder: (_) => const ResidentLogin()),
+              );
+            },
+            child: const Text("Logout"))
       ],
     );
 

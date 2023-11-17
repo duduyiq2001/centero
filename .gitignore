@@ -35,6 +35,7 @@ migrate_working_dir/
 .pub/
 /build/
 
+
 # Symbolication related
 app.*.symbols
 
@@ -909,3 +910,4 @@ Temporary Items
 # Backup           - https://github.com/github/gitignore/blob/main/Global/Backup.gitignore
 # JEnv             - https://github.com/github/gitignore/blob/main/Global/JEnv.gitignore
 **key.json
+functions/lib/
