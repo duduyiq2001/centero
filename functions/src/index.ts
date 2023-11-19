@@ -67,6 +67,7 @@ export const clientsignin = functions.https.onRequest((req, res) => {
       logger.log("Error creating custom token:", error);
       res.status(500).send("Internal server error");
     }
+    res.status(200).send("success");
   });
 });
 
@@ -108,6 +109,7 @@ exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
     } catch (error) {
       res.status(500).send("Internal server error");
     }
+    res.status(200).send("success");
   });
 });
 
@@ -140,6 +142,7 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
     } catch (error) {
       res.status(500).send("Internal server error");
     }
+    res.status(200).send("success");
   });
 });
 
@@ -172,6 +175,7 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
     } catch (error) {
       res.status(500).send("Internal server error");
     }
+    res.status(200).send("success");
   });
 });
 
@@ -204,6 +208,7 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
     } catch (error) {
       res.status(500).send("Internal server error");
     }
+    res.status(200).send("success");
   });
 });
 
@@ -236,5 +241,6 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
     } catch (error) {
       res.status(500).send("Internal server error");
     }
+    res.status(200).send("success");
   });
 });

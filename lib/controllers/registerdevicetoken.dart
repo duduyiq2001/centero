@@ -11,6 +11,7 @@ Future<void> registerdevicetoken(String device_token) async {
     throw Exception("not signed in");
   }
   try {
+    print("register called");
     response = await http.post(
         Uri.parse(
             'http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogin'),

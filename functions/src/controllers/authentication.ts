@@ -7,7 +7,7 @@ async function authenticate_client(
   social: string,
   db_connection: admin.firestore.Firestore
 ): Promise<Authresult> {
-  const ResidentRef = db_connection.collection("resident");
+  const ResidentRef = db_connection.collection("Residents");
 
   const q = ResidentRef.where("property_name", "==", property_name).where(
     "unit_number",
