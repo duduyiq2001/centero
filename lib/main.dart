@@ -10,6 +10,8 @@ import "firebase_options.dart";
 import "themes.dart";
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:html' as html;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
@@ -31,6 +33,16 @@ void main() async {
       options: web,
     );
   }
+  //set up messaging!
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+    html.window.alert('${message.data}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  });
 
   runApp(const MyApp());
 }

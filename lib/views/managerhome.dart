@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
-import "package:centero/controllers/managerauthentication.dart";
+import 'package:centero/controllers/authentication/managerauthentication.dart';
 import "package:centero/views/managerlogin.dart";
 import "package:centero/main.dart";
 

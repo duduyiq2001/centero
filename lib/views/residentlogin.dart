@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:centero/views/clienthome.dart";
-import "package:centero/controllers/residentauthentication.dart";
+import 'package:centero/controllers/authentication/residentauthentication.dart';
 import 'package:centero/models/loginresponse.dart';
 
 class ResidentLogin extends StatefulWidget {

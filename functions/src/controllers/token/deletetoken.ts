@@ -14,4 +14,4 @@ async function delete_token(
   return true;
 }
 
-export { delete_token };
+export { delete_token, UserType };

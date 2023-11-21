@@ -1,7 +1,6 @@
 import { logger } from "firebase-functions/v1";
-import { delete_token } from "./deletetoken";
+import { delete_token, UserType } from "./deletetoken";
 import { store_token } from "./storetoken";
-type UserType = "client" | "manager";
 async function refresh_token(
   device_token: string,
   new_token: string,

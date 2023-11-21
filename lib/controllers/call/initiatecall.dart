@@ -1,0 +1,29 @@
+import 'package:localstorage/localstorage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+
+Future<bool> initiatecall() async {
+  //get device tokenimport 'package:firebase_auth/firebase_auth.dart';
+  final LocalStorage storage = new LocalStorage('centero');
+  String device_token = storage.getItem("device_token");
+  //get access token
+  String? access_token =
+      await FirebaseAuth.instance.currentUser?.getIdToken(true);
+  var response;
+  try {
+    response = await http.post(
+        Uri.parse(
+            'http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall'),
+        body: jsonEncode({"device_token": device_token}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $access_token'
+        });
+    print(response.body);
+  } catch (e) {
+    print(e);
+    return false;
+  }
+  return true;
+}

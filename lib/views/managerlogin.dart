@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:centero/views/managerhome.dart";
-import "package:centero/controllers/managerauthentication.dart";
+import 'package:centero/controllers/authentication/managerauthentication.dart';
 import 'package:centero/models/loginresponse.dart';
 
 class ManagerLogin extends StatefulWidget {

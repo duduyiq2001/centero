@@ -1,7 +1,7 @@
 import 'package:centero/models/loginresponse.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:centero/controllers/getdevicetoken.dart';
-import 'package:centero/controllers/registerdevicetoken.dart';
+import 'package:centero/utility/getdevicetoken.dart';
+import 'package:centero/utility/registerdevicetoken.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:http/http.dart' as http;
 import "dart:convert";

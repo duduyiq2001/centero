@@ -4,9 +4,10 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
-import "package:centero/controllers/residentauthentication.dart";
+import 'package:centero/controllers/authentication/residentauthentication.dart';
 import "package:centero/views/residentlogin.dart";
 import "package:centero/main.dart";
+import "package:centero/controllers/call/initiatecall.dart";
 
 class PageStates {
   static const home = 0;
@@ -67,14 +68,22 @@ class ClientHome extends HookWidget {
                 25.0 * CenteroTheme.getValues(context).scaleFactor)),
         if (!onCall.value)
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               onCall.value = true;
-              Future.delayed(const Duration(seconds: 3), () {
+              //bool ifsucceed = await initiatecall();
+              if (await initiatecall()) {
                 if (onCall.value) {
                   onCall.value = false;
                   pageState.value = PageStates.call;
                 }
-              });
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("connection error"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(

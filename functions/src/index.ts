@@ -10,12 +10,16 @@ import { logger } from "firebase-functions";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { initializeApp } from "firebase-admin/app";
-import { authenticate_client } from "./controllers/authentication";
-import { store_token } from "./controllers/storetoken";
+import { authenticate_client } from "./controllers/authentication/authentication";
+import { store_token } from "./controllers/token/storetoken";
 import { getFirestore } from "firebase-admin/firestore";
 import * as corsLib from "cors";
-import { delete_token } from "./controllers/deletetoken";
-import { refresh_token } from "./controllers/refreshtoken";
+import { delete_token } from "./controllers/token/deletetoken";
+import { refresh_token } from "./controllers/token/refreshtoken";
+import * as session from "./controllers/session/sessionupdate";
+import { getmanager } from "./controllers/callrouting/callrouting";
+import { alertmanager } from "./controllers/messaging/alertmanager";
+import * as search from "./controllers/search/usersearch";
 // Define an array of allowed origins
 
 // Configure CORS with the specific origins
@@ -238,6 +242,58 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
         });
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
+    res.status(200).send("success");
+  });
+});
+
+exports.onRequestCall = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    //initializeApp();
+    try {
+      const { device_token } = req.body;
+
+      const conn = await getFirestore();
+
+      const idToken = req.get("Authorization")?.split("Bearer ")[1];
+      var name: string;
+      if (!idToken) {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+      try {
+        var decodetoken = await admin.auth().verifyIdToken(idToken);
+        const uid = decodetoken.uid;
+        var [userexist, name] = await search.searchuser(uid, conn);
+        if (!userexist) {
+          res.status(401).send("user does not exist");
+        }
+      } catch {
+        res.status(401).send("Unauthorized");
+      }
+
+      //route to manager
+      var [ifsucceced, managertoken] = await getmanager(conn);
+      if (ifsucceced) {
+        //update_request_session
+        session
+          .addrequestsession(device_token, managertoken, conn)
+          .then((ifsucceed) => {
+            if (ifsucceed) {
+            } else {
+              res.status(401).send("Internal Server Error");
+              try {
+                alertmanager("incoming call", managertoken, name);
+                res.status(200).send("success");
+              } catch (e) {
+                logger.log(e);
+                res.status(401).send("Internal Server Error");
+              }
+            }
+          });
+      }
     } catch (error) {
       res.status(500).send("Internal server error");
     }

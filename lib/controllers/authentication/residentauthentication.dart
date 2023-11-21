@@ -1,4 +1,4 @@
-import 'package:centero/controllers/getdevicetoken.dart';
+import 'package:centero/utility/getdevicetoken.dart';
 import 'package:centero/serializers/residentserialzer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
