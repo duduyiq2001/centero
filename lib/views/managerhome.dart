@@ -12,6 +12,7 @@ class ManagerHome extends HookWidget {
   Widget build(BuildContext context) {
     var showLeftPanel = useState(true);
     var showRightPanel = useState(true);
+    var onCall = useState(false);
 
     return Scaffold(
       bottomSheet: const Footer(),
@@ -31,6 +32,7 @@ class ManagerHome extends HookWidget {
         actions: const <Widget>[],
       ),
       body: Container(
+        // color: Colors.black,
         margin:
             EdgeInsets.all(10 * CenteroTheme.getValues(context).scaleFactor),
         padding:
@@ -168,7 +170,114 @@ class ManagerHome extends HookWidget {
             // center panel
             Expanded(
               flex: 5,
-              child: Container(),
+              child: Column(
+                children: <Widget>[
+                  (onCall.value)
+                      ? Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(
+                                15 *
+                                    CenteroTheme.getValues(context).scaleFactor,
+                              ),
+                            ),
+                            Text(
+                              "Incoming Call",
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(
+                                15 *
+                                    CenteroTheme.getValues(context).scaleFactor,
+                              ),
+                            ),
+                            Text(
+                              "Bob Smith",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              "Paradise Apartments",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              "Unit 2051 A",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              "Los Angeles, CA",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Container(
+                              width: CenteroTheme.getValues(context).logoSize,
+                              height: CenteroTheme.getValues(context).logoSize,
+                              margin: EdgeInsets.all(
+                                10 *
+                                    CenteroTheme.getValues(context).scaleFactor,
+                              ),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.contain,
+                                  image: AssetImage("assets/user.png"),
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "Answer",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          children: <Widget>[
+                            Text(
+                              "Bob Smith",
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black12,
+                                border:
+                                    Border.all(width: 1, color: Colors.black38),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(
+                                    8 *
+                                        CenteroTheme.getValues(context)
+                                            .scaleFactor,
+                                  ),
+                                ),
+                              ),
+                              padding: EdgeInsets.all(
+                                15 *
+                                    CenteroTheme.getValues(context).scaleFactor,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Google Map",
+                                  style: CenteroTheme.getTheme(context)
+                                      .textTheme
+                                      .headlineMedium,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "Last Call: 10/31/2023",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             // right panel
             (showRightPanel.value)

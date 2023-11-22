@@ -7,7 +7,14 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black12,
+      // color: Colors.black12,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        color: Colors.black12,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -30,10 +37,11 @@ class Footer extends StatelessWidget {
             ),
           ),
           Padding(
-              padding: EdgeInsets.only(
-            left: 25 * CenteroTheme.getValues(context).scaleFactor,
-            top: 0.5 * CenteroTheme.getValues(context).logoSize,
-          )),
+            padding: EdgeInsets.only(
+              left: 25 * CenteroTheme.getValues(context).scaleFactor,
+              top: 0.5 * CenteroTheme.getValues(context).logoSize,
+            ),
+          ),
         ],
       ),
     );
