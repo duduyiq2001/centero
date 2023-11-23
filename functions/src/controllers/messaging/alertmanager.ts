@@ -9,15 +9,15 @@ async function alertmanager(
   recipient_token: string,
   sendername: string
 ): Promise<void> {
-  if (alert == "call rejected" || "call accepted") {
+  if (alert == "call rejected" || alert == "call accepted") {
     throw new Error("wrong function");
   }
 
   if (alert == "incoming call") {
-    sendmessage(recipient_token, `incoming call from ${sendername}`);
+    await sendmessage(recipient_token, `incoming call from ${sendername}`);
   }
   if (alert == "call cancelled") {
-    sendmessage(recipient_token, `call cancelled by ${sendername}`);
+    await sendmessage(recipient_token, `call cancelled by ${sendername}`);
   }
 }
 export { alertmanager };

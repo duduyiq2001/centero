@@ -14,12 +14,12 @@ async function alertclient(
     `alert ${alert}, recipient ${recipient_token}, sendername${sendername}`
   );
   if (alert == "call rejected") {
-    sendmessage(recipient_token, "rerouting");
+    await sendmessage(recipient_token, "rerouting");
   }
   if (alert == "call accepted") {
-    sendmessage(recipient_token, `call accepted by ${sendername}`);
+    await sendmessage(recipient_token, `call accepted by ${sendername}`);
   }
-  if (alert == "incoming call" || "call cancelled") {
+  if (alert == "incoming call" || alert == "call cancelled") {
     throw new Error("wrong function");
   }
 }

@@ -258,7 +258,7 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       const conn = await getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
-      var name: string;
+      var name: string = "";
       if (!idToken) {
         res.status(401).send("Unauthorized");
         return;
@@ -278,25 +278,20 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       var [ifsucceced, managertoken] = await getmanager(conn);
       if (ifsucceced) {
         //update_request_session
-        session
-          .addrequestsession(device_token, managertoken, conn)
-          .then((ifsucceed) => {
-            if (ifsucceed) {
-            } else {
-              res.status(401).send("Internal Server Error");
-              try {
-                alertmanager("incoming call", managertoken, name);
-                res.status(200).send("success");
-              } catch (e) {
-                logger.log(e);
-                res.status(401).send("Internal Server Error");
-              }
-            }
-          });
+        if (await session.addrequestsession(device_token, managertoken, conn)) {
+          try {
+            await alertmanager("incoming call", managertoken, name);
+            res.status(200).send("success");
+          } catch (e) {
+            logger.log(e);
+            res.status(401).send("Internal Server Error");
+          }
+        } else {
+          res.status(401).send("Internal Server Error");
+        }
       }
     } catch (error) {
       res.status(500).send("Internal server error");
     }
-    res.status(200).send("success");
   });
 });
