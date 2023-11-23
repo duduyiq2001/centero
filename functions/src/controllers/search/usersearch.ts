@@ -28,6 +28,6 @@ async function searchmanager(
     return [false, "property not found"];
   }
   const matchingDoc = docs.docs[0];
-  return [true, matchingDoc.name];
+  return [true, matchingDoc.data().name];
 }
 export { searchuser, searchmanager };

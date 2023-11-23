@@ -154,7 +154,7 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
     try {
-      const { device_token, new_token } = req.body;
+      const { new_token } = req.body;
 
       const conn = await getFirestore();
 
@@ -170,7 +170,7 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
         .verifyIdToken(idToken)
         .then((decodedToken) => {
           const uid = decodedToken.uid;
-          refresh_token(device_token, new_token, "manager", conn, uid);
+          refresh_token(new_token, "manager", conn, uid);
         })
         .catch((error) => {
           // The ID token is invalid or expired
@@ -187,8 +187,6 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
     try {
-      const { device_token } = req.body;
-
       const conn = await getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
@@ -202,8 +200,8 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
         .auth()
         .verifyIdToken(idToken)
         .then((decodedToken) => {
-          //const uid = decodedToken.uid;
-          delete_token(device_token, "client", conn);
+          const uid = decodedToken.uid;
+          delete_token(uid, "client", conn);
         })
         .catch((error) => {
           // The ID token is invalid or expired
@@ -220,7 +218,7 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
     try {
-      const { device_token, new_token } = req.body;
+      const { new_token } = req.body;
 
       const conn = await getFirestore();
 
@@ -236,7 +234,7 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
         .verifyIdToken(idToken)
         .then((decodedToken) => {
           const uid = decodedToken.uid;
-          refresh_token(device_token, new_token, "client", conn, uid);
+          refresh_token(new_token, "client", conn, uid);
         })
         .catch((error) => {
           // The ID token is invalid or expired

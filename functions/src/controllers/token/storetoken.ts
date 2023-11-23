@@ -13,9 +13,7 @@ async function store_token(
     } else {
       storeref = db_connection.collection("managerstore");
     }
-    await storeref
-      .doc(device_token)
-      .set({ uid: uid, device_token: device_token });
+    await storeref.doc(uid).set({ uid: uid, device_token: device_token });
     return true;
   } catch (e) {
     logger.log(e);
