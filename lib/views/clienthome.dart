@@ -86,12 +86,6 @@ class ClientHome extends HookWidget {
               if (success) {
                 managerName.value = managername;
                 onCall.value = true;
-                /*
-                if (onCall.value) {
-                  onCall.value = false;
-                  pageState.value = PageStates.call;
-                }
-                */
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

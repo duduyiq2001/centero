@@ -3,9 +3,10 @@ import * as admin from "firebase-admin";
 /**
  *
  * @return {RoutingResponse} to provide granularity
- * if no mananger found return false
+ * if no manager found return false
  * if find a manager
  * return true and managertoken and managerid
+ * currently only finds the first manager from the manager table
  *  ***************
  * To do:
  * 1.modify database schema so that each manager get associated with a propetyname

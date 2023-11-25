@@ -12,7 +12,7 @@ type AlertType =
  *
  * *******
  * FUTURE PLAN:
- * instead of passing
+ * passing the reason for alert into the 'data' parameter
  */
 async function alertmanager(
   alert: AlertType,
