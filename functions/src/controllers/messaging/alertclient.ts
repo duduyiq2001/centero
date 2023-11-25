@@ -17,7 +17,7 @@ async function alertclient(
     await sendmessage(recipient_token, "rerouting");
   }
   if (alert == "call accepted") {
-    await sendmessage(recipient_token, `call accepted by ${sendername}`);
+    await sendmessage(recipient_token, `call accepted by manager`);
   }
   if (alert == "incoming call" || alert == "call cancelled") {
     throw new Error("wrong function");

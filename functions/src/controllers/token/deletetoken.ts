@@ -1,6 +1,6 @@
 type UserType = "client" | "manager";
 async function delete_token(
-  device_token: string,
+  uid: string,
   user: UserType,
   db_connection: any
 ): Promise<boolean> {
@@ -10,7 +10,7 @@ async function delete_token(
   } else {
     storeref = db_connection.collection("managerstore");
   }
-  await storeref.doc(device_token).delete();
+  await storeref.doc(uid).delete();
   return true;
 }
 

@@ -7,12 +7,30 @@ import "package:centero/views/footer.dart";
 import 'package:centero/controllers/authentication/managerauthentication.dart';
 import "package:centero/views/managerlogin.dart";
 import "package:centero/main.dart";
+import 'package:firebase_messaging/firebase_messaging.dart';
+import "package:centero/views/notification.dart";
+import "package:centero/controllers/call/acceptcall.dart";
 
 class ManagerHome extends HookWidget {
   const ManagerHome({super.key});
 
   @override
   Widget build(BuildContext context) {
+    //set up messaging!
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+      //html.window.alert('${message.data}');
+      BuildContext? current = navigatorKey.currentState?.overlay?.context;
+      if (current != null) {
+        showImmediateDialog(current, message.data.entries.first.value,
+            acceptcall, () => {print("rejected")});
+      }
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
     return Scaffold(
         bottomSheet: const Footer(),
         appBar: AppBar(

@@ -1,6 +1,6 @@
 import { logger } from "firebase-functions";
 import * as admin from "firebase-admin";
-type RoutingResponse = [boolean, string];
+type RoutingResponse = [boolean, string, string];
 async function getmanager(db_connection: any): Promise<RoutingResponse> {
   var managerref: any;
   try {
@@ -11,13 +11,17 @@ async function getmanager(db_connection: any): Promise<RoutingResponse> {
       await q.get();
     logger.info("doc", docs);
     if (docs.empty) {
-      return [false, ""];
+      return [false, "", ""];
     }
     const matchingmanager = docs.docs[0];
-    return [true, matchingmanager.data().device_token];
+    return [
+      true,
+      matchingmanager.data().device_token,
+      matchingmanager.data().uid,
+    ];
   } catch (e) {
     logger.log(e);
-    return [false, "error"];
+    return [false, "error", ""];
   }
 }
 export { getmanager };

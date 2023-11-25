@@ -8,6 +8,8 @@ import 'package:centero/controllers/authentication/residentauthentication.dart';
 import "package:centero/views/residentlogin.dart";
 import "package:centero/main.dart";
 import "package:centero/controllers/call/initiatecall.dart";
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:html' as html;
 
 class PageStates {
   static const home = 0;
@@ -23,12 +25,21 @@ class ClientHome extends HookWidget {
     final pageState = useState(PageStates.home);
     final onCall = useState(false);
     final rated = useState(false);
-    var managerName = "Bob Jones";
+    final managerName = useState("Bob Jones");
 
-    // ignore: unused_element
-    void resetState() {
-      rated.value = false;
-    }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle the message and update state
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+      html.window.alert('${message.data}');
+      // Update state using the state hook
+      onCall.value = false;
+      pageState.value = PageStates.call;
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
 
     var home = Column(
       children: [
@@ -58,7 +69,7 @@ class ClientHome extends HookWidget {
         Center(
           child: Text(
             (onCall.value)
-                ? "$managerName will be with you in just a moment!"
+                ? "${managerName.value}will be with you in just a moment!"
                 : "Welcome to Shady Oaks Apartments",
             style: Theme.of(context).textTheme.headlineLarge,
           ),
@@ -69,13 +80,18 @@ class ClientHome extends HookWidget {
         if (!onCall.value)
           ElevatedButton(
             onPressed: () async {
-              onCall.value = true;
               //bool ifsucceed = await initiatecall();
-              if (await initiatecall()) {
+              var [success, managername] = await initiatecall();
+              print('manager   $managername');
+              if (success) {
+                managerName.value = managername;
+                onCall.value = true;
+                /*
                 if (onCall.value) {
                   onCall.value = false;
                   pageState.value = PageStates.call;
                 }
+                */
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

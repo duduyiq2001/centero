@@ -19,7 +19,9 @@ import { refresh_token } from "./controllers/token/refreshtoken";
 import * as session from "./controllers/session/sessionupdate";
 import { getmanager } from "./controllers/callrouting/callrouting";
 import { alertmanager } from "./controllers/messaging/alertmanager";
+import { alertclient } from "./controllers/messaging/alertclient";
 import * as search from "./controllers/search/usersearch";
+import * as sessionsearch from "./controllers/session/sessionsearch";
 // Define an array of allowed origins
 
 // Configure CORS with the specific origins
@@ -121,8 +123,6 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
     try {
-      const { device_token } = req.body;
-
       const conn = await getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
@@ -136,8 +136,8 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
         .auth()
         .verifyIdToken(idToken)
         .then((decodedToken) => {
-          //const uid = decodedToken.uid;
-          delete_token(device_token, "manager", conn);
+          const uid = decodedToken.uid;
+          delete_token(uid, "manager", conn);
         })
         .catch((error) => {
           // The ID token is invalid or expired
@@ -165,21 +165,22 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
         return;
       }
 
-      admin
-        .auth()
-        .verifyIdToken(idToken)
-        .then((decodedToken) => {
-          const uid = decodedToken.uid;
-          refresh_token(new_token, "manager", conn, uid);
-        })
-        .catch((error) => {
-          // The ID token is invalid or expired
-          res.status(401).send("Unauthorized");
-        });
+      try {
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const uid = decodedToken.uid;
+        if (await refresh_token(new_token, "manager", conn, uid)) {
+          res.status(200).send("success");
+          return;
+        }
+        res.status(401).send("can't refresh token");
+        return;
+      } catch (error) {
+        res.status(401).send("Unauthorized");
+      }
     } catch (error) {
       res.status(500).send("Internal server error");
+      return;
     }
-    res.status(200).send("success");
   });
 });
 
@@ -206,6 +207,7 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
         .catch((error) => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
+          return;
         });
     } catch (error) {
       res.status(500).send("Internal server error");
@@ -242,8 +244,10 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
         });
     } catch (error) {
       res.status(500).send("Internal server error");
+      return;
     }
     res.status(200).send("success");
+    return;
   });
 });
 
@@ -273,23 +277,88 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       }
 
       //route to manager
-      var [ifsucceced, managertoken] = await getmanager(conn);
-      if (ifsucceced) {
+      var ifsucceed1: Boolean = false;
+      var managertoken: string = "";
+      var managername: string = "";
+      try {
+        var [ifsucceed, managertoken, muid] = await getmanager(conn);
+        ifsucceed1 = ifsucceed;
+        logger.log(`muid:  ${muid}`);
+        var [ifexist, managername] = await search.searchmanager(muid, conn);
+        if (!ifexist) {
+          res.status(401).send("no manager available");
+          return;
+        }
+      } catch (e) {
+        logger.log(e);
+        res.status(401).send("internal server error");
+        return;
+      }
+
+      if (ifsucceed1) {
         //update_request_session
+        logger.log(managername);
         if (await session.addrequestsession(device_token, managertoken, conn)) {
           try {
             await alertmanager("incoming call", managertoken, name);
-            res.status(200).send("success");
+            res.status(200).send(managername);
+            return;
           } catch (e) {
             logger.log(e);
             res.status(401).send("Internal Server Error");
+            return;
           }
         } else {
           res.status(401).send("Internal Server Error");
+          return;
         }
       }
     } catch (error) {
       res.status(500).send("Internal server error");
+      return;
+    }
+  });
+});
+
+exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    //initializeApp();
+    try {
+      const { device_token } = req.body;
+      const conn = await getFirestore();
+      const idToken = req.get("Authorization")?.split("Bearer ")[1];
+      if (!idToken) {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+      try {
+        const clienttoken = await sessionsearch.searchrequestsession(
+          device_token,
+          conn
+        );
+        if (clienttoken) {
+          await alertclient("call accepted", clienttoken, "");
+        } else {
+          res.status(401).send("client does not exist!");
+          return;
+        }
+
+        if (await session.removerequestsession(device_token, conn)) {
+          if (await session.addcallsession(clienttoken, device_token, conn)) {
+            res.status(200).send("success");
+            return;
+          }
+          res.status(401).send("can't add call session");
+        } else {
+          res.status(401).send("remove session failed");
+        }
+      } catch {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
+      return;
     }
   });
 });

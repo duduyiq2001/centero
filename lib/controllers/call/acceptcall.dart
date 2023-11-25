@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future<List<dynamic>> initiatecall() async {
+Future<bool> acceptcall() async {
   //get device tokenimport 'package:firebase_auth/firebase_auth.dart';
   final LocalStorage storage = new LocalStorage('centero');
   String device_token = storage.getItem("device_token");
@@ -15,17 +15,16 @@ Future<List<dynamic>> initiatecall() async {
   try {
     response = await http.post(
         Uri.parse(
-            'http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall'),
+            'http://127.0.0.1:5001/centero-191ae/us-central1/onAcceptCall'),
         body: jsonEncode({"device_token": device_token}),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $access_token'
         });
     print(response.body);
-    managername = response.body;
   } catch (e) {
     print(e);
-    return [false, ""];
+    return false;
   }
-  return [true, managername];
+  return true;
 }
