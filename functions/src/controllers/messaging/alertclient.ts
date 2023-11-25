@@ -5,6 +5,14 @@ type AlertType =
   | "call accepted"
   | "incoming call"
   | "call cancelled";
+
+/**
+ * Alert client with firebase cloud messging
+ * @param alert specify alert reason
+ * @param recipient_token token of the recipient
+ * @param sendername name of the person who's sending out the message
+ *
+ */
 async function alertclient(
   alert: AlertType,
   recipient_token: string,

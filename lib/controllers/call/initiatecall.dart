@@ -3,6 +3,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 
+///
+/// Used by client fronend
+/// Initiates a call from client
+/// Returns [true ,managername] if succeds
+/// control left click on those things for more details.
 Future<List<dynamic>> initiatecall() async {
   //get device tokenimport 'package:firebase_auth/firebase_auth.dart';
   final LocalStorage storage = new LocalStorage('centero');

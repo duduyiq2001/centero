@@ -6,6 +6,13 @@ import 'dart:convert';
 import 'package:centero/models/loginresponse.dart';
 import 'package:localstorage/localstorage.dart';
 
+///
+/// Sign in resident with
+/// [propertyname]
+/// [unit_number]
+/// [social]
+/// Returns [LoginResponse] for granularity of login response.
+/// control left click on those things for more details.
 Future<LoginResponse> residentlogin(
     String propertyname, int unit_number, String social) async {
   //fetch device token
@@ -57,6 +64,9 @@ Future<LoginResponse> residentlogin(
   return LoginResponse.success;
 }
 
+///
+/// Sign out resident
+///
 Future<void> residentlogout() async {
   //delete device token in database
   final LocalStorage storage = new LocalStorage('centero');

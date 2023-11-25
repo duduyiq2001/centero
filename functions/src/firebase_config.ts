@@ -1,3 +1,8 @@
+/**
+ * Production credential
+ * Contains filebase configuration and api key to connects to
+ * the actual firebase instance
+ */
 const config_app = {
   apiKey: "AIzaSyCukdY8KFDS7WRyOCoC3VQZncP0rKuPYXw",
   appId: "1:478226578656:web:d94b6d1b9e25a39448a485",

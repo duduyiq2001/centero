@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+///serialize the resident data for authentication
 String residentserializer(
     String propertyname, int unit_number, String social, String device_token) {
   return jsonEncode({

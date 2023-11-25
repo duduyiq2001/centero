@@ -6,6 +6,13 @@ import 'package:localstorage/localstorage.dart';
 import 'package:http/http.dart' as http;
 import "dart:convert";
 
+///
+/// Sign in manager with
+/// [email]
+/// [password]
+/// register manager device token with[registerdevicetoken]
+/// Returns [LoginResponse] for granularity of login response.
+/// control left click on those things for more details.
 Future<LoginResponse> managerlogin(String email, String password) async {
   try {
     final credential = await FirebaseAuth.instance
@@ -37,6 +44,10 @@ Future<LoginResponse> managerlogin(String email, String password) async {
   return LoginResponse.success;
 }
 
+///
+/// Sign out manager
+/// delete device token on server side
+/// control left click on those things for more details.
 Future<void> managerlogout() async {
   //delete device token in database
   final LocalStorage storage = new LocalStorage('centero');

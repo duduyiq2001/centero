@@ -17,6 +17,7 @@ class ManagerHome extends HookWidget {
   @override
   Widget build(BuildContext context) {
     //set up messaging!
+    // a listener for messaging from FCM!
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');

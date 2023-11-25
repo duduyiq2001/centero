@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:centero/models/loginresponse.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+///
+/// Used by the manager side
+/// Do Not call this method driectly
 Future<void> registerdevicetoken(String device_token) async {
   http.Response response;
   String? access_token =

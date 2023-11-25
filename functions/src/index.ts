@@ -41,6 +41,10 @@ const corsOptions: corsLib.CorsOptions = {
 const cors = corsLib(corsOptions);
 initializeApp();
 //http://localhost:35409/
+/**
+ * Signs in client, update client session
+ * Don't worry about this one
+ */
 export const clientsignin = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -55,7 +59,6 @@ export const clientsignin = functions.https.onRequest((req, res) => {
         social,
         conn
       );
-      logger.log("ekdmeedde");
       logger.log([isValidUser, uid]);
       if (isValidUser) {
         admin
@@ -76,7 +79,11 @@ export const clientsignin = functions.https.onRequest((req, res) => {
     res.status(200).send("success");
   });
 });
-
+/**
+ * whenever manager account is added on firebase auth
+ * firebase firestore will also be updated
+ * don't worry about this one
+ */
 exports.createManagerProfile = functions.auth.user().onCreate((user) => {
   // user is the newly created user
   const userRef = admin.firestore().collection("Managers").doc(user.uid);
@@ -85,7 +92,10 @@ exports.createManagerProfile = functions.auth.user().onCreate((user) => {
     uid: user.uid,
   });
 });
-
+/**
+ * Called after manager authenticates with firebase auth
+ * add manager device token to managerstore
+ */
 exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -118,7 +128,11 @@ exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
     res.status(200).send("success");
   });
 });
-
+/**
+ * manager logout
+ * delete manager device token from session
+ * don't worry about this one
+ */
 exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -149,7 +163,10 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
     res.status(200).send("success");
   });
 });
-
+/**
+ * manager token refresh
+ * don't worry about this one
+ */
 exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -183,7 +200,10 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
     }
   });
 });
-
+/**
+ * delete resident devicetoken from sessionstore when log out
+ * don't worry about this one
+ */
 exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -215,7 +235,10 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
     res.status(200).send("success");
   });
 });
-
+/**
+ * refresh resident token
+ * don't worry about this one
+ */
 exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -250,7 +273,13 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
     return;
   });
 });
-
+/**
+ * Used when a CLIENT request a manager
+ * CALLING @getmanager service to get routed to a manager
+ * use @search service to search for resident name
+ * @session will be use to add (manager,resident) pair to call session
+ * @alertmanager manager be alerted by user's request
+ */
 exports.onRequestCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -298,7 +327,7 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       if (ifsucceed1) {
         //update_request_session
         logger.log(managername);
-        if (await session.addrequestsession(device_token, managertoken, conn)) {
+        if (await session.addcallsession(device_token, managertoken, conn)) {
           try {
             await alertmanager("incoming call", managertoken, name);
             res.status(200).send(managername);
@@ -319,7 +348,14 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
     }
   });
 });
-
+/**
+ * Used when a MANAGER accept a recident's call request
+ * @alertclient client be alerted by manager's acceptance
+ *
+ * *********
+ * FUTURE PLAN: we will also initiate a actual video session
+ * from this endpoint
+ */
 exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
@@ -332,7 +368,7 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
         return;
       }
       try {
-        const clienttoken = await sessionsearch.searchrequestsession(
+        const clienttoken = await sessionsearch.searchcallsession(
           device_token,
           conn
         );
@@ -342,16 +378,95 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
           res.status(401).send("client does not exist!");
           return;
         }
-
-        if (await session.removerequestsession(device_token, conn)) {
-          if (await session.addcallsession(clienttoken, device_token, conn)) {
-            res.status(200).send("success");
-            return;
-          }
-          res.status(401).send("can't add call session");
+      } catch {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
+      return;
+    }
+  });
+});
+/**
+ * Used when a MANAGER reject a recident's call request
+ * @alertclient client be alerted by manager's rejection
+ * @removecallsession to remove (manager,client) sessionpair
+ * *********
+ * FUTURE PLAN:
+ * on the client side display "rerouting to a another manager"
+ * the manager that rejected by client can be
+ * cached in client browser (managerid1,managerid2)
+ * client will recalling the requestcall endpoint after
+ * a cool down of let's say 10 seconds sending the cached manager ids
+ * so that we can filter out mannger that just rejected
+ */
+exports.onRejectCall = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    //initializeApp();
+    try {
+      const { device_token } = req.body;
+      const conn = await getFirestore();
+      const idToken = req.get("Authorization")?.split("Bearer ")[1];
+      if (!idToken) {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+      try {
+        const clienttoken = await sessionsearch.searchcallsession(
+          device_token,
+          conn
+        );
+        if (clienttoken) {
+          await alertclient("call rejected", clienttoken, "");
         } else {
-          res.status(401).send("remove session failed");
+          res.status(401).send("client does not exist!");
+          return;
         }
+        await session.removecallsession(device_token, conn);
+      } catch {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
+      return;
+    }
+  });
+});
+/**
+ * Used when a CLIENT reject a recident's call request
+ * @alertmanager alert manager that the call is cancelled
+ * @removecallsession to remove (manager,client) sessionpair
+ *********
+ * frontend of the manager needs to handle the alert differently,
+ * cancelling call before the manager click accept will simply remove
+ * the popup message box
+ * cancelling call during the call will lead manager back to the homepage
+ */
+exports.onCancelCall = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    //initializeApp();
+    try {
+      const { device_token } = req.body;
+      const conn = await getFirestore();
+      const idToken = req.get("Authorization")?.split("Bearer ")[1];
+      if (!idToken) {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+      try {
+        const managertoken = await sessionsearch.searchcallsessionfromclient(
+          device_token,
+          conn
+        );
+        if (managertoken) {
+          await alertmanager("call cancelled", managertoken, "");
+        } else {
+          res.status(401).send("manager does not exist!");
+          return;
+        }
+        await session.removecallsession(managertoken, conn);
       } catch {
         res.status(401).send("Unauthorized");
         return;

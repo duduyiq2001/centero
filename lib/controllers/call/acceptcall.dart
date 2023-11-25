@@ -3,6 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 
+///
+/// Used by Manager Frontend
+/// a eventhandler for when manager accepts the call
+/// return true if succeed
 Future<bool> acceptcall() async {
   //get device tokenimport 'package:firebase_auth/firebase_auth.dart';
   final LocalStorage storage = new LocalStorage('centero');

@@ -1,6 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:localstorage/localstorage.dart';
 
+///
+/// Get device token from firebase messaging service
+/// token might refresh
 Future<String> getdevicetoken() async {
 //request permission
   FirebaseMessaging messaging = FirebaseMessaging.instance;

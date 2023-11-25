@@ -1,6 +1,15 @@
 import { logger } from "firebase-functions";
 import * as admin from "firebase-admin";
 type Authresult = [boolean, string];
+/**
+ * Authenticate client with @param property_name @param unit_num @param social
+ * @return {Authresult} to provide granularity
+ * in event of success
+ * return true and uid
+ * in event of failure
+ * return false and failure reason
+ *
+ */
 async function authenticate_client(
   property_name: string,
   unit_num: number,
@@ -14,7 +23,6 @@ async function authenticate_client(
     "==",
     unit_num
   );
-  logger.log("abcdefg");
   let docs = await q.get();
   logger.info("doc", docs);
   if (docs.empty) {
