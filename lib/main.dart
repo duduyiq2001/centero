@@ -27,7 +27,7 @@ class MyApp extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var interface = useState(Users.manager);
+    var interface = useState(Users.none);
 
     var userSelect = Container(
       margin: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor),
