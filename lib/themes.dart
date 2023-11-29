@@ -36,7 +36,6 @@ class CenteroTheme {
       headlineSmall: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        decoration: TextDecoration.underline,
         color: black,
       ),
     ),
