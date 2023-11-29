@@ -4,6 +4,12 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
+import 'package:centero/controllers/authentication/residentauthentication.dart';
+import "package:centero/views/residentlogin.dart";
+import "package:centero/main.dart";
+import "package:centero/controllers/call/initiatecall.dart";
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:html' as html;
 
 class PageStates {
   static const home = 0;
@@ -19,12 +25,21 @@ class ClientHome extends HookWidget {
     final pageState = useState(PageStates.home);
     final onCall = useState(false);
     final rated = useState(false);
-    var managerName = "Bob Jones";
+    final managerName = useState("Bob Jones");
 
-    // ignore: unused_element
-    void resetState() {
-      rated.value = false;
-    }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle the message and update state
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+      html.window.alert('${message.data}');
+      // Update state using the state hook
+      onCall.value = false;
+      pageState.value = PageStates.call;
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
 
     var home = Column(
       children: [
@@ -54,7 +69,7 @@ class ClientHome extends HookWidget {
         Center(
           child: Text(
             (onCall.value)
-                ? "$managerName will be with you in just a moment!"
+                ? "${managerName.value}will be with you in just a moment!"
                 : "Welcome to Shady Oaks Apartments",
             style: Theme.of(context).textTheme.headlineLarge,
           ),
@@ -64,14 +79,21 @@ class ClientHome extends HookWidget {
                 25.0 * CenteroTheme.getValues(context).scaleFactor)),
         if (!onCall.value)
           ElevatedButton(
-            onPressed: () {
-              onCall.value = true;
-              Future.delayed(const Duration(seconds: 3), () {
-                if (onCall.value) {
-                  onCall.value = false;
-                  pageState.value = PageStates.call;
-                }
-              });
+            onPressed: () async {
+              //bool ifsucceed = await initiatecall();
+              var [success, managername] = await initiatecall();
+              print('manager   $managername');
+              if (success) {
+                managerName.value = managername;
+                onCall.value = true;
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("connection error"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(
@@ -147,6 +169,16 @@ class ClientHome extends HookWidget {
                     50 * CenteroTheme.getValues(context).scaleFactor)),
           ],
         ),
+        ElevatedButton(
+            onPressed: () async {
+              await residentlogout();
+              navigatorKey.currentState?.popUntil((route) => route.isFirst);
+              Navigator.push(
+                navigatorKey.currentContext!,
+                MaterialPageRoute(builder: (_) => const ResidentLogin()),
+              );
+            },
+            child: const Text("Logout"))
       ],
     );
 

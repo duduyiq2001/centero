@@ -26,6 +26,7 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
+**/node_modules
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -33,6 +34,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+
 
 # Symbolication related
 app.*.symbols
@@ -908,3 +910,4 @@ Temporary Items
 # Backup           - https://github.com/github/gitignore/blob/main/Global/Backup.gitignore
 # JEnv             - https://github.com/github/gitignore/blob/main/Global/JEnv.gitignore
 **key.json
+functions/lib/

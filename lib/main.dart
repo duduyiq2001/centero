@@ -1,17 +1,39 @@
+import "package:centero/views/managerlogin.dart";
 import "package:flutter/material.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:centero/views/clienthome.dart";
 import "package:centero/views/managerhome.dart";
+import "package:centero/views/residentlogin.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 // import "package:centero/views/login.dart";
 import "firebase_options.dart";
 import "themes.dart";
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:html' as html;
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  const String mode = String.fromEnvironment('mode');
+
+  if (mode == "dev") {
+    await Firebase.initializeApp(
+      options: web,
+    );
+    try {
+      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
+  } else {
+    await Firebase.initializeApp(
+      options: web,
+    );
+  }
+
   runApp(const MyApp());
 }
 
@@ -21,6 +43,7 @@ class Users {
   static const manager = 2;
   static const admin = 3;
 }
+//use enum instead
 
 class MyApp extends HookWidget {
   const MyApp({super.key});
@@ -88,15 +111,16 @@ class MyApp extends HookWidget {
     );
 
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: "Centero",
       theme: CenteroTheme.getTheme(context),
       debugShowCheckedModeBanner: false,
       home: (interface.value == Users.none)
           ? userSelect
           : (interface.value == Users.tenant)
-              ? const ClientHome()
+              ? const ResidentLogin()
               : (interface.value == Users.manager)
-                  ? const ManagerHome()
+                  ? const ManagerLogin()
                   : Container(),
     );
   }
