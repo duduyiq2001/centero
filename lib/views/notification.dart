@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import "package:flutter/material.dart";
 
 void showImmediateDialog(BuildContext context, String message,
@@ -8,26 +10,26 @@ void showImmediateDialog(BuildContext context, String message,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(message),
-        content: SingleChildScrollView(
+        content: const SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Text('Would you like to accept this call?'),
+              Text("Would you like to accept this call?"),
             ],
           ),
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Accept'),
+            child: const Text("Accept"),
             onPressed: () async {
-              print('Accepted');
+              print("Accepted");
               Navigator.of(context).pop(); // Dismiss the dialog
               await acceptcallback();
             },
           ),
           TextButton(
-            child: Text('reject'),
+            child: const Text("reject"),
             onPressed: () async {
-              print('Rejected');
+              print("Rejected");
               Navigator.of(context).pop();
               await rejectcallback();
               // Dismiss the dialog

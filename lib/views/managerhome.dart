@@ -1,21 +1,23 @@
+// ignore_for_file: avoid_print
+
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:intl/intl.dart";
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
 import "package:centero/models/resident.dart";
-import 'package:centero/controllers/authentication/managerauthentication.dart';
+import "package:centero/models/manager.dart";
+import "package:centero/controllers/authentication/managerauthentication.dart";
 import "package:centero/views/managerlogin.dart";
 import "package:centero/main.dart";
-import 'package:firebase_messaging/firebase_messaging.dart';
+import "package:firebase_messaging/firebase_messaging.dart";
 import "package:centero/views/notification.dart";
 import "package:centero/controllers/call/acceptcall.dart";
 
-  
-class PageStates {
-  static const home = 0;
-  static const incomingCall = 1;
-  static const onCall = 2;
+enum PageStates {
+  home,
+  incomingCall,
+  onCall,
 }
 
 String getStatus(DateTime rentDueDate) {
@@ -25,9 +27,11 @@ String getStatus(DateTime rentDueDate) {
   }
   return "Overdue by ${now.difference(rentDueDate).inDays} days";
 }
-  
+
 class ManagerHome extends HookWidget {
-  const ManagerHome({super.key});
+  final Manager? manager;
+
+  const ManagerHome({super.key, this.manager});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +39,29 @@ class ManagerHome extends HookWidget {
     var showRightPanel = useState(true);
     var pageState = useState(PageStates.home);
 
-    var resident = useState(dummyData[10]);
+    var resident = useState(dummyResidents[10]);
 
     var dateformat = DateFormat("yyyy/MM/dd");
 
+    //set up messaging!
+    // a listener for messaging from FCM!
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Got a message whilst in the foreground!");
+      print("Message data: ${message.data}");
+      //html.window.alert("${message.data}");
+      BuildContext? current = navigatorKey.currentState?.overlay?.context;
+      if (current != null) {
+        showImmediateDialog(current, message.data.entries.first.value,
+            acceptcall, () => {print("rejected")});
+      }
+
+      if (message.notification != null) {
+        print("Message also contained a notification: ${message.notification}");
+      }
+    });
+
     // placeholder home page
-    // I'm not sure what the manager page should look like when there's no call
+    // I"m not sure what the manager page should look like when there"s no call
     var centerHome = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -51,6 +72,20 @@ class ManagerHome extends HookWidget {
           child: Text(
             "Get Call",
             style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: ElevatedButton(
+            onPressed: () async {
+              await managerlogout();
+              navigatorKey.currentState?.popUntil((route) => route.isFirst);
+              Navigator.push(
+                navigatorKey.currentContext!,
+                MaterialPageRoute(builder: (_) => ManagerLogin()),
+              );
+            },
+            child: const Text("Logout"),
           ),
         ),
       ],
@@ -164,47 +199,39 @@ class ManagerHome extends HookWidget {
     // #########################################################################
     // The actual page
     // #########################################################################
-    //set up messaging!
-    // a listener for messaging from FCM!
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-      //html.window.alert('${message.data}');
-      BuildContext? current = navigatorKey.currentState?.overlay?.context;
-      if (current != null) {
-        showImmediateDialog(current, message.data.entries.first.value,
-            acceptcall, () => {print("rejected")});
-      }
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });
     return Scaffold(
-        bottomSheet: const Footer(),
-        appBar: AppBar(
-          title: const Text("Centero Property Administration"),
-          leading: Container(
-            width: 0.4 * CenteroTheme.getValues(context).logoSize,
-            height: 0.4 * CenteroTheme.getValues(context).logoSize,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.contain,
-                image: AssetImage("assets/centeroBrand.jpg"),
+      bottomSheet: const Footer(),
+      appBar: AppBar(
+        title: const Text("Centero Property Administration"),
+        leading: Container(
+          width: 0.4 * CenteroTheme.getValues(context).logoSize,
+          height: 0.4 * CenteroTheme.getValues(context).logoSize,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.contain,
+              image: AssetImage("assets/centeroBrand.jpg"),
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          if (manager is Manager)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ElevatedButton(
+                onPressed: () {},
+                style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                      backgroundColor:
+                          const MaterialStatePropertyAll(Colors.white),
+                    ),
+                child: Row(
+                  children: <Widget>[
+                    Text(manager!.name),
+                    const Icon(Icons.person),
+                  ],
+                ),
               ),
             ),
-          ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.person),
-              iconSize: 30,
-              padding: EdgeInsets.zero,
-            ),
-          ),
         ],
       ),
       body: Container(
@@ -370,17 +397,6 @@ class ManagerHome extends HookWidget {
                           "Last Call: ${dateformat.format(resident.value.lastCall)}",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
-                      ElevatedButton(
-                  onPressed: () async {
-                    await managerlogout();
-                    navigatorKey.currentState
-                        ?.popUntil((route) => route.isFirst);
-                    Navigator.push(
-                      navigatorKey.currentContext!,
-                      MaterialPageRoute(builder: (_) => const ManagerLogin()),
-                    );
-                  },
-                  child: const Text("Logout"))
                     ],
                   ),
                 ],

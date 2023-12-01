@@ -1,7 +1,9 @@
-import 'package:localstorage/localstorage.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: avoid_print
+
+import "package:localstorage/localstorage.dart";
+import "package:http/http.dart" as http;
+import "dart:convert";
+import "package:firebase_auth/firebase_auth.dart";
 
 ///
 /// Used by client fronend
@@ -9,22 +11,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 /// Returns [true ,managername] if succeds
 /// control left click on those things for more details.
 Future<List<dynamic>> initiatecall() async {
-  //get device tokenimport 'package:firebase_auth/firebase_auth.dart';
-  final LocalStorage storage = new LocalStorage('centero');
-  String device_token = storage.getItem("device_token");
+  //get device tokenimport "package:firebase_auth/firebase_auth.dart";
+  final LocalStorage storage = LocalStorage("centero");
+  String deviceToken = storage.getItem("device_token");
   //get access token
-  String? access_token =
+  String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
-  var response;
+  http.Response response;
   String managername = "";
   try {
     response = await http.post(
         Uri.parse(
-            'http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall'),
-        body: jsonEncode({"device_token": device_token}),
+            "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
+        body: jsonEncode({"device_token": deviceToken}),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $access_token'
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken"
         });
     print(response.body);
     managername = response.body;

@@ -13,9 +13,10 @@ class Values {
 
 const green = Color(0xFF41AF28);
 const black = Color(0xFF221D34);
+// const black = Colors.black;
 
 class CenteroTheme {
-  static Values mediumValues = Values(100, 1, 25, 20, 50);
+  static Values mediumValues = Values(100, 1, 25, 10, 50);
   static Values protoValues = Values(400, 3, 80, 150, 150);
 
   static final ThemeData mediumScreens = ThemeData(
@@ -42,6 +43,7 @@ class CenteroTheme {
     elevatedButtonTheme: const ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: MaterialStatePropertyAll(green),
+        foregroundColor: MaterialStatePropertyAll(black),
         padding: MaterialStatePropertyAll(EdgeInsets.all(20.0)),
         textStyle: MaterialStatePropertyAll(
           TextStyle(
@@ -85,6 +87,7 @@ class CenteroTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: const MaterialStatePropertyAll(green),
+        foregroundColor: const MaterialStatePropertyAll(black),
         padding: const MaterialStatePropertyAll(EdgeInsets.all(40)),
         textStyle: const MaterialStatePropertyAll(
           TextStyle(

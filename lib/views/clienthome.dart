@@ -1,50 +1,55 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print
+// ignore_for_file: avoid_print
 
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import "package:firebase_messaging/firebase_messaging.dart";
+import "package:universal_html/html.dart" as html;
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
-import 'package:centero/controllers/authentication/residentauthentication.dart';
+import "package:centero/controllers/authentication/residentauthentication.dart";
 import "package:centero/views/residentlogin.dart";
 import "package:centero/main.dart";
 import "package:centero/controllers/call/initiatecall.dart";
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:html' as html;
+import "package:centero/models/resident.dart";
 
-class PageStates {
-  static const home = 0;
-  static const call = 1;
-  static const callEnded = 2;
+enum PageStates {
+  home,
+  call,
+  callEnded,
 }
 
 class ClientHome extends HookWidget {
-  const ClientHome({super.key});
+  final Resident? resident;
+
+  const ClientHome({super.key, this.resident});
 
   @override
   Widget build(BuildContext context) {
-    final pageState = useState(PageStates.home);
-    final onCall = useState(false);
-    final rated = useState(false);
-    final managerName = useState("Bob Jones");
+    var pageState = useState(PageStates.home);
+    var onCall = useState(false);
+    var rated = useState(false);
+    var managerName = useState("Bob Jones");
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the message and update state
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-      html.window.alert('${message.data}');
+      print("Got a message whilst in the foreground!");
+      print("Message data: ${message.data}");
+      html.window.alert("${message.data}");
       // Update state using the state hook
       onCall.value = false;
       pageState.value = PageStates.call;
 
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
+        print("Message also contained a notification: ${message.notification}");
       }
     });
 
     var home = Column(
       children: [
         Padding(
-          padding: EdgeInsets.all(MediaQuery.of(context).size.height / 20),
+          padding: EdgeInsets.all(
+            10 * CenteroTheme.getValues(context).scaleFactor,
+          ),
         ),
         Center(
           child: Container(
@@ -76,13 +81,13 @@ class ClientHome extends HookWidget {
         ),
         Padding(
             padding: EdgeInsets.all(
-                25.0 * CenteroTheme.getValues(context).scaleFactor)),
+                15 * CenteroTheme.getValues(context).scaleFactor)),
         if (!onCall.value)
           ElevatedButton(
             onPressed: () async {
               //bool ifsucceed = await initiatecall();
               var [success, managername] = await initiatecall();
-              print('manager   $managername');
+              print("manager   $managername");
               if (success) {
                 managerName.value = managername;
                 onCall.value = true;
@@ -169,16 +174,6 @@ class ClientHome extends HookWidget {
                     50 * CenteroTheme.getValues(context).scaleFactor)),
           ],
         ),
-        ElevatedButton(
-            onPressed: () async {
-              await residentlogout();
-              navigatorKey.currentState?.popUntil((route) => route.isFirst);
-              Navigator.push(
-                navigatorKey.currentContext!,
-                MaterialPageRoute(builder: (_) => const ResidentLogin()),
-              );
-            },
-            child: const Text("Logout"))
       ],
     );
 
@@ -266,7 +261,7 @@ class ClientHome extends HookWidget {
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            children: <Widget>[
               Text(
                 (!rated.value)
                     ? "Rate this interaction"
@@ -353,6 +348,48 @@ class ClientHome extends HookWidget {
 
     return Scaffold(
       bottomSheet: const Footer(),
+      appBar: AppBar(
+        title: const Text("Centero Property Administration"),
+        leading: Container(
+          width: 0.4 * CenteroTheme.getValues(context).logoSize,
+          height: 0.4 * CenteroTheme.getValues(context).logoSize,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.contain,
+              image: AssetImage("assets/centeroBrand.jpg"),
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          if (resident is Resident)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Text("Logged in: ${resident!.name}"),
+            ),
+          // Logout Button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: ElevatedButton(
+              onPressed: () async {
+                await residentlogout();
+                Navigator.pushAndRemoveUntil(
+                  navigatorKey.currentContext!,
+                  PageRouteBuilder(
+                    pageBuilder: (context, _, __) => ResidentLogin(),
+                  ),
+                  (route) => false,
+                );
+              },
+              style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                    backgroundColor:
+                        const MaterialStatePropertyAll(Colors.white),
+                  ),
+              child: const Text("Logout"),
+            ),
+          ),
+        ],
+      ),
       body: Container(
         margin: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor),
         child: (pageState.value == PageStates.home)

@@ -47,12 +47,11 @@ initializeApp();
  */
 export const clientsignin = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
       const { property_name, unit_number, social, device_token } = req.body;
       logger.log("req boday:", req.body);
       logger.log("property", property_name);
-      const conn = await getFirestore();
+      const conn = getFirestore();
       const [isValidUser, uid] = await authenticate_client(
         property_name,
         unit_number,
@@ -63,20 +62,20 @@ export const clientsignin = functions.https.onRequest((req, res) => {
       if (isValidUser) {
         admin
           .auth()
-          .createCustomToken(uid)
+          .createCustomToken(`${uid}`)
           .then((customToken) => {
-            res.json({ token: customToken });
+            res.status(200).json({ token: customToken, id: uid });
           });
-        await store_token(device_token, "client", conn, uid);
+        await store_token(device_token, "client", conn, `${uid}`);
       } else {
-        //here to specify reasons for fail (if else)
         res.status(403).send("Invalid credentials");
+        return;
       }
     } catch (error) {
       logger.log("Error creating custom token:", error);
       res.status(500).send("Internal server error");
+      return;
     }
-    res.status(200).send("success");
   });
 });
 /**
@@ -121,9 +120,11 @@ exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
         .catch((error) => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
+          return;
         });
     } catch (error) {
       res.status(500).send("Internal server error");
+      return;
     }
     res.status(200).send("success");
   });
@@ -156,9 +157,11 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
         .catch((error) => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
+          return;
         });
     } catch (error) {
       res.status(500).send("Internal server error");
+      return;
     }
     res.status(200).send("success");
   });
@@ -193,6 +196,7 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
         return;
       } catch (error) {
         res.status(401).send("Unauthorized");
+        return;
       }
     } catch (error) {
       res.status(500).send("Internal server error");
@@ -231,6 +235,7 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
         });
     } catch (error) {
       res.status(500).send("Internal server error");
+      return;
     }
     res.status(200).send("success");
   });
@@ -264,6 +269,7 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
         .catch((error) => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
+          return;
         });
     } catch (error) {
       res.status(500).send("Internal server error");
@@ -300,9 +306,11 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
         var [userexist, name] = await search.searchuser(uid, conn);
         if (!userexist) {
           res.status(401).send("user does not exist");
+          return;
         }
       } catch {
         res.status(401).send("Unauthorized");
+        return;
       }
 
       //route to manager

@@ -34,14 +34,14 @@ class Resident {
   });
 }
 
-List<Resident> dummyData = [
+List<Resident> dummyResidents = [
   Resident(
     username: "deandu",
     password: "3t1415926",
     name: "Dean Du",
-    unit: "2",
+    unit: "1",
     id: 1,
-    propertyname: "Greenwood Apartments",
+    propertyname: "a",
     address: "1409 Cherry Lane, Los Angeles, CA 90277",
     leasestart: DateTime(2022, 1, 15),
     leaseend: DateTime(2023, 1, 14),
@@ -209,7 +209,7 @@ List<Resident> dummyData = [
     username: "bobsmith",
     password: "bobsmith",
     name: "Bob Smith",
-    unit: "2051A 2BR 1BA 'Colonial'",
+    unit: "2051A",
     id: 11,
     propertyname: "Paradise Apartments",
     address: "1409 Cherry Lane, Los Angeles, CA 90277",
@@ -221,5 +221,22 @@ List<Resident> dummyData = [
     deposit: 2300,
     petRent: 75,
     lastCall: DateTime(2023, 10, 31),
+  ),
+  Resident(
+    username: "test",
+    password: "test",
+    name: "Test",
+    unit: "1",
+    id: 12,
+    propertyname: "UCI",
+    address: "Campus Drive",
+    leasestart: DateTime(1965, 10, 4),
+    leaseend: DateTime(2024, 10, 1),
+    monthlyRent: 5000,
+    isloggedin: false,
+    rentDueDate: DateTime(2023, 12, 15),
+    deposit: 2600,
+    petRent: 100,
+    lastCall: DateTime(2023, 11, 30),
   )
 ];

@@ -1,5 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+// ignore: unused_import
 import 'package:centero/models/loginresponse.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

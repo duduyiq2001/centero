@@ -1,67 +1,70 @@
-import 'package:centero/utility/getdevicetoken.dart';
-import 'package:centero/serializers/residentserialzer.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:centero/models/loginresponse.dart';
-import 'package:localstorage/localstorage.dart';
+// ignore_for_file: avoid_print
+
+import "package:centero/utility/getdevicetoken.dart";
+import "package:centero/serializers/residentserialzer.dart";
+import "package:firebase_auth/firebase_auth.dart";
+import "package:http/http.dart" as http;
+import "dart:convert";
+import "package:centero/models/loginresponse.dart";
+import "package:localstorage/localstorage.dart";
+import "package:centero/models/resident.dart";
 
 ///
 /// Sign in resident with
 /// [propertyname]
-/// [unit_number]
+/// [unitNumber]
 /// [social]
 /// Returns [LoginResponse] for granularity of login response.
 /// control left click on those things for more details.
-Future<LoginResponse> residentlogin(
-    String propertyname, int unit_number, String social) async {
+Future<(LoginResponse, Resident?)> residentlogin(
+    String propertyname, String unitNumber, String social) async {
   //fetch device token
-  String device_token = "";
+  String deviceToken = "";
   try {
-    device_token = await getdevicetoken();
+    deviceToken = await getdevicetoken();
   } catch (e) {
-    print("failed to fetch device token");
-    print(e);
-    return LoginResponse.devicetokenfailed;
+    return (LoginResponse.deviceTokenFailed, null);
   }
-  print(device_token);
+  // print(deviceToken);
   String data =
-      residentserializer(propertyname, unit_number, social, device_token);
+      residentserializer(propertyname, unitNumber, social, deviceToken);
 
   // get custom token
   http.Response response;
+  Resident? r;
   String token = "";
+  Map<String, dynamic> decodedData;
   try {
     response = await http.post(
-        Uri.parse(
-            'http://127.0.0.1:5001/centero-191ae/us-central1/clientsignin'),
-        body: data,
-        headers: <String, String>{'Content-Type': 'application/json'});
-    String body = response.body;
-    print("response body $body");
-    Map<String, dynamic> decodedData = jsonDecode(response.body);
-    if (response.body == "invalid credential") {
-      return LoginResponse.customtokenfailedtogenerate;
+      Uri.parse("http://127.0.0.1:5001/centero-191ae/us-central1/clientsignin"),
+      body: data,
+      headers: <String, String>{"Content-Type": "application/json"},
+    );
+    if (response.statusCode == 403) {
+      return (LoginResponse.signInFailed, null);
     }
-    token = decodedData['token'];
-    print('Token: $token');
+    decodedData = jsonDecode(response.body);
+    token = decodedData["token"];
   } catch (e) {
-    print("failed to get custom token");
-
-    print(e);
-    return LoginResponse.customtokenfailedtogenerate;
+    return (LoginResponse.customTokenFailedToGenerate, null);
   }
-  //sign in with custom token
 
   try {
+    int id = decodedData["id"];
+    r = dummyResidents.firstWhere((element) => element.id == id);
+  } catch (e) {
+    r = null;
+  }
+
+  try {
+    // ignore: unused_local_variable
     final userCredential =
         await FirebaseAuth.instance.signInWithCustomToken(token);
-    print('user:$userCredential');
+    // print("user:${userCredential}");
   } catch (e) {
-    print("failed to sign in with token");
-    return LoginResponse.sigininfailed;
+    return (LoginResponse.signInFailed, null);
   }
-  return LoginResponse.success;
+  return (LoginResponse.success, r);
 }
 
 ///
@@ -69,23 +72,20 @@ Future<LoginResponse> residentlogin(
 ///
 Future<void> residentlogout() async {
   //delete device token in database
-  final LocalStorage storage = new LocalStorage('centero');
-  String device_token = storage.getItem("device_token");
-  http.Response response;
-  String? access_token =
+  final LocalStorage storage = LocalStorage("centero");
+  String deviceToken = storage.getItem("device_token");
+  String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   try {
-    response = await http.post(
+    http.Response _ = await http.post(
         Uri.parse(
-            'http://127.0.0.1:5001/centero-191ae/us-central1/OnResidentLogOut'),
-        body: jsonEncode({"device_token": device_token}),
+            "http://127.0.0.1:5001/centero-191ae/us-central1/OnResidentLogOut"),
+        body: jsonEncode({"device_token": deviceToken}),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $access_token'
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken"
         });
-    print(response.body);
   } catch (e) {
-    print(e);
     throw Exception("request failed");
   }
 

@@ -1,10 +1,13 @@
-import 'package:centero/models/loginresponse.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:centero/utility/getdevicetoken.dart';
-import 'package:centero/utility/registerdevicetoken.dart';
-import 'package:localstorage/localstorage.dart';
-import 'package:http/http.dart' as http;
+// ignore_for_file: avoid_print
+
+import "package:firebase_auth/firebase_auth.dart";
+import "package:localstorage/localstorage.dart";
+import "package:http/http.dart" as http;
 import "dart:convert";
+import "package:centero/models/loginresponse.dart";
+import "package:centero/models/manager.dart";
+import "package:centero/utility/getdevicetoken.dart";
+import "package:centero/utility/registerdevicetoken.dart";
 
 ///
 /// Sign in manager with
@@ -13,35 +16,44 @@ import "dart:convert";
 /// register manager device token with[registerdevicetoken]
 /// Returns [LoginResponse] for granularity of login response.
 /// control left click on those things for more details.
-Future<LoginResponse> managerlogin(String email, String password) async {
+Future<(LoginResponse, Manager?)> managerlogin(
+    String email, String password) async {
+  UserCredential? credential;
   try {
-    final credential = await FirebaseAuth.instance
+    // ignore: unused_local_variable
+    credential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      print('No user found for that email.');
-      return LoginResponse.sigininfailed;
-    } else if (e.code == 'wrong-password') {
-      print('Wrong password provided for that user.');
-      return LoginResponse.sigininfailed;
+    if (e.code == "user-not-found") {
+      print("No user found for that email.");
+      return (LoginResponse.signInFailed, null);
+    } else if (e.code == "wrong-password") {
+      print("Wrong password provided for that user.");
+      return (LoginResponse.signInFailed, null);
     }
   }
-  String device_token = "";
+  String? id = credential?.user?.uid;
+  String deviceToken = "";
   try {
-    device_token = await getdevicetoken();
+    deviceToken = await getdevicetoken();
   } catch (e) {
-    print("failed to fetch device token");
-    print(e);
-    return LoginResponse.devicetokenfailed;
+    return (LoginResponse.deviceTokenFailed, null);
   }
 
   try {
-    await registerdevicetoken(device_token);
+    await registerdevicetoken(deviceToken);
   } catch (e) {
-    print(e);
-    return LoginResponse.sigininfailed;
+    return (LoginResponse.signInFailed, null);
   }
-  return LoginResponse.success;
+
+  Manager? manager;
+  try {
+    manager = dummyManagers.firstWhere((element) => element.id == id);
+  } catch (e) {
+    manager = null;
+  }
+
+  return (LoginResponse.success, manager);
 }
 
 ///
@@ -50,23 +62,22 @@ Future<LoginResponse> managerlogin(String email, String password) async {
 /// control left click on those things for more details.
 Future<void> managerlogout() async {
   //delete device token in database
-  final LocalStorage storage = new LocalStorage('centero');
-  String device_token = storage.getItem("device_token");
-  http.Response response;
-  String? access_token =
+  final LocalStorage storage = LocalStorage("centero");
+  String deviceToken = storage.getItem("device_token");
+  String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   try {
-    response = await http.post(
+    http.Response _ = await http.post(
         Uri.parse(
-            'http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogout'),
-        body: jsonEncode({"device_token": device_token}),
+            "http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogout"),
+        body: jsonEncode({"device_token": deviceToken}),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $access_token'
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken"
         });
-    print(response.body);
+    // print(response.body);
   } catch (e) {
-    print(e);
+    // print(e);
     throw Exception("request failed");
   }
 

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import "package:centero/views/managerlogin.dart";
 import "package:flutter/material.dart";
 import "package:firebase_core/firebase_core.dart";
@@ -8,22 +10,21 @@ import "package:flutter_hooks/flutter_hooks.dart";
 // import "package:centero/views/login.dart";
 import "firebase_options.dart";
 import "themes.dart";
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:html' as html;
+import "package:firebase_auth/firebase_auth.dart";
+import "package:firebase_messaging/firebase_messaging.dart";
+import "package:universal_html/html.dart" as html;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  const String mode = String.fromEnvironment('mode');
+  const String mode = String.fromEnvironment("mode");
 
   if (mode == "dev") {
     await Firebase.initializeApp(
       options: web,
     );
     try {
-      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      await FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     } catch (e) {
       // ignore: avoid_print
       print(e);
@@ -37,11 +38,11 @@ void main() async {
   runApp(const MyApp());
 }
 
-class Users {
-  static const none = 0;
-  static const tenant = 1;
-  static const manager = 2;
-  static const admin = 3;
+enum Users {
+  none,
+  tenant,
+  manager,
+  admin,
 }
 //use enum instead
 
@@ -118,9 +119,10 @@ class MyApp extends HookWidget {
       home: (interface.value == Users.none)
           ? userSelect
           : (interface.value == Users.tenant)
-              ? const ResidentLogin()
+              ? ResidentLogin()
+              // ? const ClientHome()
               : (interface.value == Users.manager)
-                  ? const ManagerLogin()
+                  ? ManagerLogin()
                   : Container(),
     );
   }
