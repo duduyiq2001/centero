@@ -1,13 +1,16 @@
 // ignore_for_file: avoid_print
 
-import "package:centero/utility/getdevicetoken.dart";
-import "package:centero/serializers/residentserialzer.dart";
+import "package:centero/main.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
-import "package:centero/models/loginresponse.dart";
 import "package:localstorage/localstorage.dart";
+import "package:provider/provider.dart";
+import "package:centero/models/loginresponse.dart";
+import "package:centero/utility/getdevicetoken.dart";
+import "package:centero/serializers/residentserialzer.dart";
 import "package:centero/models/resident.dart";
+import "package:centero/controllers/http/connectionservice.dart";
 
 ///
 /// Sign in resident with
@@ -17,7 +20,10 @@ import "package:centero/models/resident.dart";
 /// Returns [LoginResponse] for granularity of login response.
 /// control left click on those things for more details.
 Future<(LoginResponse, Resident?)> residentlogin(
-    String propertyname, String unitNumber, String social) async {
+  String propertyname,
+  String unitNumber,
+  String social,
+) async {
   //fetch device token
   String deviceToken = "";
   try {
@@ -34,8 +40,13 @@ Future<(LoginResponse, Resident?)> residentlogin(
   Resident? r;
   String token = "";
   Map<String, dynamic> decodedData;
+
   try {
-    response = await http.post(
+    http.Client client = Provider.of<ConnectionService>(
+      navigatorKey.currentContext!,
+      listen: false,
+    ).returnConnection();
+    response = await client.post(
       Uri.parse("http://127.0.0.1:5001/centero-191ae/us-central1/clientsignin"),
       body: data,
       headers: <String, String>{"Content-Type": "application/json"},
@@ -77,7 +88,11 @@ Future<void> residentlogout() async {
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   try {
-    http.Response _ = await http.post(
+    http.Client client = Provider.of<ConnectionService>(
+      navigatorKey.currentContext!,
+      listen: false,
+    ).returnConnection();
+    http.Response _ = await client.post(
         Uri.parse(
             "http://127.0.0.1:5001/centero-191ae/us-central1/OnResidentLogOut"),
         body: jsonEncode({"device_token": deviceToken}),

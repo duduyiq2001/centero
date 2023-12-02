@@ -1,18 +1,19 @@
 // ignore_for_file: unused_import
 
-import "package:centero/views/managerlogin.dart";
 import "package:flutter/material.dart";
 import "package:firebase_core/firebase_core.dart";
-import "package:centero/views/clienthome.dart";
-import "package:centero/views/managerhome.dart";
-import "package:centero/views/residentlogin.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
-// import "package:centero/views/login.dart";
-import "firebase_options.dart";
-import "themes.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
 import "package:universal_html/html.dart" as html;
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:provider/provider.dart";
+import "package:centero/views/clienthome.dart";
+import "package:centero/views/managerhome.dart";
+import "package:centero/views/residentlogin.dart";
+import "package:centero/views/managerlogin.dart";
+import "package:centero/controllers/http/connectionservice.dart";
+import "firebase_options.dart";
+import "themes.dart";
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
@@ -35,7 +36,14 @@ void main() async {
     );
   }
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ConnectionService()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 enum Users {

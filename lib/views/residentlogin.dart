@@ -46,7 +46,7 @@ class ResidentLogin extends HookWidget {
             ),
             child: TextField(
               controller: unitct,
-              obscureText: true,
+              obscureText: false,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Unit Number",
@@ -90,7 +90,10 @@ class ResidentLogin extends HookWidget {
             // Login button
             onPressed: () async {
               var (response, resident) = await residentlogin(
-                  propertyct.text, unitct.text, socialct.text);
+                propertyct.text,
+                unitct.text,
+                socialct.text,
+              );
               if (response == LoginResponse.success) {
                 Navigator.pushAndRemoveUntil(
                   context,

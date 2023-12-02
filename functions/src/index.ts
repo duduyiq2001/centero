@@ -49,8 +49,6 @@ export const clientsignin = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       const { property_name, unit_number, social, device_token } = req.body;
-      logger.log("req boday:", req.body);
-      logger.log("property", property_name);
       const conn = getFirestore();
       const [isValidUser, uid] = await authenticate_client(
         property_name,
@@ -58,7 +56,6 @@ export const clientsignin = functions.https.onRequest((req, res) => {
         social,
         conn
       );
-      logger.log([isValidUser, uid]);
       if (isValidUser) {
         admin
           .auth()

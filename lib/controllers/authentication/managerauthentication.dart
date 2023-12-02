@@ -1,13 +1,16 @@
 // ignore_for_file: avoid_print
 
+import "package:centero/main.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:localstorage/localstorage.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
+import "package:provider/provider.dart";
 import "package:centero/models/loginresponse.dart";
 import "package:centero/models/manager.dart";
 import "package:centero/utility/getdevicetoken.dart";
 import "package:centero/utility/registerdevicetoken.dart";
+import "package:centero/controllers/http/connectionservice.dart";
 
 ///
 /// Sign in manager with
@@ -17,7 +20,9 @@ import "package:centero/utility/registerdevicetoken.dart";
 /// Returns [LoginResponse] for granularity of login response.
 /// control left click on those things for more details.
 Future<(LoginResponse, Manager?)> managerlogin(
-    String email, String password) async {
+  String email,
+  String password,
+) async {
   UserCredential? credential;
   try {
     // ignore: unused_local_variable
@@ -67,7 +72,11 @@ Future<void> managerlogout() async {
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   try {
-    http.Response _ = await http.post(
+    http.Client client = Provider.of<ConnectionService>(
+            navigatorKey.currentContext!,
+            listen: false)
+        .returnConnection();
+    http.Response _ = await client.post(
         Uri.parse(
             "http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogout"),
         body: jsonEncode({"device_token": deviceToken}),
