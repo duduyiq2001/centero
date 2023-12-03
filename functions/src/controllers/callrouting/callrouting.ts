@@ -1,36 +1,56 @@
 import { logger } from "firebase-functions";
 import * as admin from "firebase-admin";
+import { searchcallsession } from "../session/sessionsearch";
 /**
  *
  * @return {RoutingResponse} to provide granularity
  * if no manager found return false
  * if find a manager
  * return true and managertoken and managerid
- * currently only finds the first manager from the manager table
- *  ***************
- * To do:
- * 1.modify database schema so that each manager get associated with a propetyname
- *  and here we only return a manager with the property name matching the client
- * 2.whenever user request a manager, we need to query the callsession table
- * to make sure manager is not in call with anyone else
- * if so we should return false
  */
 type RoutingResponse = [boolean, string, string];
-async function getmanager(db_connection: any): Promise<RoutingResponse> {
+async function getmanager(db_connection: admin.firestore.Firestore, property: string): Promise<RoutingResponse> {
   try {
-    const managerref = db_connection.collection("managerstore");
-    const q = managerref.where("uid", "!=", null);
-    let docs: admin.firestore.QuerySnapshot<admin.firestore.DocumentData> =
-      await q.get();
-    logger.info("doc", docs);
-    if (docs.empty) {
-      return [false, "", ""];
+    const activeRef = db_connection.collection("managerstore");
+    const q = activeRef.where("uid", "!=", null);
+    let activeManagers = await q.get();
+    const managerRef = db_connection.collection("Managers");
+    const q2 = managerRef.where("property_name", "==", property);
+    let propertyManagers = await q2.get();
+    let matchingmanagers: admin.firestore.DocumentData[] = [];
+    let manager: admin.firestore.DocumentData|null = null;
+
+    for (let i = 0; i < activeManagers.size; ++i) {
+      let uid = activeManagers.docs[i].data().uid;
+      for (let j = 0; j < propertyManagers.size; ++j) {
+        if (uid == propertyManagers.docs[j].data().uid) {
+          matchingmanagers.push(activeManagers.docs[i]);
+        }
+      }
     }
-    const matchingmanager = docs.docs[0];
+
+    if (matchingmanagers.length == 0) {
+      return [false, "no online managers for property", ""];
+    }
+
+    // loop through managers check if they are in a call
+    for (let i = 0; i < matchingmanagers.length; ++i) {
+      let managerToken = matchingmanagers[i].data().device_token;
+      let inSession = await searchcallsession(managerToken, db_connection).then(clientToken => clientToken != null);
+      if (!inSession) {
+        manager = matchingmanagers[i];
+        break;
+      }
+    }
+
+    if (manager == null) {
+      return [false, "managers are busy", ""];
+    }
+
     return [
       true,
-      matchingmanager.data().device_token,
-      matchingmanager.data().uid,
+      manager!.data().device_token,
+      manager!.data().uid,
     ];
   } catch (e) {
     logger.log(e);

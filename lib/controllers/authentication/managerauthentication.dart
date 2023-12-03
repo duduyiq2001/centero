@@ -1,10 +1,9 @@
-// ignore_for_file: avoid_print
-
 import "package:centero/main.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:localstorage/localstorage.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
+import "dart:developer" as developer;
 import "package:provider/provider.dart";
 import "package:centero/models/loginresponse.dart";
 import "package:centero/models/manager.dart";
@@ -30,10 +29,10 @@ Future<(LoginResponse, Manager?)> managerlogin(
         .signInWithEmailAndPassword(email: email, password: password);
   } on FirebaseAuthException catch (e) {
     if (e.code == "user-not-found") {
-      print("No user found for that email.");
+      developer.log("No user found for that email.");
       return (LoginResponse.signInFailed, null);
     } else if (e.code == "wrong-password") {
-      print("Wrong password provided for that user.");
+      developer.log("Wrong password provided for that user.");
       return (LoginResponse.signInFailed, null);
     }
   }

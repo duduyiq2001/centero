@@ -1,9 +1,8 @@
-// ignore_for_file: avoid_print
-
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
 import "package:universal_html/html.dart" as html;
+import "dart:developer" as developer;
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
 import "package:centero/controllers/authentication/residentauthentication.dart";
@@ -28,19 +27,20 @@ class ClientHome extends HookWidget {
     var pageState = useState(PageStates.home);
     var onCall = useState(false);
     var rated = useState(false);
-    var managerName = useState("Bob Jones");
+    var managerName = useState("");
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the message and update state
-      print("Got a message whilst in the foreground!");
-      print("Message data: ${message.data}");
+      developer.log("Got a message whilst in the foreground!");
+      developer.log("Message data: ${message.data}");
       html.window.alert("${message.data}");
       // Update state using the state hook
       onCall.value = false;
       pageState.value = PageStates.call;
 
       if (message.notification != null) {
-        print("Message also contained a notification: ${message.notification}");
+        developer.log(
+            "Message also contained a notification: ${message.notification}");
       }
     });
 
@@ -74,7 +74,7 @@ class ClientHome extends HookWidget {
         Center(
           child: Text(
             (onCall.value)
-                ? "${managerName.value}will be with you in just a moment!"
+                ? "${managerName.value} will be with you in just a moment!"
                 : "Welcome to Shady Oaks Apartments",
             style: Theme.of(context).textTheme.headlineLarge,
           ),
@@ -85,17 +85,17 @@ class ClientHome extends HookWidget {
         if (!onCall.value)
           ElevatedButton(
             onPressed: () async {
-              //bool ifsucceed = await initiatecall();
-              var [success, managername] = await initiatecall();
-              print("manager   $managername");
+              onCall.value = true;
+              var (success, manager) =
+                  await initiatecall(resident!.propertyname);
               if (success) {
-                managerName.value = managername;
-                onCall.value = true;
+                managerName.value = manager;
+                pageState.value = PageStates.call;
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("connection error"),
-                    duration: Duration(seconds: 2),
+                  SnackBar(
+                    content: Text(manager),
+                    duration: const Duration(seconds: 2),
                   ),
                 );
               }
@@ -138,31 +138,31 @@ class ClientHome extends HookWidget {
                   const Padding(padding: EdgeInsets.all(5.0)),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Submit Work Order");
+                      developer.log("Pressed Submit Work Order");
                     },
                     child: const Text("Submit Work Order"),
                   ),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Reserve Amenity Button");
+                      developer.log("Pressed Reserve Amenity Button");
                     },
                     child: const Text("Reserve Amenity"),
                   ),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Pay Rent Button");
+                      developer.log("Pressed Pay Rent Button");
                     },
                     child: const Text("Pay My Rent"),
                   ),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Calendar of Events Button");
+                      developer.log("Pressed Calendar of Events Button");
                     },
                     child: const Text("Calendar of Events"),
                   ),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Rental Information Button");
+                      developer.log("Pressed Rental Information Button");
                     },
                     child: const Text("Rental Information"),
                   ),

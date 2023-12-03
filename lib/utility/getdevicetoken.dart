@@ -1,5 +1,6 @@
 import "package:firebase_messaging/firebase_messaging.dart";
 import "package:localstorage/localstorage.dart";
+import "dart:developer" as developer;
 
 ///
 /// Get device token from firebase messaging service
@@ -19,11 +20,11 @@ Future<String> getdevicetoken() async {
   );
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print("User granted permission");
+    developer.log("User granted permission");
   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    print("User granted provisional permission");
+    developer.log("User granted provisional permission");
   } else {
-    print("User declined or has not accepted permission");
+    developer.log("User declined or has not accepted permission");
     return "declined";
   }
   // Get the token each time the application loads

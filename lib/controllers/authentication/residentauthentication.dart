@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import "package:centero/main.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:http/http.dart" as http;
@@ -29,6 +27,7 @@ Future<(LoginResponse, Resident?)> residentlogin(
   try {
     deviceToken = await getdevicetoken();
   } catch (e) {
+    print(e);
     return (LoginResponse.deviceTokenFailed, null);
   }
   // print(deviceToken);
@@ -61,7 +60,7 @@ Future<(LoginResponse, Resident?)> residentlogin(
   }
 
   try {
-    int id = decodedData["id"];
+    String id = decodedData["id"];
     r = dummyResidents.firstWhere((element) => element.id == id);
   } catch (e) {
     r = null;

@@ -285,11 +285,10 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
  */
 exports.onRequestCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
-      const { device_token } = req.body;
+      const { property_name } = req.body;
 
-      const conn = await getFirestore();
+      const conn = getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       var name: string = "";
@@ -311,48 +310,41 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       }
 
       //route to manager
-      var ifsucceed1: Boolean = false;
+      var succeeded: boolean = false;
+      var ifexist: boolean = false;
       var managertoken: string = "";
       var managername: string = "";
       try {
-        var [ifsucceed, managertoken, muid] = await getmanager(conn);
-        ifsucceed1 = ifsucceed;
-        logger.log(`muid:  ${muid}`);
-        var [ifexist, managername] = await search.searchmanager(muid, conn);
-        if (!ifexist) {
-          res.status(401).send("no manager available");
+        var [succeeded, managertoken, muid] = await getmanager(conn, property_name);
+        if (succeeded) var [ifexist, managername] = await search.searchmanager(muid, conn);
+        console.log(succeeded, ifexist, managertoken, muid, managername);
+        if (!succeeded || !ifexist) {
+          res.status(401).send("No Manager Available");
           return;
         }
       } catch (e) {
         logger.log(e);
-        res.status(401).send("internal server error");
+        res.status(401).send("Internal Server Error");
         return;
       }
 
-      if (ifsucceed1) {
-        //update_request_session
-        logger.log(managername);
-        if (await session.addcallsession(device_token, managertoken, conn)) {
-          try {
-            await alertmanager("incoming call", managertoken, name);
-            res.status(200).send(managername);
-            return;
-          } catch (e) {
-            logger.log(e);
-            res.status(401).send("Internal Server Error");
-            return;
-          }
-        } else {
-          res.status(401).send("Internal Server Error");
-          return;
+      try {
+        await alertmanager("incoming call", managertoken, name);
+        res.status(200).send(managername);
+        return;
+      } catch (e) {
+        logger.log(e);
+        res.status(401).send("Internal Server Error");
+        return;
         }
-      }
+
     } catch (error) {
-      res.status(500).send("Internal server error");
+      res.status(500).send("Internal Server Error");
       return;
     }
   });
 });
+
 /**
  * Used when a MANAGER accept a recident's call request
  * @alertclient client be alerted by manager's acceptance
@@ -366,7 +358,7 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
     //initializeApp();
     try {
       const { device_token } = req.body;
-      const conn = await getFirestore();
+      const conn = getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
         res.status(401).send("Unauthorized");
@@ -379,6 +371,11 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
         );
         if (clienttoken) {
           await alertclient("call accepted", clienttoken, "");
+          if (!await session.addcallsession(clienttoken, device_token, conn)) {
+            console.log("Could not create session");
+            res.status(401).send("Could not create session");
+            return;
+          }
         } else {
           res.status(401).send("client does not exist!");
           return;

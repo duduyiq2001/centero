@@ -1,14 +1,9 @@
-// ignore_for_file: unused_import
-
 import "package:flutter/material.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:firebase_auth/firebase_auth.dart";
-import "package:firebase_messaging/firebase_messaging.dart";
-import "package:universal_html/html.dart" as html;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:provider/provider.dart";
-import "package:centero/views/clienthome.dart";
-import "package:centero/views/managerhome.dart";
+import "dart:developer" as developer;
 import "package:centero/views/residentlogin.dart";
 import "package:centero/views/managerlogin.dart";
 import "package:centero/controllers/http/connectionservice.dart";
@@ -27,8 +22,7 @@ void main() async {
     try {
       await FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     } catch (e) {
-      // ignore: avoid_print
-      print(e);
+      developer.log(e.toString());
     }
   } else {
     await Firebase.initializeApp(
@@ -128,7 +122,6 @@ class MyApp extends HookWidget {
           ? userSelect
           : (interface.value == Users.tenant)
               ? ResidentLogin()
-              // ? const ClientHome()
               : (interface.value == Users.manager)
                   ? ManagerLogin()
                   : Container(),

@@ -1,4 +1,3 @@
-import { logger } from "firebase-functions";
 import * as admin from "firebase-admin";
 type Authresult = [boolean, string];
 /**
@@ -27,7 +26,6 @@ async function authenticate_client(
   }
   const matchingDoc = docs.docs.find((doc) => doc.data().social === social);
   if (matchingDoc) {
-    logger.log(matchingDoc.id, " => ", matchingDoc.data().uid);
     return [true, matchingDoc.data().uid];
   } else {
     return [false, "social does not match"];

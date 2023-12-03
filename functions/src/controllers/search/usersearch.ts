@@ -1,4 +1,4 @@
-import { logger } from "firebase-functions/v1";
+import * as admin from "firebase-admin";
 
 /**
  * This module contains methods for searching names of manager and user based on id
@@ -13,7 +13,7 @@ import { logger } from "firebase-functions/v1";
  */
 async function searchuser(
   uid: string,
-  db_connection: any
+  db_connection: admin.firestore.Firestore,
 ): Promise<[boolean, string]> {
   const ResidentRef = db_connection.collection("Residents");
   const q = ResidentRef.where("uid", "==", uid);
@@ -24,6 +24,7 @@ async function searchuser(
   const matchingDoc = docs.docs[0];
   return [true, matchingDoc.data().name];
 }
+
 /**
  * Search manager based on id
  * @param uid
@@ -34,13 +35,12 @@ async function searchuser(
  */
 async function searchmanager(
   uid: string,
-  db_connection: any
+  db_connection: admin.firestore.Firestore,
 ): Promise<[boolean, string]> {
   const ResidentRef = db_connection.collection("Managers");
   const q = ResidentRef.where("uid", "==", uid);
   let docs = await q.get();
   if (docs.empty) {
-    logger.log("Manager not found");
     return [false, "Manager not found"];
   }
   const matchingDoc = docs.docs[0];

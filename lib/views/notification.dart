@@ -1,6 +1,5 @@
-// ignore_for_file: avoid_print
-
 import "package:flutter/material.dart";
+import "dart:developer" as developer;
 
 void showImmediateDialog(BuildContext context, String message,
     Function acceptcallback, Function rejectcallback) {
@@ -21,15 +20,15 @@ void showImmediateDialog(BuildContext context, String message,
           TextButton(
             child: const Text("Accept"),
             onPressed: () async {
-              print("Accepted");
+              developer.log("Accepted");
               Navigator.of(context).pop(); // Dismiss the dialog
               await acceptcallback();
             },
           ),
           TextButton(
-            child: const Text("reject"),
+            child: const Text("Reject"),
             onPressed: () async {
-              print("Rejected");
+              developer.log("Rejected");
               Navigator.of(context).pop();
               await rejectcallback();
               // Dismiss the dialog

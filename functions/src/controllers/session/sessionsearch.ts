@@ -11,23 +11,17 @@ async function searchcallsession(
   db_conn: admin.firestore.Firestore
 ): Promise<string | null> {
   var storeref = db_conn.collection("callsession");
-  logger.log(`manager token search is${managertoken}`);
-  var token: string = "";
-  await storeref
-    .doc(managertoken)
-    .get()
-    .then((doc) => {
+  logger.log(`manager token search is ${managertoken}`);
+  var token: string|null = null;
+  await storeref.doc(managertoken).get().then((doc) => {
       const data = doc.data();
       if (data != undefined) {
         token = data.clienttoken;
       }
-    })
-    .catch((error) => {
-      logger.log(error);
-      return null;
-    });
+    }).catch(() => {});
   return token;
 }
+
 /**
  * query the callsession (manager,client pair) with
  * @param clienttoken
@@ -39,7 +33,7 @@ async function searchcallsessionfromclient(
   db_conn: admin.firestore.Firestore
 ): Promise<string | null> {
   var storeref = db_conn.collection("callsession");
-  logger.log(`client token search is${clienttoken}`);
+  logger.log(`client token search is ${clienttoken}`);
   const q = storeref.where("clienttoken", "==", clienttoken);
   let docs = await q.get();
   if (docs.empty) {

@@ -1,34 +1,38 @@
-// ignore_for_file: avoid_print
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-// ignore: unused_import
-import 'package:centero/models/loginresponse.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import "package:centero/main.dart";
+import "package:http/http.dart" as http;
+import "dart:convert";
+import "package:firebase_auth/firebase_auth.dart";
+import "dart:developer" as developer;
+import "package:provider/provider.dart";
+import "package:centero/controllers/http/connectionservice.dart";
 
 ///
 /// Used by the manager side
 /// Do Not call this method driectly
-Future<void> registerdevicetoken(String device_token) async {
+Future<void> registerdevicetoken(String deviceToken) async {
   http.Response response;
-  String? access_token =
+  String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
-  if (access_token == null) {
+  if (accessToken == null) {
     throw Exception("not signed in");
   }
   try {
-    print("register called");
-    response = await http.post(
+    developer.log("register called");
+    http.Client client = Provider.of<ConnectionService>(
+      navigatorKey.currentContext!,
+      listen: false,
+    ).returnConnection();
+    response = await client.post(
         Uri.parse(
-            'http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogin'),
-        body: jsonEncode({"device_token": device_token}),
+            "http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogin"),
+        body: jsonEncode({"device_token": deviceToken}),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $access_token'
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken"
         });
-    print(response.body);
+    developer.log(response.body);
   } catch (e) {
-    print(e);
+    developer.log(e.toString());
     throw Exception("request failed");
   }
 }
