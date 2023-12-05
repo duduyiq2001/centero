@@ -7,7 +7,6 @@ import "package:provider/provider.dart";
 import "package:centero/models/loginresponse.dart";
 import "package:centero/utility/getdevicetoken.dart";
 import "package:centero/serializers/residentserialzer.dart";
-import "package:centero/models/resident.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 
 ///
@@ -17,7 +16,7 @@ import "package:centero/controllers/http/connectionservice.dart";
 /// [social]
 /// Returns [LoginResponse] for granularity of login response.
 /// control left click on those things for more details.
-Future<(LoginResponse, Resident?)> residentlogin(
+Future<LoginResponse> residentlogin(
   String propertyname,
   String unitNumber,
   String social,
@@ -27,8 +26,7 @@ Future<(LoginResponse, Resident?)> residentlogin(
   try {
     deviceToken = await getdevicetoken();
   } catch (e) {
-    print(e);
-    return (LoginResponse.deviceTokenFailed, null);
+    return LoginResponse.deviceTokenFailed;
   }
   // print(deviceToken);
   String data =
@@ -36,7 +34,7 @@ Future<(LoginResponse, Resident?)> residentlogin(
 
   // get custom token
   http.Response response;
-  Resident? r;
+  String id;
   String token = "";
   Map<String, dynamic> decodedData;
 
@@ -51,19 +49,13 @@ Future<(LoginResponse, Resident?)> residentlogin(
       headers: <String, String>{"Content-Type": "application/json"},
     );
     if (response.statusCode == 403) {
-      return (LoginResponse.signInFailed, null);
+      return LoginResponse.signInFailed;
     }
     decodedData = jsonDecode(response.body);
     token = decodedData["token"];
+    id = decodedData["id"];
   } catch (e) {
-    return (LoginResponse.customTokenFailedToGenerate, null);
-  }
-
-  try {
-    String id = decodedData["id"];
-    r = dummyResidents.firstWhere((element) => element.id == id);
-  } catch (e) {
-    r = null;
+    return LoginResponse.customTokenFailedToGenerate;
   }
 
   try {
@@ -72,9 +64,13 @@ Future<(LoginResponse, Resident?)> residentlogin(
         await FirebaseAuth.instance.signInWithCustomToken(token);
     // print("user:${userCredential}");
   } catch (e) {
-    return (LoginResponse.signInFailed, null);
+    return LoginResponse.signInFailed;
   }
-  return (LoginResponse.success, r);
+
+  final LocalStorage storage = LocalStorage("centero");
+  storage.setItem("uid", id);
+
+  return LoginResponse.success;
 }
 
 ///

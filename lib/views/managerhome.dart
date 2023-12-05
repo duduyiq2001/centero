@@ -37,8 +37,8 @@ class ManagerHome extends HookWidget {
     var showLeftPanel = useState(true);
     var showRightPanel = useState(true);
     var pageState = useState(PageStates.home);
-
-    var resident = useState(dummyResidents[10]);
+    var gotResident = useState(false);
+    var resident = useState<Resident?>(null);
 
     var dateformat = DateFormat("yyyy/MM/dd");
 
@@ -91,110 +91,116 @@ class ManagerHome extends HookWidget {
       ],
     );
 
-    var centerIncomingCall = Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(
-            15 * CenteroTheme.getValues(context).scaleFactor,
-          ),
-        ),
-        Text(
-          "Incoming Call",
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-        Padding(
-          padding: EdgeInsets.all(
-            15 * CenteroTheme.getValues(context).scaleFactor,
-          ),
-        ),
-        Text(
-          resident.value.name,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        Text(
-          resident.value.propertyname,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        Text(
-          "Unit ${resident.value.unit}",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        Text(
-          resident.value.address,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        Container(
-          width: CenteroTheme.getValues(context).logoSize,
-          height: CenteroTheme.getValues(context).logoSize,
-          margin: EdgeInsets.all(
-            10 * CenteroTheme.getValues(context).scaleFactor,
-          ),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              fit: BoxFit.contain,
-              image: AssetImage("assets/user.png"),
-            ),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            showLeftPanel.value = true;
-            showRightPanel.value = true;
-            pageState.value = PageStates.onCall;
-          },
-          child: Text(
-            "Answer",
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-        ),
-      ],
-    );
-
-    var centerOnCall = Column(
-      children: <Widget>[
-        Text(
-          resident.value.name,
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black12,
-              border: Border.all(width: 1, color: Colors.black38),
-              borderRadius: BorderRadius.all(
-                Radius.circular(
-                  8 * CenteroTheme.getValues(context).scaleFactor,
+    var centerIncomingCall = (gotResident.value)
+        ? Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(
+                  15 * CenteroTheme.getValues(context).scaleFactor,
                 ),
               ),
-            ),
-            padding: EdgeInsets.all(
-              15 * CenteroTheme.getValues(context).scaleFactor,
-            ),
-            child: Center(
-              child: Text(
-                "Video",
-                style: CenteroTheme.getTheme(context).textTheme.headlineMedium,
+              Text(
+                "Incoming Call",
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(15),
-          child: ElevatedButton(
-            onPressed: () {
-              showLeftPanel.value = false;
-              showRightPanel.value = false;
-              pageState.value = PageStates.home;
-            },
-            child: Text(
-              "End Call",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-        ),
-      ],
-    );
+              Padding(
+                padding: EdgeInsets.all(
+                  15 * CenteroTheme.getValues(context).scaleFactor,
+                ),
+              ),
+              Text(
+                resident.value!.name,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text(
+                resident.value!.propertyname,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text(
+                "Unit ${resident.value!.unit}",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text(
+                resident.value!.address,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Container(
+                width: CenteroTheme.getValues(context).logoSize,
+                height: CenteroTheme.getValues(context).logoSize,
+                margin: EdgeInsets.all(
+                  10 * CenteroTheme.getValues(context).scaleFactor,
+                ),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.contain,
+                    image: AssetImage("assets/user.png"),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  showLeftPanel.value = true;
+                  showRightPanel.value = true;
+                  pageState.value = PageStates.onCall;
+                },
+                child: Text(
+                  "Answer",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            ],
+          )
+        : const Column();
+
+    var centerOnCall = (gotResident.value)
+        ? Column(
+            children: <Widget>[
+              Text(
+                resident.value!.name,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    border: Border.all(width: 1, color: Colors.black38),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(
+                        8 * CenteroTheme.getValues(context).scaleFactor,
+                      ),
+                    ),
+                  ),
+                  padding: EdgeInsets.all(
+                    15 * CenteroTheme.getValues(context).scaleFactor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Video",
+                      style: CenteroTheme.getTheme(context)
+                          .textTheme
+                          .headlineMedium,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: ElevatedButton(
+                  onPressed: () {
+                    showLeftPanel.value = false;
+                    showRightPanel.value = false;
+                    pageState.value = PageStates.home;
+                  },
+                  child: Text(
+                    "End Call",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
+            ],
+          )
+        : const Column();
 
     // #########################################################################
     // The actual page
@@ -312,7 +318,9 @@ class ManagerHome extends HookWidget {
                               20 * CenteroTheme.getValues(context).scaleFactor,
                             ),
                             child: Text(
-                              resident.value.address,
+                              (gotResident.value)
+                                  ? resident.value!.address
+                                  : "",
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
                             ),
@@ -354,7 +362,9 @@ class ManagerHome extends HookWidget {
                               20 * CenteroTheme.getValues(context).scaleFactor,
                             ),
                             child: Text(
-                              "Unit ${resident.value.unit}",
+                              (gotResident.value)
+                                  ? "Unit ${resident.value!.unit}"
+                                  : "",
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
                             ),
@@ -394,7 +404,9 @@ class ManagerHome extends HookWidget {
                     children: <Widget>[
                       if (pageState.value == PageStates.onCall)
                         Text(
-                          "Last Call: ${dateformat.format(resident.value.lastCall)}",
+                          (gotResident.value)
+                              ? "Last Call: ${dateformat.format(resident.value!.lastCall)}"
+                              : "",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                     ],
@@ -489,7 +501,9 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text("\$${resident.value.monthlyRent}"),
+                                    Text((gotResident.value)
+                                        ? "\$${resident.value!.monthlyRent}"
+                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -498,7 +512,9 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text(getStatus(resident.value.rentDueDate)),
+                                    Text((gotResident.value)
+                                        ? getStatus(resident.value!.rentDueDate)
+                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -507,8 +523,10 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text(dateformat
-                                        .format(resident.value.leaseend)),
+                                    Text((gotResident.value)
+                                        ? dateformat
+                                            .format(resident.value!.leaseend)
+                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -517,7 +535,9 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text("\$${resident.value.deposit}"),
+                                    Text((gotResident.value)
+                                        ? "\$${resident.value!.deposit}"
+                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -526,7 +546,9 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text("\$${resident.value.petRent}"),
+                                    Text((gotResident.value)
+                                        ? "\$${resident.value!.petRent}"
+                                        : ""),
                                   ],
                                 ),
                               ),

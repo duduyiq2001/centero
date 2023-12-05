@@ -3,9 +3,10 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:centero/themes.dart";
-import "package:centero/views/clienthome.dart";
+import 'package:centero/views/residenthome.dart';
 import "package:centero/controllers/authentication/residentauthentication.dart";
 import "package:centero/models/loginresponse.dart";
+import "package:centero/controllers/data/getresident.dart";
 
 class ResidentLogin extends HookWidget {
   ResidentLogin({super.key});
@@ -89,17 +90,18 @@ class ResidentLogin extends HookWidget {
           ElevatedButton(
             // Login button
             onPressed: () async {
-              var (response, resident) = await residentlogin(
+              var response = await residentlogin(
                 propertyct.text,
                 unitct.text,
                 socialct.text,
               );
               if (response == LoginResponse.success) {
+                var res = await getResidentData();
                 Navigator.pushAndRemoveUntil(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (context, _, __) => ClientHome(
-                      resident: resident,
+                    pageBuilder: (context, _, __) => ResidentHome(
+                      resident: res,
                     ),
                   ),
                   (route) => false,

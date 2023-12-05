@@ -17,10 +17,10 @@ enum PageStates {
   callEnded,
 }
 
-class ClientHome extends HookWidget {
+class ResidentHome extends HookWidget {
   final Resident? resident;
 
-  const ClientHome({super.key, this.resident});
+  const ResidentHome({super.key, this.resident});
 
   @override
   Widget build(BuildContext context) {
