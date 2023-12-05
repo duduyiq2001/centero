@@ -38,14 +38,16 @@ const corsOptions: corsLib.CorsOptions = {
     }
   },
 };
+
 const cors = corsLib(corsOptions);
 initializeApp();
+
 //http://localhost:35409/
 /**
  * Signs in client, update client session
  * Don't worry about this one
  */
-export const clientsignin = functions.https.onRequest((req, res) => {
+exports.clientsignin = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       const { property_name, unit_number, social, device_token } = req.body;
@@ -75,6 +77,7 @@ export const clientsignin = functions.https.onRequest((req, res) => {
     }
   });
 });
+
 /**
  * whenever manager account is added on firebase auth
  * firebase firestore will also be updated
@@ -88,17 +91,17 @@ exports.createManagerProfile = functions.auth.user().onCreate((user) => {
     uid: user.uid,
   });
 });
+
 /**
  * Called after manager authenticates with firebase auth
  * add manager device token to managerstore
  */
 exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
       const { device_token } = req.body;
 
-      const conn = await getFirestore();
+      const conn = getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
 
@@ -126,6 +129,7 @@ exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
     res.status(200).send("success");
   });
 });
+
 /**
  * manager logout
  * delete manager device token from session
@@ -133,9 +137,8 @@ exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
  */
 exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
-      const conn = await getFirestore();
+      const conn = getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
 
@@ -163,17 +166,17 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
     res.status(200).send("success");
   });
 });
+
 /**
  * manager token refresh
  * don't worry about this one
  */
 exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
       const { new_token } = req.body;
 
-      const conn = await getFirestore();
+      const conn = getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
 
@@ -201,15 +204,15 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
     }
   });
 });
+
 /**
  * delete resident devicetoken from sessionstore when log out
  * don't worry about this one
  */
 exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
-      const conn = await getFirestore();
+      const conn = getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
 
@@ -237,17 +240,17 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
     res.status(200).send("success");
   });
 });
+
 /**
  * refresh resident token
  * don't worry about this one
  */
 exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
       const { new_token } = req.body;
 
-      const conn = await getFirestore();
+      const conn = getFirestore();
 
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
 
@@ -276,6 +279,7 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
     return;
   });
 });
+
 /**
  * Used when a CLIENT request a manager
  * CALLING @getmanager service to get routed to a manager
@@ -355,7 +359,6 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
  */
 exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
       const { device_token } = req.body;
       const conn = getFirestore();
@@ -390,6 +393,7 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
     }
   });
 });
+
 /**
  * Used when a MANAGER reject a recident's call request
  * @alertclient client be alerted by manager's rejection
@@ -405,10 +409,9 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
  */
 exports.onRejectCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
       const { device_token } = req.body;
-      const conn = await getFirestore();
+      const conn = getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
         res.status(401).send("Unauthorized");
@@ -436,6 +439,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
     }
   });
 });
+
 /**
  * Used when a CLIENT reject a recident's call request
  * @alertmanager alert manager that the call is cancelled
@@ -448,10 +452,9 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
  */
 exports.onCancelCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
     try {
       const { device_token } = req.body;
-      const conn = await getFirestore();
+      const conn = getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
         res.status(401).send("Unauthorized");
@@ -476,6 +479,41 @@ exports.onCancelCall = functions.https.onRequest(async (req, res) => {
     } catch (error) {
       res.status(500).send("Internal server error");
       return;
+    }
+  });
+});
+
+exports.getResident = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { uid } = req.body;
+      let query = await admin.firestore().collection("Residents").where("uid", "==", uid).get();
+      if (query.size < 1) {
+        res.status(404).send("User id not found");
+      }
+      else if (query.size > 1) {
+        res.status(403).send("Error: Duplicate users");
+      }
+      else {
+        let data = query.docs[0].data();
+        res.status(200).json({
+          name: data.name,
+          unit: data.unit,
+          id: data.id,
+          propertyName: data.property_name,
+          address: data.address,
+          leaseStart: data.leaseStart,
+          leaseEnd: data.leaseEnd,
+          rent: data.rent,
+          rentDueDate: data.rentDueDate,
+          deposit: data.deposit,
+          petRent: data.petRent,
+          lastCall: data.lastCall,
+        });
+      }
+    }
+    catch (error) {
+      res.status(500).send("Internal Server Error");
     }
   });
 });

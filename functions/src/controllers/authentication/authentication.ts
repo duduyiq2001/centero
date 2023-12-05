@@ -19,7 +19,7 @@ async function authenticate_client(
 
   const q = ResidentRef
     .where("property_name", "==", propertyName)
-    .where("unit_number", "==", unitNum);
+    .where("unit", "==", unitNum);
   let docs = await q.get();
   if (docs.empty) {
     return [false, "property not found"];
