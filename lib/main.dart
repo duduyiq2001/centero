@@ -25,7 +25,7 @@ void main() async {
     try {
       await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
     } catch (e) {
-      // ignore: avoid_print
+      // ignore: avoid_printvar url = window.location.href;
       print(e);
     }
   } else {
