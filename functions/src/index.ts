@@ -290,28 +290,17 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
 exports.onRequestCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { property_name } = req.body;
+      const { id } = req.body;
 
       const conn = getFirestore();
 
-      const idToken = req.get("Authorization")?.split("Bearer ")[1];
-      var name: string = "";
-      if (!idToken) {
-        res.status(401).send("Unauthorized");
+      // get resident
+      let q = await conn.collection("Residents").where("uid", "==", id).get();
+      if (q.size != 1) {
+        res.status(401).send("User does not exist");
         return;
       }
-      try {
-        var decodetoken = await admin.auth().verifyIdToken(idToken);
-        const uid = decodetoken.uid;
-        var [userexist, name] = await search.searchuser(uid, conn);
-        if (!userexist) {
-          res.status(401).send("user does not exist");
-          return;
-        }
-      } catch {
-        res.status(401).send("Unauthorized");
-        return;
-      }
+      let resident = q.docs[0].data();
 
       //route to manager
       var succeeded: boolean = false;
@@ -319,9 +308,9 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       var managertoken: string = "";
       var managername: string = "";
       try {
-        var [succeeded, managertoken, muid] = await getmanager(conn, property_name);
+        var [succeeded, managertoken, muid] = await getmanager(conn, resident.property_name);
         if (succeeded) var [ifexist, managername] = await search.searchmanager(muid, conn);
-        console.log(succeeded, ifexist, managertoken, muid, managername);
+        // console.log(succeeded, ifexist, managertoken, muid, managername);
         if (!succeeded || !ifexist) {
           res.status(401).send("No Manager Available");
           return;
@@ -333,7 +322,7 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       }
 
       try {
-        await alertmanager("incoming call", managertoken, name);
+        alertmanager("incoming call", managertoken, resident);
         res.status(200).send(managername);
         return;
       } catch (e) {
@@ -360,7 +349,7 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
 exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { device_token } = req.body;
+      const { device_token, residentID } = req.body;
       const conn = getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
@@ -368,17 +357,15 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
         return;
       }
       try {
-        const clienttoken = await sessionsearch.searchcallsession(
-          device_token,
-          conn
-        );
+        const clienttoken = await search.searchclientstore(residentID, conn);
         if (clienttoken) {
-          await alertclient("call accepted", clienttoken, "");
+          await alertclient("call accepted", clienttoken);
           if (!await session.addcallsession(clienttoken, device_token, conn)) {
             console.log("Could not create session");
             res.status(401).send("Could not create session");
             return;
           }
+          return;
         } else {
           res.status(401).send("client does not exist!");
           return;
@@ -423,7 +410,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
           conn
         );
         if (clienttoken) {
-          await alertclient("call rejected", clienttoken, "");
+          await alertclient("call rejected", clienttoken);
         } else {
           res.status(401).send("client does not exist!");
           return;
@@ -466,7 +453,7 @@ exports.onCancelCall = functions.https.onRequest(async (req, res) => {
           conn
         );
         if (managertoken) {
-          await alertmanager("call cancelled", managertoken, "");
+          await alertmanager("call cancelled", managertoken, null);
         } else {
           res.status(401).send("manager does not exist!");
           return;
@@ -499,8 +486,8 @@ exports.getResident = functions.https.onRequest(async (req, res) => {
         res.status(200).json({
           name: data.name,
           unit: data.unit,
-          id: data.id,
-          propertyName: data.property_name,
+          uid: uid,
+          property_name: data.property_name,
           address: data.address,
           leaseStart: data.leaseStart,
           leaseEnd: data.leaseEnd,

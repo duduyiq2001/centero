@@ -1,5 +1,6 @@
 import { logger } from "firebase-functions/v1";
 import { UserType } from "./deletetoken";
+
 /**
  * add a user to their respective session store(clientstore vs managerstore)
  * used when device token needs to be refreshed or
@@ -11,12 +12,7 @@ import { UserType } from "./deletetoken";
  * @return {boolean}
  * return true if suceed
  */
-async function store_token(
-  device_token: string,
-  user: UserType,
-  db_connection: any,
-  uid: string
-): Promise<boolean> {
+export async function store_token(device_token: string, user: UserType, db_connection: any, uid: string) : Promise<boolean> {
   var storeref: any;
   try {
     if (user == "client") {
@@ -31,5 +27,3 @@ async function store_token(
     return false;
   }
 }
-
-export { store_token };

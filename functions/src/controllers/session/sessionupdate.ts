@@ -1,4 +1,5 @@
 import { logger } from "firebase-functions/v1";
+
 /**
  * add a manager client pair in call session,update the callsession table
  * @param managertoken
@@ -7,11 +8,7 @@ import { logger } from "firebase-functions/v1";
  * @return {boolean}
  * return true if suceed
  */
-async function addcallsession(
-  clienttoken: string,
-  managertoken: string,
-  db_conn: any
-) : Promise<boolean> {
+export async function addcallsession(clienttoken: string, managertoken: string, db_conn: any) : Promise<boolean> {
   var storeref = db_conn.collection("callsession");
   try {
     await storeref.doc(managertoken).set({ clienttoken: clienttoken });
@@ -30,7 +27,7 @@ async function addcallsession(
  * @return {boolean}
  * return true if suceed
  */
-async function removecallsession(managertoken: string, db_conn: any) : Promise<boolean> {
+export async function removecallsession(managertoken: string, db_conn: any) : Promise<boolean> {
   var storeref = db_conn.collection("callsession");
   try {
     await storeref.doc(managertoken).delete();
@@ -40,5 +37,3 @@ async function removecallsession(managertoken: string, db_conn: any) : Promise<b
     return false;
   }
 }
-
-export { addcallsession, removecallsession };

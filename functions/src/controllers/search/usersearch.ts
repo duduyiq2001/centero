@@ -11,10 +11,7 @@ import * as admin from "firebase-admin";
  * places, which would be more convenient now I think about it
  *
  */
-async function searchuser(
-  uid: string,
-  db_connection: admin.firestore.Firestore,
-): Promise<[boolean, string]> {
+async function searchuser(uid: string, db_connection: admin.firestore.Firestore) : Promise<[boolean, string]> {
   const ResidentRef = db_connection.collection("Residents");
   const q = ResidentRef.where("uid", "==", uid);
   let docs = await q.get();
@@ -26,6 +23,25 @@ async function searchuser(
 }
 
 /**
+ * query the clientstore (device token, uid) with
+ * @param clientID
+ * the client id
+ * @return {Promise<string | null>}
+ * the client's device token
+ */
+export async function searchclientstore(clientID: string, db_conn: admin.firestore.Firestore) : Promise<string | null> {
+  var storeref = db_conn.collection("clientstore");
+  var token: string|null = null;
+  await storeref.doc(clientID).get().then((doc) => {
+    const data = doc.data();
+    if (data != undefined) {
+      token = data.device_token;
+    }
+  }).catch(() => {});
+  return token;
+}
+
+/**
  * Search manager based on id
  * @param uid
  * @return {boolean,string}
@@ -33,10 +49,7 @@ async function searchuser(
  * places, which would be more convenient now I think about it
  *
  */
-async function searchmanager(
-  uid: string,
-  db_connection: admin.firestore.Firestore,
-): Promise<[boolean, string]> {
+async function searchmanager(uid: string, db_connection: admin.firestore.Firestore) : Promise<[boolean, string]> {
   const ResidentRef = db_connection.collection("Managers");
   const q = ResidentRef.where("uid", "==", uid);
   let docs = await q.get();

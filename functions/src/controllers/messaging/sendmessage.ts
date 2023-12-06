@@ -9,19 +9,15 @@ import { logger } from "firebase-functions/v1";
  * @param data additional data to be sent to client (optional)
  *
  */
-async function sendmessage(
-  device_token: string,
-  message: string,
-  data?: string
-) {
-  logger.log(`sending message${message}`);
-  logger.log(`d_token:${device_token}`);
+async function sendmessage(device_token: string, message: string, data?: any) {
+  logger.log(`sending message ${message}`);
+  logger.log(`device_token: ${device_token}`);
   if (data) {
     await admin.messaging().send({
       token: device_token,
       data: {
         message: message,
-        data: data,
+        data: data.toString(),
       },
     });
   } else {
