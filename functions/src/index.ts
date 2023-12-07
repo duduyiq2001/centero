@@ -20,6 +20,7 @@ import * as session from "./controllers/session/sessionupdate";
 import { getmanager } from "./controllers/callrouting/callrouting";
 import { alertmanager } from "./controllers/messaging/alertmanager";
 import { alertclient } from "./controllers/messaging/alertclient";
+import { deleteDocument } from "./controllers/admin/deleterecord";
 import * as search from "./controllers/search/usersearch";
 import * as sessionsearch from "./controllers/session/sessionsearch";
 // Define an array of allowed origins
@@ -475,5 +476,24 @@ exports.onCancelCall = functions.https.onRequest(async (req, res) => {
       res.status(500).send("Internal server error");
       return;
     }
+  });
+});
+
+/**
+ * delete resident devicetoken from sessionstore when log out
+ * don't worry about this one
+ */
+exports.AdminDeleteRecord = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    //initializeApp();
+    try {
+      const conn = await getFirestore();
+      const collection = req.body.collection;
+      const doc = req.body.doc;
+      await deleteDocument(collection, doc, conn);
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
+    res.status(200).send("success");
   });
 });
