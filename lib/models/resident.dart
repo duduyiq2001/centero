@@ -1,6 +1,4 @@
 class Resident {
-  final String username;
-  final String password;
   final String name;
   final String unit;
   final String id;
@@ -15,8 +13,6 @@ class Resident {
   final DateTime lastCall;
 
   Resident({
-    required this.username,
-    required this.password,
     required this.name,
     required this.unit,
     required this.id,

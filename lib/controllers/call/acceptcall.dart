@@ -11,7 +11,7 @@ import "package:centero/main.dart";
 /// Used by Manager Frontend
 /// a eventhandler for when manager accepts the call
 /// return true if succeed
-Future<bool> acceptcall(String managerID) async {
+Future<bool> acceptcall(String residentID) async {
   final LocalStorage storage = LocalStorage("centero");
   String deviceToken = storage.getItem("device_token");
   String? accessToken =
@@ -25,7 +25,10 @@ Future<bool> acceptcall(String managerID) async {
     response = await client.post(
         Uri.parse(
             "http://127.0.0.1:5001/centero-191ae/us-central1/onAcceptCall"),
-        body: jsonEncode({"device_token": deviceToken}),
+        body: jsonEncode({
+          "device_token": deviceToken,
+          "residentID": residentID,
+        }),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken"

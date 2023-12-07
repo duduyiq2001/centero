@@ -11,7 +11,7 @@ import "package:centero/controllers/http/connectionservice.dart";
 /// Initiates a call from client
 /// Returns [true, managername] if succeds
 /// control left click on those things for more details.
-Future<(bool, String)> initiatecall(String property) async {
+Future<(bool, String)> initiatecall(String id) async {
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   http.Response response;
@@ -25,7 +25,7 @@ Future<(bool, String)> initiatecall(String property) async {
         Uri.parse(
             "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
         body: jsonEncode({
-          "property_name": property,
+          "id": id,
         }),
         headers: {
           "Content-Type": "application/json",

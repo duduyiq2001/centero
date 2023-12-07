@@ -5,6 +5,7 @@ import "package:http/http.dart" as http;
 import "package:centero/main.dart";
 import "package:centero/models/resident.dart";
 import "package:centero/controllers/http/connectionservice.dart";
+import "package:centero/serializers/residentserialzer.dart";
 
 Future<Resident?> getResidentData() async {
   final LocalStorage storage = LocalStorage("centero");
@@ -29,25 +30,5 @@ Future<Resident?> getResidentData() async {
 
   Map<String, dynamic> residentData = jsonDecode(response.body);
 
-  try {
-    return Resident(
-      username: residentData["username"],
-      password: residentData["password"],
-      name: residentData["name"],
-      unit: residentData["unit"],
-      id: residentData["id"],
-      propertyname: residentData["propertyName"],
-      address: residentData["address"],
-      leasestart: residentData["leaseStart"],
-      leaseend: residentData["leaseEnd"],
-      monthlyRent: residentData["rent"],
-      rentDueDate: residentData["rentDueDate"],
-      deposit: residentData["deposit"],
-      petRent: residentData["petRent"],
-      lastCall: residentData["lastCall"],
-    );
-  } catch (e) {
-    print(e);
-    return null;
-  }
+  return residentFromData(residentData);
 }

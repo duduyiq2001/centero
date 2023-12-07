@@ -33,6 +33,7 @@ class ResidentHome extends HookWidget {
       // Handle the message and update state
       developer.log("Got a message whilst in the foreground!");
       developer.log("Message data: ${message.data}");
+      print(message);
       html.window.alert("${message.data}");
       // Update state using the state hook
       onCall.value = false;
@@ -85,12 +86,10 @@ class ResidentHome extends HookWidget {
         if (!onCall.value)
           ElevatedButton(
             onPressed: () async {
-              onCall.value = true;
-              var (success, manager) =
-                  await initiatecall(resident!.propertyname);
+              var (success, manager) = await initiatecall(resident!.id);
               if (success) {
                 managerName.value = manager;
-                pageState.value = PageStates.call;
+                onCall.value = true;
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -252,6 +251,7 @@ class ResidentHome extends HookWidget {
         TextButton(
           onPressed: () {
             pageState.value = PageStates.home;
+            onCall.value = false;
           },
           child: Text(
             "Back to Home Screen",
