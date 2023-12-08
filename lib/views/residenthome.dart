@@ -33,11 +33,12 @@ class ResidentHome extends HookWidget {
       // Handle the message and update state
       developer.log("Got a message whilst in the foreground!");
       developer.log("Message data: ${message.data}");
+      onCall.value = false;
+      pageState.value = PageStates.call;
+
       print(message);
       html.window.alert("${message.data}");
       // Update state using the state hook
-      onCall.value = false;
-      pageState.value = PageStates.call;
 
       if (message.notification != null) {
         developer.log(
