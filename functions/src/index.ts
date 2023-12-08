@@ -22,6 +22,7 @@ import { alertmanager } from "./controllers/messaging/alertmanager";
 import { alertclient } from "./controllers/messaging/alertclient";
 import * as search from "./controllers/search/usersearch";
 import * as sessionsearch from "./controllers/session/sessionsearch";
+import { deleteDocument } from "./controllers/admin/deleterecord";
 // Define an array of allowed origins
 
 // Configure CORS with the specific origins
@@ -289,8 +290,9 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
  */
 exports.onRequestCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
+    //initializeApp();
     try {
-      const { id } = req.body;
+      const { id, device_token } = req.body;
 
       const conn = getFirestore();
 
@@ -307,9 +309,14 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       var ifexist: boolean = false;
       var managertoken: string = "";
       var managername: string = "";
+      //Call routing
       try {
-        var [succeeded, managertoken, muid] = await getmanager(conn, resident.property_name);
-        if (succeeded) var [ifexist, managername] = await search.searchmanager(muid, conn);
+        var [succeeded, managertoken, muid] = await getmanager(
+          conn,
+          resident.property_name
+        );
+        if (succeeded)
+          var [ifexist, managername] = await search.searchmanager(muid, conn);
         // console.log(succeeded, ifexist, managertoken, muid, managername);
         if (!succeeded || !ifexist) {
           res.status(401).send("No Manager Available");
@@ -320,7 +327,13 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
         res.status(401).send("Internal Server Error");
         return;
       }
-
+      //add session
+      if (!(await session.addcallsession(device_token, managertoken, conn))) {
+        console.log("Could not create session");
+        res.status(401).send("Could not create session");
+        return;
+      }
+      //alert manager
       try {
         alertmanager("incoming call", managertoken, resident);
         res.status(200).send(managername);
@@ -329,8 +342,7 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
         logger.log(e);
         res.status(401).send("Internal Server Error");
         return;
-        }
-
+      }
     } catch (error) {
       res.status(500).send("Internal Server Error");
       return;
@@ -349,22 +361,21 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
 exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { device_token, residentID } = req.body;
-      const conn = getFirestore();
+      const { device_token } = req.body;
+      const conn = await getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
         res.status(401).send("Unauthorized");
         return;
       }
       try {
-        const clienttoken = await search.searchclientstore(residentID, conn);
+        const clienttoken = await sessionsearch.searchcallsession(
+          device_token,
+          conn
+        );
         if (clienttoken) {
           await alertclient("call accepted", clienttoken);
-          if (!await session.addcallsession(clienttoken, device_token, conn)) {
-            console.log("Could not create session");
-            res.status(401).send("Could not create session");
-            return;
-          }
+          res.status(200).send("success!");
           return;
         } else {
           res.status(401).send("client does not exist!");
@@ -411,6 +422,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
         );
         if (clienttoken) {
           await alertclient("call rejected", clienttoken);
+          res.status(200).send("sucess!");
         } else {
           res.status(401).send("client does not exist!");
           return;
@@ -428,7 +440,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
 });
 
 /**
- * Used when a CLIENT reject a recident's call request
+ * Used when a CLIENT cancel a call during the middle of the call
  * @alertmanager alert manager that the call is cancelled
  * @removecallsession to remove (manager,client) sessionpair
  *********
@@ -453,12 +465,15 @@ exports.onCancelCall = functions.https.onRequest(async (req, res) => {
           conn
         );
         if (managertoken) {
+          logger.log(`manager token is fetched ${managertoken}`);
           await alertmanager("call cancelled", managertoken, null);
         } else {
           res.status(401).send("manager does not exist!");
           return;
         }
         await session.removecallsession(managertoken, conn);
+        res.status(200).send("sucess!");
+        return;
       } catch {
         res.status(401).send("Unauthorized");
         return;
@@ -474,14 +489,16 @@ exports.getResident = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
       const { uid } = req.body;
-      let query = await admin.firestore().collection("Residents").where("uid", "==", uid).get();
+      let query = await admin
+        .firestore()
+        .collection("Residents")
+        .where("uid", "==", uid)
+        .get();
       if (query.size < 1) {
         res.status(404).send("User id not found");
-      }
-      else if (query.size > 1) {
+      } else if (query.size > 1) {
         res.status(403).send("Error: Duplicate users");
-      }
-      else {
+      } else {
         let data = query.docs[0].data();
         res.status(200).json({
           name: data.name,
@@ -498,9 +515,27 @@ exports.getResident = functions.https.onRequest(async (req, res) => {
           lastCall: data.lastCall,
         });
       }
-    }
-    catch (error) {
+    } catch (error) {
       res.status(500).send("Internal Server Error");
     }
+  });
+});
+
+/**
+ * delete resident devicetoken from sessionstore when log out
+ * don't worry about this one
+ */
+exports.AdminDeleteRecord = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    //initializeApp();
+    try {
+      const conn = await getFirestore();
+      const collection = req.body.collection;
+      const doc = req.body.doc;
+      await deleteDocument(collection, doc, conn);
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
+    res.status(200).send("success");
   });
 });

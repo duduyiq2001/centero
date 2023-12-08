@@ -5,6 +5,7 @@ import "package:firebase_auth/firebase_auth.dart";
 import "dart:developer" as developer;
 import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
+import "package:localstorage/localstorage.dart";
 
 ///
 /// Used by client fronend
@@ -16,6 +17,8 @@ Future<(bool, String)> initiatecall(String id) async {
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   http.Response response;
   String managername = "";
+  final LocalStorage storage = LocalStorage("centero");
+  String deviceToken = storage.getItem("device_token");
   try {
     http.Client client = Provider.of<ConnectionService>(
       navigatorKey.currentContext!,
@@ -26,6 +29,7 @@ Future<(bool, String)> initiatecall(String id) async {
             "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
         body: jsonEncode({
           "id": id,
+          "device_token": deviceToken,
         }),
         headers: {
           "Content-Type": "application/json",

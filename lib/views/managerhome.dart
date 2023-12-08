@@ -12,8 +12,9 @@ import "package:centero/controllers/authentication/managerauthentication.dart";
 import "package:centero/views/managerlogin.dart";
 import "package:centero/main.dart";
 import "package:centero/controllers/call/acceptcall.dart";
-import "package:centero/controllers/call/rejectcall.dart";
+import 'package:centero/controllers/call/rejectcall.dart';
 import "package:centero/serializers/residentserialzer.dart";
+import "package:centero/views/notification.dart";
 
 enum PageStates {
   home,
@@ -50,6 +51,8 @@ class ManagerHome extends HookWidget {
       developer.log("Got a message whilst in the foreground!");
       developer.log("Message data: ${message.data}");
       BuildContext? current = navigatorKey.currentState?.overlay?.context;
+      var reason = message.data["reason"];
+      print('reason:$reason');
       if (current != null) {
         // showImmediateDialog(
         //   current,
@@ -57,9 +60,17 @@ class ManagerHome extends HookWidget {
         //   () => {acceptcall(manager!.id), pageState.value = PageS},
         //   () => {developer.log("rejected")},
         // );
-        resident.value = residentFromData(jsonDecode(message.data["data"]));
-        gotResident.value = resident.value != null;
-        pageState.value = PageStates.incomingCall;
+        var reason = message.data["reason"];
+        print('reason:$reason');
+        if (reason == "incoming call") {
+          resident.value = residentFromData(jsonDecode(message.data["data"]));
+          gotResident.value = resident.value != null;
+          pageState.value = PageStates.incomingCall;
+        }
+        if (reason == "call cancelled") {
+          showImmediateNotif(context, "call cancelled by client");
+          pageState.value = PageStates.home;
+        }
       }
 
       if (message.notification != null) {
@@ -156,9 +167,18 @@ class ManagerHome extends HookWidget {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  rejectCall(resident.value!.id);
-                  pageState.value = PageStates.home;
+                onPressed: () async {
+                  try {
+                    await rejectcall();
+                    pageState.value = PageStates.home;
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("rejectcall failed"),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 },
                 child: Text(
                   "Decline",

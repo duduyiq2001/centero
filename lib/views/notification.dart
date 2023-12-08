@@ -39,3 +39,31 @@ void showImmediateDialog(BuildContext context, String message,
     },
   );
 }
+
+void showImmediateNotif(BuildContext context, String message) {
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false, // User must tap a button to dismiss.
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(message),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(message),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("Ok"),
+            onPressed: () async {
+              developer.log("Ok");
+              Navigator.of(context).pop(); // Dismiss the dialog
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

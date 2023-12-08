@@ -1,45 +1,46 @@
+// ignore_for_file: unused_import
+
 import "package:localstorage/localstorage.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
 import "package:firebase_auth/firebase_auth.dart";
 import "dart:developer" as developer;
-import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:centero/main.dart";
+import "package:provider/provider.dart";
 
 ///
 /// Used by Manager Frontend
-/// a eventhandler for when manager accepts the call
-/// return true if succeed
-Future<bool> acceptcall(String residentID) async {
-  final LocalStorage storage = LocalStorage("centero");
-  String deviceToken = storage.getItem("device_token");
-  String? accessToken =
-      await FirebaseAuth.instance.currentUser?.getIdToken(true);
+/// a eventhandler for when manager rejects the call
+Future<void> cancellCallFromClient() async {
+  final LocalStorage storage = new LocalStorage('centero');
+  String device_token = storage.getItem("device_token");
   http.Response response;
+  String? access_token =
+      await FirebaseAuth.instance.currentUser?.getIdToken(true);
   try {
+    print("calling");
     http.Client client = Provider.of<ConnectionService>(
       navigatorKey.currentContext!,
       listen: false,
     ).returnConnection();
     response = await client.post(
         Uri.parse(
-            "http://127.0.0.1:5001/centero-191ae/us-central1/onAcceptCall"),
+            "http://127.0.0.1:5001/centero-191ae/us-central1/onCancelCall"),
         body: jsonEncode({
-          "device_token": deviceToken,
+          "device_token": device_token,
         }),
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $accessToken"
+          "Authorization": "Bearer $access_token"
         });
-    developer.log(response.body);
     if (response.statusCode != 200) {
       developer.log("ERROR: ${response.body}");
-      return false;
+      throw Exception("request failed");
     }
+    return;
   } catch (e) {
-    developer.log(e.toString());
-    return false;
+    print(e);
+    throw Exception("request failed");
   }
-  return true;
 }

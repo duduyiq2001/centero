@@ -10,6 +10,8 @@ import "package:centero/views/residentlogin.dart";
 import "package:centero/main.dart";
 import "package:centero/controllers/call/initiatecall.dart";
 import "package:centero/models/resident.dart";
+import "package:centero/controllers/call/cancelcall.dart";
+import "package:centero/controllers/call/cancelcall.dart";
 
 enum PageStates {
   home,
@@ -111,8 +113,18 @@ class ResidentHome extends HookWidget {
           ),
         if (onCall.value)
           ElevatedButton(
-            onPressed: () {
-              onCall.value = false;
+            onPressed: () async {
+              try {
+                await cancellCallFromClient();
+                onCall.value = false;
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("cancel call failed! "),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
             child: const Text("Cancel Call"),
           ),
@@ -211,7 +223,18 @@ class ResidentHome extends HookWidget {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    try {
+                      await cancellCallFromClient();
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("cancel failed"),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
+
                     pageState.value = PageStates.callEnded;
                   },
                   child: const Text("End Call"),
