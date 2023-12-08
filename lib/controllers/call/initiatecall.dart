@@ -13,6 +13,7 @@ import "package:localstorage/localstorage.dart";
 /// Returns [true, managername] if succeds
 /// control left click on those things for more details.
 Future<(bool, String)> initiatecall(String id) async {
+  print('id is $id');
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   http.Response response;

@@ -264,8 +264,19 @@ class ResidentHome extends HookWidget {
             padding: EdgeInsets.all(
                 50 * CenteroTheme.getValues(context).scaleFactor)),
         ElevatedButton(
-          onPressed: () {
-            pageState.value = PageStates.call;
+          onPressed: () async {
+            var (success, manager) = await initiatecall(resident!.id);
+            if (success) {
+              managerName.value = manager;
+              onCall.value = true;
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(manager),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            }
           },
           child: const Text("Call Again"),
         ),

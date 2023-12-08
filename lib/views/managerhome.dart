@@ -133,10 +133,6 @@ class ManagerHome extends HookWidget {
                 "Unit ${resident.value!.unit}",
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              Text(
-                resident.value!.address,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
               Container(
                 width: CenteroTheme.getValues(context).logoSize,
                 height: CenteroTheme.getValues(context).logoSize,
@@ -354,9 +350,7 @@ class ManagerHome extends HookWidget {
                               20 * CenteroTheme.getValues(context).scaleFactor,
                             ),
                             child: Text(
-                              (gotResident.value)
-                                  ? resident.value!.address
-                                  : "",
+                              (gotResident.value) ? "irvine" : "",
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
                             ),
@@ -440,9 +434,7 @@ class ManagerHome extends HookWidget {
                     children: <Widget>[
                       if (pageState.value == PageStates.onCall)
                         Text(
-                          (gotResident.value)
-                              ? "Last Call: ${dateformat.format(resident.value!.lastCall)}"
-                              : "",
+                          (gotResident.value) ? "Last Call: 10pm" : "",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                     ],
@@ -537,9 +529,6 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text((gotResident.value)
-                                        ? "\$${resident.value!.monthlyRent}"
-                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -548,9 +537,6 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text((gotResident.value)
-                                        ? getStatus(resident.value!.rentDueDate)
-                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -559,10 +545,6 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text((gotResident.value)
-                                        ? dateformat
-                                            .format(resident.value!.leaseend)
-                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -571,9 +553,6 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text((gotResident.value)
-                                        ? "\$${resident.value!.deposit}"
-                                        : ""),
                                     const Padding(
                                         padding: EdgeInsets.only(top: 10)),
                                     Text(
@@ -582,9 +561,6 @@ class ManagerHome extends HookWidget {
                                           .textTheme
                                           .headlineSmall,
                                     ),
-                                    Text((gotResident.value)
-                                        ? "\$${resident.value!.petRent}"
-                                        : ""),
                                   ],
                                 ),
                               ),
