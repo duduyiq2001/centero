@@ -12,30 +12,39 @@ import "package:localstorage/localstorage.dart";
 /// Initiates a call from client
 /// Returns [true, managername] if succeds
 /// control left click on those things for more details.
-Future<(bool, String)> initiatecall(String id) async {
-  print('id is $id');
+Future<(bool, String)> initiatecall() async {
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   http.Response response;
   String managername = "";
   final LocalStorage storage = LocalStorage("centero");
   String deviceToken = storage.getItem("device_token");
+  String? rejectedmanager = storage.getItem("rejectedmanager");
   try {
     http.Client client = Provider.of<ConnectionService>(
       navigatorKey.currentContext!,
       listen: false,
     ).returnConnection();
-    response = await client.post(
-        Uri.parse(
-            "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
-        body: jsonEncode({
-          "id": id,
-          "device_token": deviceToken,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $accessToken"
-        });
+    if (rejectedmanager != null) {
+      response = await client.post(
+          Uri.parse(
+              "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
+          body: jsonEncode(
+              {"device_token": deviceToken, "rejected": rejectedmanager}),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $accessToken"
+          });
+    } else {
+      response = await client.post(
+          Uri.parse(
+              "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
+          body: jsonEncode({"device_token": deviceToken}),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $accessToken"
+          });
+    }
     if (response.statusCode != 200) {
       developer.log("ERROR: ${response.body}");
       return (false, response.body);

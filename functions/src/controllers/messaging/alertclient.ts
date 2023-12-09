@@ -12,10 +12,16 @@ type AlertType =
  */
 export async function alertclient(
   alert: AlertType,
-  recipient_token: string
+  recipient_token: string,
+  managerid?: string
 ): Promise<void> {
   if (alert == "call rejected") {
-    await sendmessage(recipient_token, "call declined", "call declined");
+    await sendmessage(
+      recipient_token,
+      "call rejected",
+      "call rejected",
+      managerid
+    );
   }
   if (alert == "call accepted") {
     await sendmessage(recipient_token, "call accepted", "call accepted");

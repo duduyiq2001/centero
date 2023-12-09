@@ -95,6 +95,9 @@ Future<void> residentlogout() async {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken"
         });
+    if (storage.getItem("rejectedmanager") != null) {
+      storage.deleteItem("rejectedmanager");
+    }
   } catch (e) {
     throw Exception("request failed");
   }

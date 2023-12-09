@@ -11,7 +11,8 @@ import "package:centero/main.dart";
 import "package:centero/controllers/call/initiatecall.dart";
 import "package:centero/models/resident.dart";
 import "package:centero/controllers/call/cancelcall.dart";
-import "package:centero/controllers/call/cancelcall.dart";
+import "package:centero/views/notification.dart";
+import "package:localstorage/localstorage.dart";
 
 enum PageStates {
   home,
@@ -34,12 +35,32 @@ class ResidentHome extends HookWidget {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the message and update state
       developer.log("Got a message whilst in the foreground!");
-      developer.log("Message data: ${message.data}");
-      onCall.value = false;
-      pageState.value = PageStates.call;
-
-      print(message);
-      html.window.alert("${message.data}");
+      //developer.log("Message data: ${message.data}");
+      //html.window.alert("${message.data}");
+      BuildContext? current = navigatorKey.currentState?.overlay?.context;
+      var reason = message.data["reason"];
+      print('reason:$reason');
+      if (current != null) {
+        // showImmediateDialog(
+        //   current,
+        //   message.data.entries.first.value,
+        //   () => {acceptcall(manager!.id), pageState.value = PageS},
+        //   () => {developer.log("rejected")},
+        // );
+        var reason = message.data["reason"];
+        print('reason:$reason');
+        if (reason == "call accepted") {
+          onCall.value = false;
+          pageState.value = PageStates.call;
+        }
+        if (reason == "call rejected") {
+          showImmediateNotif(context, "call rejected by manager");
+          final LocalStorage storage = LocalStorage("centero");
+          storage.setItem("rejectedmanager", message.data["data"]);
+          onCall.value = false;
+          pageState.value = PageStates.home;
+        }
+      }
       // Update state using the state hook
 
       if (message.notification != null) {
@@ -89,7 +110,7 @@ class ResidentHome extends HookWidget {
         if (!onCall.value)
           ElevatedButton(
             onPressed: () async {
-              var (success, manager) = await initiatecall(resident!.id);
+              var (success, manager) = await initiatecall();
               if (success) {
                 managerName.value = manager;
                 onCall.value = true;
@@ -265,7 +286,7 @@ class ResidentHome extends HookWidget {
                 50 * CenteroTheme.getValues(context).scaleFactor)),
         ElevatedButton(
           onPressed: () async {
-            var (success, manager) = await initiatecall(resident!.id);
+            var (success, manager) = await initiatecall();
             if (success) {
               managerName.value = manager;
               onCall.value = true;

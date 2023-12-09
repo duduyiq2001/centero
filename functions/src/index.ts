@@ -292,18 +292,35 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     //initializeApp();
     try {
-      const { id, device_token } = req.body;
-
+      const body = req.body;
+      const device_token = body.device_token;
+      const rejected = body.rejected;
+      const idToken = req.get("Authorization")?.split("Bearer ")[1];
       const conn = getFirestore();
-
+      var id;
+      if (idToken) {
+        try {
+          const decodedToken = await admin.auth().verifyIdToken(idToken);
+          id = decodedToken.uid;
+          logger.log(`id :${id}`);
+        } catch (e) {
+          res.status(401).send("Unauthorized");
+          return;
+        }
+      } else {
+        res.status(401).send("Unauthorized");
+        return;
+      }
       // get resident
+      logger.log("getting the resident");
+      logger.log(`id is ${id}`);
       let q = await conn.collection("Residents").where("uid", "==", id).get();
-      if (q.size != 1) {
+      if (q.size < 1) {
         res.status(401).send("User does not exist");
         return;
       }
       let resident = q.docs[0].data();
-
+      logger.log("got resident");
       //route to manager
       var succeeded: boolean = false;
       var ifexist: boolean = false;
@@ -311,10 +328,20 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       var managername: string = "";
       //Call routing
       try {
-        var [succeeded, managertoken, muid] = await getmanager(
-          conn,
-          resident.property_name
-        );
+        logger.log("routing to manager");
+        if (rejected) {
+          var [succeeded, managertoken, muid] = await getmanager(
+            conn,
+            resident.property_name,
+            rejected
+          );
+        } else {
+          logger.log("here!");
+          var [succeeded, managertoken, muid] = await getmanager(
+            conn,
+            resident.property_name
+          );
+        }
         if (succeeded)
           var [ifexist, managername] = await search.searchmanager(muid, conn);
         // console.log(succeeded, ifexist, managertoken, muid, managername);
@@ -329,7 +356,7 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       }
       //add session
       if (!(await session.addcallsession(device_token, managertoken, conn))) {
-        console.log("Could not create session");
+        logger.log("Could not create session");
         res.status(401).send("Could not create session");
         return;
       }
@@ -365,6 +392,20 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
       const conn = await getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
+        res.status(401).send("Unauthorized");
+        return;
+      }
+      if (idToken) {
+        admin
+          .auth()
+          .verifyIdToken(idToken)
+          .then(() => {})
+          .catch(() => {
+            // The ID token is invalid or expired
+            res.status(401).send("Unauthorized");
+            return;
+          });
+      } else {
         res.status(401).send("Unauthorized");
         return;
       }
@@ -411,7 +452,18 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
       const { device_token } = req.body;
       const conn = getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
-      if (!idToken) {
+      var managerid: string;
+
+      if (idToken) {
+        try {
+          const decodedToken = await admin.auth().verifyIdToken(idToken);
+          managerid = decodedToken.uid;
+          logger.log(`id :${managerid}`);
+        } catch (e) {
+          res.status(401).send("Unauthorized");
+          return;
+        }
+      } else {
         res.status(401).send("Unauthorized");
         return;
       }
@@ -421,7 +473,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
           conn
         );
         if (clienttoken) {
-          await alertclient("call rejected", clienttoken);
+          await alertclient("call rejected", clienttoken, managerid);
           res.status(200).send("sucess!");
         } else {
           res.status(401).send("client does not exist!");

@@ -7,9 +7,15 @@ import { searchcallsession } from "../session/sessionsearch";
  * if no manager found return false
  * if find a manager
  * return true and managertoken and managerid
+ * @param property name of the property for the client
+ * @param manager_to_exclude is the uid of the manager we need to exclude here
  */
 type RoutingResponse = [boolean, string, string];
-async function getmanager(db_connection: admin.firestore.Firestore, property: string): Promise<RoutingResponse> {
+async function getmanager(
+  db_connection: admin.firestore.Firestore,
+  property: string,
+  manager_to_exclude?: string
+): Promise<RoutingResponse> {
   try {
     const activeRef = db_connection.collection("managerstore");
     const q = activeRef.where("uid", "!=", null);
@@ -18,8 +24,10 @@ async function getmanager(db_connection: admin.firestore.Firestore, property: st
     const q2 = managerRef.where("property_name", "==", property);
     let propertyManagers = await q2.get();
     let matchingmanagers: admin.firestore.DocumentData[] = [];
-    let manager: admin.firestore.DocumentData|null = null;
-
+    let manager: admin.firestore.DocumentData | null = null;
+    let hashMap = new Map<string, Number>();
+    //optimize using hash join?
+    /*
     for (let i = 0; i < activeManagers.size; ++i) {
       let uid = activeManagers.docs[i].data().uid;
       for (let j = 0; j < propertyManagers.size; ++j) {
@@ -28,7 +36,28 @@ async function getmanager(db_connection: admin.firestore.Firestore, property: st
         }
       }
     }
-
+*/
+    if (manager_to_exclude) {
+      for (let i = 0; i < propertyManagers.size; ++i) {
+        let uid = propertyManagers.docs[i].data().uid;
+        if (uid != manager_to_exclude) {
+          hashMap.set(uid, 1);
+        }
+      }
+    } else {
+      for (let i = 0; i < propertyManagers.size; ++i) {
+        let uid = propertyManagers.docs[i].data().uid;
+        hashMap.set(uid, 1);
+      }
+    }
+    for (let j = 0; j < activeManagers.size; ++j) {
+      var id = activeManagers.docs[j].data().uid;
+      if (hashMap.has(id)) {
+        matchingmanagers.push(activeManagers.docs[j]);
+        logger.log(`id ${id}`);
+      }
+    }
+    // if no manager is available
     if (matchingmanagers.length == 0) {
       return [false, "no online managers for property", ""];
     }
@@ -36,7 +65,9 @@ async function getmanager(db_connection: admin.firestore.Firestore, property: st
     // loop through managers check if they are in a call
     for (let i = 0; i < matchingmanagers.length; ++i) {
       let managerToken = matchingmanagers[i].data().device_token;
-      let inSession = await searchcallsession(managerToken, db_connection).then(clientToken => clientToken != null);
+      let inSession = await searchcallsession(managerToken, db_connection).then(
+        (clientToken) => clientToken != null
+      );
       if (!inSession) {
         manager = matchingmanagers[i];
         break;
@@ -47,11 +78,7 @@ async function getmanager(db_connection: admin.firestore.Firestore, property: st
       return [false, "managers are busy", ""];
     }
 
-    return [
-      true,
-      manager!.data().device_token,
-      manager!.data().uid,
-    ];
+    return [true, manager!.data().device_token, manager!.data().uid];
   } catch (e) {
     logger.log(e);
     return [false, "error", ""];

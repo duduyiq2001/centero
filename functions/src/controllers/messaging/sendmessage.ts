@@ -17,12 +17,13 @@ async function sendmessage(
 ) {
   logger.log(`sending message ${message}`);
   logger.log(`device_token: ${device_token}`);
+  logger.log(`data: ${data}`);
   if (data) {
     await admin.messaging().send({
       token: device_token,
       data: {
         message: message,
-        data: data.toString(),
+        data: data,
         reason: reason,
       },
     });
