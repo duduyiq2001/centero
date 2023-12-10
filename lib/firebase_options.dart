@@ -53,12 +53,3 @@ class DefaultFirebaseOptions {
   }
 }
 
-const FirebaseOptions web = FirebaseOptions(
-  apiKey: "AIzaSyCukdY8KFDS7WRyOCoC3VQZncP0rKuPYXw",
-  appId: "1:478226578656:web:d94b6d1b9e25a39448a485",
-  messagingSenderId: "478226578656",
-  projectId: "centero-191ae",
-  authDomain: "centero-191ae.firebaseapp.com",
-  storageBucket: "centero-191ae.appspot.com",
-  measurementId: "G-7P4DKVJLBT",
-);
