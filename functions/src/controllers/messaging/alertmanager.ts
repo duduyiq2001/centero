@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import { sendmessage } from "./sendmessage";
+import {sendmessage} from "./sendmessage";
 
 type AlertType =
   | "call rejected"
@@ -8,13 +8,14 @@ type AlertType =
   | "call cancelled";
 /**
  * Alert manager with firebase cloud messging
- * @param alert specify alert reason
- * @param recipient_token token of the recipient
- * @param sendername name of the person who's sending out the message
+ * @param {AlertType}alert specify alert reason
+ * @param {string}recipientToken token of the recipient
+ * @param {admin.firestore.DocumentData | null}sender name
+ * of the person who's sending out the message
  */
 async function alertmanager(
   alert: AlertType,
-  recipient_token: string,
+  recipientToken: string,
   sender: admin.firestore.DocumentData | null
 ): Promise<void> {
   if (alert == "call rejected" || alert == "call accepted") {
@@ -23,18 +24,18 @@ async function alertmanager(
 
   if (alert == "incoming call") {
     await sendmessage(
-      recipient_token,
+      recipientToken,
       `incoming call from ${sender ? sender.name : ""}`,
       "incoming call",
-      JSON.stringify(sender!)
+      JSON.stringify(sender)
     );
   } else if (alert == "call cancelled") {
     await sendmessage(
-      recipient_token,
+      recipientToken,
       `call cancelled by ${sender ? sender.name : ""}`,
       "call cancelled"
     );
   }
 }
 
-export { alertmanager };
+export {alertmanager};

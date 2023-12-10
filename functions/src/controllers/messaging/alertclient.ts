@@ -1,4 +1,4 @@
-import { sendmessage } from "./sendmessage";
+import {sendmessage} from "./sendmessage";
 type AlertType =
   | "call rejected"
   | "call accepted"
@@ -7,24 +7,25 @@ type AlertType =
 
 /**
  * Alert client with firebase cloud messging
- * @param alert specify alert reason
- * @param recipient_token token of the recipient
+ * @param {AlertType}alert specify alert reason
+ * @param {string}recipientToken token of the recipient
+ * @param {string}managerid the id of the manager
  */
 export async function alertclient(
   alert: AlertType,
-  recipient_token: string,
+  recipientToken: string,
   managerid?: string
 ): Promise<void> {
   if (alert == "call rejected") {
     await sendmessage(
-      recipient_token,
+      recipientToken,
       "call rejected",
       "call rejected",
       managerid
     );
   }
   if (alert == "call accepted") {
-    await sendmessage(recipient_token, "call accepted", "call accepted");
+    await sendmessage(recipientToken, "call accepted", "call accepted");
   }
   if (alert == "incoming call" || alert == "call cancelled") {
     throw new Error("wrong function");

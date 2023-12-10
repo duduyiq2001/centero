@@ -1,29 +1,31 @@
-import { logger } from "firebase-functions/v1";
-import { delete_token, UserType } from "./deletetoken";
-import { store_token } from "./storetoken";
+import {logger} from "firebase-functions/v1";
+import {deleteToken, UserType} from "./deletetoken";
+import {storeToken} from "./storetoken";
+import * as admin from "firebase-admin";
 /**
- * Refresh user's token in their respective session store(key:uid value:(uid,token))
- * used when device token needs to be refreshed(delete old and add new)
- * @param uid uid of the token that needs to be refreshed
- * @param UserType specify manager or client
- * @param db_connection
- * @param new_token new token to be added
- *
+ * Refresh user's token in their respective
+ * session store(key:uid value:(uid,token))
+ * used when device token needs to be refreshed
+ * (delete old and add new)
+ * @param {string} newToken new token to be added
+ * @param {UserType}user specify manager or client
+ * @param {admin.firestore.Firestore} dbConnection
+ * @param {string} uid uid of the token that needs to be refreshed
  * @return {boolean}
  * return true if suceed
  */
-async function refresh_token(
-  new_token: string,
+async function refreshToken(
+  newToken: string,
   user: UserType,
-  db_connection: any,
+  dbConnection: admin.firestore.Firestore,
   uid: string
 ): Promise<boolean> {
   try {
-    let ifdelete: boolean = await delete_token(uid, user, db_connection);
-    let ifrefresh: boolean = await store_token(
-      new_token,
+    const ifdelete: boolean = await deleteToken(uid, user, dbConnection);
+    const ifrefresh: boolean = await storeToken(
+      newToken,
       user,
-      db_connection,
+      dbConnection,
       uid
     );
     if (!ifdelete) {
@@ -41,4 +43,4 @@ async function refresh_token(
   }
 }
 
-export { refresh_token };
+export {refreshToken};

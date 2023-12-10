@@ -6,6 +6,7 @@ import "dart:developer" as developer;
 import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:localstorage/localstorage.dart";
+import "package:centero/utility/urlmanager.dart";
 
 ///
 /// Used by client fronend
@@ -18,7 +19,7 @@ Future<(bool, String)> initiatecall() async {
   http.Response response;
   String managername = "";
   final LocalStorage storage = LocalStorage("centero");
-  String deviceToken = storage.getItem("device_token");
+  String deviceToken = storage.getItem("deviceToken");
   String? rejectedmanager = storage.getItem("rejectedmanager");
   try {
     http.Client client = Provider.of<ConnectionService>(
@@ -26,20 +27,16 @@ Future<(bool, String)> initiatecall() async {
       listen: false,
     ).returnConnection();
     if (rejectedmanager != null) {
-      response = await client.post(
-          Uri.parse(
-              "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
+      response = await client.post(Uri.parse(getfunctionname("onRequestCall")),
           body: jsonEncode(
-              {"device_token": deviceToken, "rejected": rejectedmanager}),
+              {"deviceToken": deviceToken, "rejected": rejectedmanager}),
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $accessToken"
           });
     } else {
-      response = await client.post(
-          Uri.parse(
-              "http://127.0.0.1:5001/centero-191ae/us-central1/onRequestCall"),
-          body: jsonEncode({"device_token": deviceToken}),
+      response = await client.post(Uri.parse(getfunctionname("onRequestCall")),
+          body: jsonEncode({"deviceToken": deviceToken}),
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $accessToken"

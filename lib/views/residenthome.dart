@@ -424,26 +424,30 @@ class ResidentHome extends HookWidget {
               child: Text("Logged in: ${resident!.name}"),
             ),
           // Logout Button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: ElevatedButton(
-              onPressed: () async {
-                await residentlogout();
-                Navigator.pushAndRemoveUntil(
-                  navigatorKey.currentContext!,
-                  PageRouteBuilder(
-                    pageBuilder: (context, _, __) => ResidentLogin(),
-                  ),
-                  (route) => false,
-                );
-              },
-              style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
-                    backgroundColor:
-                        const MaterialStatePropertyAll(Colors.white),
-                  ),
-              child: const Text("Logout"),
+          if (onCall.value == false && pageState.value == PageStates.home ||
+              onCall.value == false && pageState.value == PageStates.callEnded)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await residentlogout();
+                  Navigator.pushAndRemoveUntil(
+                    navigatorKey.currentContext!,
+                    PageRouteBuilder(
+                      pageBuilder: (context, _, __) => ResidentLogin(),
+                    ),
+                    (route) => false,
+                  );
+                },
+                style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                      backgroundColor:
+                          const MaterialStatePropertyAll(Colors.white),
+                    ),
+                child: const Text("Logout"),
+              ),
             ),
-          ),
+
+          //
         ],
       ),
       body: Container(

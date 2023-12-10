@@ -10,6 +10,7 @@ import "package:centero/models/manager.dart";
 import "package:centero/utility/getdevicetoken.dart";
 import "package:centero/utility/registerdevicetoken.dart";
 import "package:centero/controllers/http/connectionservice.dart";
+import "package:centero/utility/urlmanager.dart";
 
 ///
 /// Sign in manager with
@@ -67,7 +68,7 @@ Future<(LoginResponse, Manager?)> managerlogin(
 Future<void> managerlogout() async {
   //delete device token in database
   final LocalStorage storage = LocalStorage("centero");
-  String deviceToken = storage.getItem("device_token");
+  String deviceToken = storage.getItem("deviceToken");
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   try {
@@ -76,9 +77,8 @@ Future<void> managerlogout() async {
             listen: false)
         .returnConnection();
     http.Response _ = await client.post(
-        Uri.parse(
-            "http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogout"),
-        body: jsonEncode({"device_token": deviceToken}),
+        Uri.parse(getfunctionname("OnManagerLogout")),
+        body: jsonEncode({"deviceToken": deviceToken}),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken"

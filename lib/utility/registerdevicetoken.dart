@@ -5,6 +5,7 @@ import "package:firebase_auth/firebase_auth.dart";
 import "dart:developer" as developer;
 import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
+import "package:centero/utility/urlmanager.dart";
 
 ///
 /// Used by the manager side
@@ -22,10 +23,8 @@ Future<void> registerdevicetoken(String deviceToken) async {
       navigatorKey.currentContext!,
       listen: false,
     ).returnConnection();
-    response = await client.post(
-        Uri.parse(
-            "http://127.0.0.1:5001/centero-191ae/us-central1/OnManagerLogin"),
-        body: jsonEncode({"device_token": deviceToken}),
+    response = await client.post(Uri.parse(getfunctionname("OnManagerLogin")),
+        body: jsonEncode({"deviceToken": deviceToken}),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken"

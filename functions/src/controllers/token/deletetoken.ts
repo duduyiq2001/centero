@@ -1,28 +1,30 @@
+import * as admin from "firebase-admin";
 type UserType = "client" | "manager";
 /**
- * delete a user from their respective session store(clientstore vs managerstore)
+ * delete a user from their respective session
+ * store(clientstore vs managerstore)
  * used when device token needs to be refreshed or
  * user log out
- * @param uid uid to delete
- * @param UserType specify manager or client
- * @param db_connection
+ * @param {string} uid uid to delete
+ * @param {UserType} user specify manager or client
+ * @param {admin.firestore.Firestore} dbConnection
  *
  * @return {boolean}
  * return true if suceed
  */
-async function delete_token(
+async function deleteToken(
   uid: string,
   user: UserType,
-  db_connection: any
+  dbConnection: admin.firestore.Firestore
 ): Promise<boolean> {
-  var storeref: any;
+  let storeref;
   if (user == "client") {
-    storeref = db_connection.collection("clientstore");
+    storeref = dbConnection.collection("clientstore");
   } else {
-    storeref = db_connection.collection("managerstore");
+    storeref = dbConnection.collection("managerstore");
   }
   await storeref.doc(uid).delete();
   return true;
 }
 
-export { delete_token, UserType };
+export {deleteToken, UserType};

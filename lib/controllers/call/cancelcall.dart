@@ -8,13 +8,14 @@ import "dart:developer" as developer;
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:centero/main.dart";
 import "package:provider/provider.dart";
+import "package:centero/utility/urlmanager.dart";
 
 ///
 /// Used by Manager Frontend
 /// a eventhandler for when manager rejects the call
 Future<void> cancellCallFromClient() async {
   final LocalStorage storage = new LocalStorage('centero');
-  String device_token = storage.getItem("device_token");
+  String deviceToken = storage.getItem("deviceToken");
   http.Response response;
   String? access_token =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
@@ -24,11 +25,9 @@ Future<void> cancellCallFromClient() async {
       navigatorKey.currentContext!,
       listen: false,
     ).returnConnection();
-    response = await client.post(
-        Uri.parse(
-            "http://127.0.0.1:5001/centero-191ae/us-central1/onCancelCall"),
+    response = await client.post(Uri.parse(getfunctionname("onCancelCall")),
         body: jsonEncode({
-          "device_token": device_token,
+          "deviceToken": deviceToken,
         }),
         headers: {
           "Content-Type": "application/json",

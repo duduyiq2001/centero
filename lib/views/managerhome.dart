@@ -216,6 +216,7 @@ class ManagerHome extends HookWidget {
                   ),
                 ),
               ),
+              /*
               Padding(
                 padding: const EdgeInsets.all(15),
                 child: ElevatedButton(
@@ -230,6 +231,7 @@ class ManagerHome extends HookWidget {
                   ),
                 ),
               ),
+              */
             ],
           )
         : const Column();

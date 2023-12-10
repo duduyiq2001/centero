@@ -6,30 +6,30 @@
  *
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
-import { logger } from "firebase-functions";
+import {logger} from "firebase-functions";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { initializeApp } from "firebase-admin/app";
-import { authenticate_client } from "./controllers/authentication/authentication";
-import { store_token } from "./controllers/token/storetoken";
-import { getFirestore } from "firebase-admin/firestore";
+import {initializeApp} from "firebase-admin/app";
+import {authenticateClient} from "./controllers/authentication/authentication";
+import {storeToken} from "./controllers/token/storetoken";
+import {getFirestore} from "firebase-admin/firestore";
 import * as corsLib from "cors";
-import { delete_token } from "./controllers/token/deletetoken";
-import { refresh_token } from "./controllers/token/refreshtoken";
+import {deleteToken} from "./controllers/token/deletetoken";
+import {refreshToken} from "./controllers/token/refreshtoken";
 import * as session from "./controllers/session/sessionupdate";
-import { getmanager } from "./controllers/callrouting/callrouting";
-import { alertmanager } from "./controllers/messaging/alertmanager";
-import { alertclient } from "./controllers/messaging/alertclient";
+import {getmanager} from "./controllers/callrouting/callrouting";
+import {alertmanager} from "./controllers/messaging/alertmanager";
+import {alertclient} from "./controllers/messaging/alertclient";
 import * as search from "./controllers/search/usersearch";
 import * as sessionsearch from "./controllers/session/sessionsearch";
-import { deleteDocument } from "./controllers/admin/deleterecord";
+import {deleteDocument} from "./controllers/admin/deleterecord";
 // Define an array of allowed origins
 
 // Configure CORS with the specific origins
 const corsOptions: corsLib.CorsOptions = {
-  origin: function (origin, callback) {
-    let allowedDomains =
-      /https:\/\/centero-191ae\.web\.app$|http:\/\/localhost(:\d+)?$/;
+  origin: function(origin, callback) {
+    const allowedDomains =
+      /https:\/\/centerobackend\.web\.app$|http:\/\/localhost(:\d+)?$/;
     if (!origin) {
       callback(null, true);
     } else if (allowedDomains.test(origin)) {
@@ -43,7 +43,7 @@ const corsOptions: corsLib.CorsOptions = {
 const cors = corsLib(corsOptions);
 initializeApp();
 
-//http://localhost:35409/
+// http://localhost:35409/
 /**
  * Signs in client, update client session
  * Don't worry about this one
@@ -51,22 +51,24 @@ initializeApp();
 exports.clientsignin = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
-      const { property_name, unit_number, social, device_token } = req.body;
+      const {propertyName, unitNumber, social, deviceToken} = req.body;
       const conn = getFirestore();
-      const [isValidUser, uid] = await authenticate_client(
-        property_name,
-        unit_number,
+      const [isValidUser, uid] = await authenticateClient(
+        propertyName,
+        unitNumber,
         social,
         conn
       );
+      logger.log("herererereree");
+      logger.log(`uid${uid}`);
       if (isValidUser) {
         admin
           .auth()
           .createCustomToken(`${uid}`)
           .then((customToken) => {
-            res.status(200).json({ token: customToken, id: uid });
+            res.status(200).json({token: customToken, id: uid});
           });
-        await store_token(device_token, "client", conn, `${uid}`);
+        await storeToken(deviceToken, "client", conn, `${uid}`);
       } else {
         res.status(403).send("Invalid credentials");
         return;
@@ -100,7 +102,7 @@ exports.createManagerProfile = functions.auth.user().onCreate((user) => {
 exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { device_token } = req.body;
+      const {deviceToken} = req.body;
 
       const conn = getFirestore();
 
@@ -116,9 +118,9 @@ exports.OnManagerLogin = functions.https.onRequest(async (req, res) => {
         .verifyIdToken(idToken)
         .then((decodedToken) => {
           const uid = decodedToken.uid;
-          store_token(device_token, "manager", conn, uid);
+          storeToken(deviceToken, "manager", conn, uid);
         })
-        .catch((error) => {
+        .catch(() => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
           return;
@@ -153,9 +155,9 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
         .verifyIdToken(idToken)
         .then((decodedToken) => {
           const uid = decodedToken.uid;
-          delete_token(uid, "manager", conn);
+          deleteToken(uid, "manager", conn);
         })
-        .catch((error) => {
+        .catch(() => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
           return;
@@ -175,7 +177,7 @@ exports.OnManagerLogout = functions.https.onRequest(async (req, res) => {
 exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { new_token } = req.body;
+      const {newToken} = req.body;
 
       const conn = getFirestore();
 
@@ -189,7 +191,7 @@ exports.OnManagerTokenRefresh = functions.https.onRequest(async (req, res) => {
       try {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         const uid = decodedToken.uid;
-        if (await refresh_token(new_token, "manager", conn, uid)) {
+        if (await refreshToken(newToken, "manager", conn, uid)) {
           res.status(200).send("success");
           return;
         }
@@ -227,9 +229,9 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
         .verifyIdToken(idToken)
         .then((decodedToken) => {
           const uid = decodedToken.uid;
-          delete_token(uid, "client", conn);
+          deleteToken(uid, "client", conn);
         })
-        .catch((error) => {
+        .catch(() => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
           return;
@@ -249,7 +251,7 @@ exports.OnResidentLogOut = functions.https.onRequest(async (req, res) => {
 exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { new_token } = req.body;
+      const {newToken} = req.body;
 
       const conn = getFirestore();
 
@@ -265,14 +267,15 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
         .verifyIdToken(idToken)
         .then((decodedToken) => {
           const uid = decodedToken.uid;
-          refresh_token(new_token, "client", conn, uid);
+          refreshToken(newToken, "client", conn, uid);
         })
-        .catch((error) => {
+        .catch(() => {
           // The ID token is invalid or expired
           res.status(401).send("Unauthorized");
           return;
         });
     } catch (error) {
+      logger.log(error);
       res.status(500).send("Internal server error");
       return;
     }
@@ -290,14 +293,14 @@ exports.OnResidentTokenRefresh = functions.https.onRequest(async (req, res) => {
  */
 exports.onRequestCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
+    // initializeApp();
     try {
       const body = req.body;
-      const device_token = body.device_token;
+      const deviceToken = body.deviceToken;
       const rejected = body.rejected;
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       const conn = getFirestore();
-      var id;
+      let id;
       if (idToken) {
         try {
           const decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -314,36 +317,39 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
       // get resident
       logger.log("getting the resident");
       logger.log(`id is ${id}`);
-      let q = await conn.collection("Residents").where("uid", "==", id).get();
+      const q = await conn.collection("Residents").where("uid", "==", id).get();
       if (q.size < 1) {
         res.status(401).send("User does not exist");
         return;
       }
-      let resident = q.docs[0].data();
+      const resident = q.docs[0].data();
       logger.log("got resident");
-      //route to manager
-      var succeeded: boolean = false;
-      var ifexist: boolean = false;
-      var managertoken: string = "";
-      var managername: string = "";
-      //Call routing
+      // route to manager
+      let succeeded = false;
+      let ifexist = false;
+      let managertoken = "";
+      let managername = "";
+      let muid;
+      // Call routing
       try {
         logger.log("routing to manager");
         if (rejected) {
-          var [succeeded, managertoken, muid] = await getmanager(
+          [succeeded, managertoken, muid] = await getmanager(
             conn,
-            resident.property_name,
+            resident.propertyName,
             rejected
           );
         } else {
           logger.log("here!");
-          var [succeeded, managertoken, muid] = await getmanager(
+          logger.log(resident.propertyName);
+          [succeeded, managertoken, muid] = await getmanager(
             conn,
-            resident.property_name
+            resident.propertyName
           );
         }
-        if (succeeded)
-          var [ifexist, managername] = await search.searchmanager(muid, conn);
+        if (succeeded) {
+          [ifexist, managername] = await search.searchmanager(muid, conn);
+        }
         // console.log(succeeded, ifexist, managertoken, muid, managername);
         if (!succeeded || !ifexist) {
           res.status(401).send("No Manager Available");
@@ -354,13 +360,13 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
         res.status(401).send("Internal Server Error");
         return;
       }
-      //add session
-      if (!(await session.addcallsession(device_token, managertoken, conn))) {
+      // add session
+      if (!(await session.addcallsession(deviceToken, managertoken, conn))) {
         logger.log("Could not create session");
         res.status(401).send("Could not create session");
         return;
       }
-      //alert manager
+      // alert manager
       try {
         alertmanager("incoming call", managertoken, resident);
         res.status(200).send(managername);
@@ -388,7 +394,7 @@ exports.onRequestCall = functions.https.onRequest(async (req, res) => {
 exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { device_token } = req.body;
+      const {deviceToken} = req.body;
       const conn = await getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
@@ -396,22 +402,20 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
         return;
       }
       if (idToken) {
-        admin
-          .auth()
-          .verifyIdToken(idToken)
-          .then(() => {})
-          .catch(() => {
-            // The ID token is invalid or expired
-            res.status(401).send("Unauthorized");
-            return;
-          });
+        try {
+          await admin.auth().verifyIdToken(idToken);
+        } catch (e) {
+          logger.log(e);
+          res.status(401).send("Unauthorized");
+          return;
+        }
       } else {
         res.status(401).send("Unauthorized");
         return;
       }
       try {
         const clienttoken = await sessionsearch.searchcallsession(
-          device_token,
+          deviceToken,
           conn
         );
         if (clienttoken) {
@@ -449,10 +453,10 @@ exports.onAcceptCall = functions.https.onRequest(async (req, res) => {
 exports.onRejectCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { device_token } = req.body;
+      const {deviceToken} = req.body;
       const conn = getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
-      var managerid: string;
+      let managerid: string;
 
       if (idToken) {
         try {
@@ -469,7 +473,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
       }
       try {
         const clienttoken = await sessionsearch.searchcallsession(
-          device_token,
+          deviceToken,
           conn
         );
         if (clienttoken) {
@@ -479,7 +483,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
           res.status(401).send("client does not exist!");
           return;
         }
-        await session.removecallsession(device_token, conn);
+        await session.removecallsession(deviceToken, conn);
       } catch {
         res.status(401).send("Unauthorized");
         return;
@@ -504,7 +508,7 @@ exports.onRejectCall = functions.https.onRequest(async (req, res) => {
 exports.onCancelCall = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { device_token } = req.body;
+      const {deviceToken} = req.body;
       const conn = getFirestore();
       const idToken = req.get("Authorization")?.split("Bearer ")[1];
       if (!idToken) {
@@ -513,7 +517,7 @@ exports.onCancelCall = functions.https.onRequest(async (req, res) => {
       }
       try {
         const managertoken = await sessionsearch.searchcallsessionfromclient(
-          device_token,
+          deviceToken,
           conn
         );
         if (managertoken) {
@@ -540,8 +544,8 @@ exports.onCancelCall = functions.https.onRequest(async (req, res) => {
 exports.getResident = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { uid } = req.body;
-      let query = await admin
+      const {uid} = req.body;
+      const query = await admin
         .firestore()
         .collection("Residents")
         .where("uid", "==", uid)
@@ -551,12 +555,12 @@ exports.getResident = functions.https.onRequest(async (req, res) => {
       } else if (query.size > 1) {
         res.status(403).send("Error: Duplicate users");
       } else {
-        let data = query.docs[0].data();
+        const data = query.docs[0].data();
         res.status(200).json({
           name: data.name,
           unit: data.unit,
           uid: uid,
-          property_name: data.property_name,
+          propertyName: data.propertyName,
           address: data.address,
           leaseStart: data.leaseStart,
           leaseEnd: data.leaseEnd,
@@ -579,7 +583,7 @@ exports.getResident = functions.https.onRequest(async (req, res) => {
  */
 exports.AdminDeleteRecord = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    //initializeApp();
+    // initializeApp();
     try {
       const conn = await getFirestore();
       const collection = req.body.collection;

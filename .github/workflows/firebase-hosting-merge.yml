@@ -2,7 +2,7 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on merge
-'on':
+"on":
   push:
     branches:
       - main
@@ -14,23 +14,23 @@ jobs:
     name: Build Flutter (Web)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: subosito/flutter-action@v2
-      with:
-          channel: 'stable'
-          flutter-version: '3.13.7'
-    - run: flutter pub get
-    - run: flutter config --enable-web
-    - run: flutter build web
-    # - name: Archive Production Artifact
-    #   uses: actions/upload-artifact@master
-    #   with:
-    #     name: web-build
-    #     path: build/web
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.13.7"
+      - run: flutter pub get
+      - run: flutter config --enable-web
+      - run: flutter build web
+      # - name: Archive Production Artifact
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: web-build
+      #     path: build/web
 
-    - uses: FirebaseExtended/action-hosting-deploy@v0
-      with:
-        repoToken: '${{ secrets.GITHUB_TOKEN }}'
-        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CENTERO_191AE }}'
-        channelId: live
-        projectId: centero-191ae
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CENTERO_191AE }}"
+          channelId: live
+          projectId: centerobackend

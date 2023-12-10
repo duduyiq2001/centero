@@ -8,6 +8,7 @@ import "package:centero/models/loginresponse.dart";
 import "package:centero/utility/getdevicetoken.dart";
 import "package:centero/serializers/residentserialzer.dart";
 import "package:centero/controllers/http/connectionservice.dart";
+import "package:centero/utility/urlmanager.dart";
 
 ///
 /// Sign in resident with
@@ -44,7 +45,7 @@ Future<LoginResponse> residentlogin(
       listen: false,
     ).returnConnection();
     response = await client.post(
-      Uri.parse("http://127.0.0.1:5001/centero-191ae/us-central1/clientsignin"),
+      Uri.parse(getfunctionname("clientsignin")),
       body: data,
       headers: <String, String>{"Content-Type": "application/json"},
     );
@@ -79,7 +80,7 @@ Future<LoginResponse> residentlogin(
 Future<void> residentlogout() async {
   //delete device token in database
   final LocalStorage storage = LocalStorage("centero");
-  String deviceToken = storage.getItem("device_token");
+  String deviceToken = storage.getItem("deviceToken");
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   try {
@@ -88,9 +89,8 @@ Future<void> residentlogout() async {
       listen: false,
     ).returnConnection();
     http.Response _ = await client.post(
-        Uri.parse(
-            "http://127.0.0.1:5001/centero-191ae/us-central1/OnResidentLogOut"),
-        body: jsonEncode({"device_token": deviceToken}),
+        Uri.parse(getfunctionname("OnResidentLogOut")),
+        body: jsonEncode({"deviceToken": deviceToken}),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken"

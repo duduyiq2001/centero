@@ -3,14 +3,14 @@
  * Contains filebase configuration and api key to connects to
  * the actual firebase instance
  */
-const config_app = {
-  apiKey: "AIzaSyCukdY8KFDS7WRyOCoC3VQZncP0rKuPYXw",
-  appId: "1:478226578656:web:d94b6d1b9e25a39448a485",
-  messagingSenderId: "478226578656",
-  projectId: "centero-191ae",
-  authDomain: "centero-191ae.firebaseapp.com",
-  storageBucket: "centero-191ae.appspot.com",
-  measurementId: "G-7P4DKVJLBT",
+const configApp = {
+  apiKey: "AIzaSyCNJs_VyFxI7OFAaNxOIoL4KEPtSF0mKUc",
+  authDomain: "centerobackend.firebaseapp.com",
+  projectId: "centerobackend",
+  storageBucket: "centerobackend.appspot.com",
+  messagingSenderId: "780428703318",
+  appId: "1:780428703318:web:670d5ac13609f2e9fb6df7",
+  measurementId: "G-VDDP4KG3DZ",
 };
 
-export { config_app };
+export {configApp};

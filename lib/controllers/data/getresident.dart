@@ -6,6 +6,7 @@ import "package:centero/main.dart";
 import "package:centero/models/resident.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:centero/serializers/residentserialzer.dart";
+import "package:centero/utility/urlmanager.dart";
 
 Future<Resident?> getResidentData() async {
   final LocalStorage storage = LocalStorage("centero");
@@ -19,7 +20,7 @@ Future<Resident?> getResidentData() async {
     listen: false,
   ).returnConnection();
   response = await client.post(
-    Uri.parse("http://127.0.0.1:5001/centero-191ae/us-central1/getResident"),
+    Uri.parse(getfunctionname("getResident")),
     body: data,
     headers: <String, String>{"Content-Type": "application/json"},
   );

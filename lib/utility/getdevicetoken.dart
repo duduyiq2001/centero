@@ -34,7 +34,7 @@ Future<String> getdevicetoken() async {
     return "token null";
   }
   final LocalStorage storage = LocalStorage("centero");
-  storage.setItem("device_token", token);
+  storage.setItem("deviceToken", token);
   // Save the initial token to the database
 
   return token;

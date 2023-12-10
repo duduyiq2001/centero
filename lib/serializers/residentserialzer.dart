@@ -6,10 +6,10 @@ import "package:centero/models/resident.dart";
 String residentserializer(
     String propertyname, String unitNumber, String social, String deviceToken) {
   return jsonEncode({
-    "property_name": propertyname,
-    "unit_number": unitNumber,
+    "propertyName": propertyname,
+    "unitNumber": unitNumber,
     "social": social,
-    "device_token": deviceToken
+    "deviceToken": deviceToken
   });
 }
 
@@ -19,7 +19,7 @@ Resident? residentFromData(Map<String, dynamic> data) {
       name: data["name"],
       unit: data["unit"],
       id: data["uid"],
-      propertyname: data["property_name"],
+      propertyname: data["propertyName"],
     );
   } catch (e) {
     developer.log(e.toString());

@@ -6,6 +6,7 @@ import "dart:developer" as developer;
 import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:centero/main.dart";
+import "package:centero/utility/urlmanager.dart";
 
 ///
 /// Used by Manager Frontend
@@ -13,7 +14,7 @@ import "package:centero/main.dart";
 /// return true if succeed
 Future<bool> acceptcall(String residentID) async {
   final LocalStorage storage = LocalStorage("centero");
-  String deviceToken = storage.getItem("device_token");
+  String deviceToken = storage.getItem("deviceToken");
   String? accessToken =
       await FirebaseAuth.instance.currentUser?.getIdToken(true);
   http.Response response;
@@ -22,11 +23,9 @@ Future<bool> acceptcall(String residentID) async {
       navigatorKey.currentContext!,
       listen: false,
     ).returnConnection();
-    response = await client.post(
-        Uri.parse(
-            "http://127.0.0.1:5001/centero-191ae/us-central1/onAcceptCall"),
+    response = await client.post(Uri.parse(getfunctionname("onAcceptCall")),
         body: jsonEncode({
-          "device_token": deviceToken,
+          "deviceToken": deviceToken,
         }),
         headers: {
           "Content-Type": "application/json",
