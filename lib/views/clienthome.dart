@@ -91,17 +91,53 @@ class ClientHome extends HookWidget {
               ),
             ),
           ),
+        Padding(
+            padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
         if (onCall.value)
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               onCall.value = false;
             },
-            child: Text("Cancel Call", style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.white)),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+              shape: const CircleBorder(),
+              backgroundColor: Colors.transparent,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.pan_tool,
+                  size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                  color: Colors.green,
+                ),
+                Padding(
+                    padding: EdgeInsets.all(
+                        8 * CenteroTheme.getValues(context).scaleFactor)),// Adjust the spacing between icon and text
+                Text(
+                  "Cancel Contact",
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                  ),
+                ),
+              ],
+            ),
           ),
+          // delete TextButton above and uncomment ElevatedButton below to change button
+          //    from hand to rectangle
+          // ElevatedButton(
+          //   onPressed: () {
+          //     onCall.value = false;
+          //   },
+          //   child: Text("Cancel Call", style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          //       color: Colors.white)),
+          // ),
         Padding(
             padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
-        Row(
+        Visibility(
+          visible: !onCall.value,
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
@@ -203,14 +239,15 @@ class ClientHome extends HookWidget {
                     ),
                     child: Text("Would you like to chat?", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
                   ),
-
                 ],
               ),
+
             ),
             Padding(
                 padding: EdgeInsets.all(
                     50 * CenteroTheme.getValues(context).scaleFactor)),
           ],
+        ),
         ),
       ],
     );
