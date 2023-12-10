@@ -57,7 +57,7 @@ class ManagerHome extends HookWidget {
           ),
         ),
         Text(
-          "Incoming Call",
+          "Incoming Contact",
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         Padding(
@@ -102,7 +102,7 @@ class ManagerHome extends HookWidget {
             pageState.value = PageStates.onCall;
           },
           child: Text(
-            "Answer",
+            "Connect",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
         ),
@@ -146,7 +146,7 @@ class ManagerHome extends HookWidget {
               pageState.value = PageStates.home;
             },
             child: Text(
-              "End Call",
+              "End Contact",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
