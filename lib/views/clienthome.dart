@@ -33,10 +33,16 @@ class ClientHome extends HookWidget {
         ),
         Center(
           child: Container(
-            width: CenteroTheme.getValues(context).logoSize,
-            height: CenteroTheme.getValues(context).logoSize,
+            width: 1.5 * CenteroTheme.getValues(context).logoSize,
+            height: 1.5 * CenteroTheme.getValues(context).logoSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
+              border: (onCall.value)
+              ? null
+              : Border.all(
+                color: Colors.green,
+                width: 15.0,
+              ),
               image: DecorationImage(
                 fit: BoxFit.fill,
                 image: AssetImage(
@@ -62,37 +68,39 @@ class ClientHome extends HookWidget {
         ),
         Padding(
             padding: EdgeInsets.all(
-                25.0 * CenteroTheme.getValues(context).scaleFactor)),
-        if (!onCall.value)
-          ElevatedButton(
-            onPressed: () {
-              onCall.value = true;
-              Future.delayed(const Duration(seconds: 3), () {
-                if (onCall.value) {
-                  onCall.value = false;
-                  pageState.value = PageStates.call;
-                }
-              });
-            },
-            //uncomment this Text child below and comment the ClipRRect child to
-              // change call button from centero logo to "Press Me"
-            // child: Text(
-            //   "Press Me",
-            //   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            //     color: Colors.white,
-            //   ),
-            // ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                  CenteroTheme.getValues(context).borderRadius),
-              child: Image.asset(
-                "assets/centeroLogo.jpg",
-                width: 1.5 * CenteroTheme.getValues(context).logoSize,
-              ),
-            ),
-          ),
+                10.0 * CenteroTheme.getValues(context).scaleFactor)),
+
+        // if (!onCall.value)
+        //   ElevatedButton(
+        //     onPressed: () {
+        //       onCall.value = true;
+        //       Future.delayed(const Duration(seconds: 3), () {
+        //         if (onCall.value) {
+        //           onCall.value = false;
+        //           pageState.value = PageStates.call;
+        //         }
+        //       });
+        //     },
+        //     child: ClipRRect(
+        //       borderRadius: BorderRadius.circular(
+        //           CenteroTheme.getValues(context).borderRadius),
+        //       child: Image.asset(
+        //         "assets/centeroLogo.jpg",
+        //         width: 1.5 * CenteroTheme.getValues(context).logoSize,
+        //       ),
+        //     ),
+        //   ),
         Padding(
             padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
+        Visibility(
+          visible: !onCall.value,
+          child: Text(
+            "Do any of these items help?",
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+        Padding(
+            padding: EdgeInsets.all(.10 * CenteroTheme.getValues(context).spacer)),
         if (onCall.value)
           TextButton(
             onPressed: () {
@@ -103,42 +111,36 @@ class ClientHome extends HookWidget {
               shape: const CircleBorder(),
               backgroundColor: Colors.transparent,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
+              alignment: Alignment.center,
               children: [
                 Icon(
                   Icons.pan_tool,
                   size: 150 * CenteroTheme.getValues(context).scaleFactor,
                   color: Colors.green,
                 ),
-                Padding(
-                    padding: EdgeInsets.all(
-                        8 * CenteroTheme.getValues(context).scaleFactor)),// Adjust the spacing between icon and text
-                Text(
-                  "Cancel Contact",
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                Positioned(
+                  right: 25 * CenteroTheme.getValues(context).scaleFactor,
+                  bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                  child: Text(
+                    "Cancel \nContact",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17 * CenteroTheme.getValues(context).scaleFactor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
             ),
           ),
-          // delete TextButton above and uncomment ElevatedButton below to change button
-          //    from hand to rectangle
-          // ElevatedButton(
-          //   onPressed: () {
-          //     onCall.value = false;
-          //   },
-          //   child: Text("Cancel Call", style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          //       color: Colors.white)),
-          // ),
-        Padding(
-            padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
+        // Padding(
+        //     padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
         Visibility(
           visible: !onCall.value,
+
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
               width: 1.2 * CenteroTheme.getValues(context).logoSize,
@@ -151,10 +153,10 @@ class ClientHome extends HookWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: <Widget>[
-                  Text(
-                    "Do these help?",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                  // Text(
+                  //   "Do these help?",
+                  //   style: Theme.of(context).textTheme.bodyMedium,
+                  // ),
                   const Padding(padding: EdgeInsets.all(12.0)),
                   TextButton(
                     onPressed: () {
@@ -167,7 +169,9 @@ class ClientHome extends HookWidget {
                         borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
                       ),
                     ),
-                    child: Text("Work Order", style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text("Work Order",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),
+                    ),
                   ),
                   Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
@@ -181,7 +185,8 @@ class ClientHome extends HookWidget {
                         borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
                       ),
                     ),
-                    child: Text("Amenities", style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text("Amenities",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
                   ),
                   Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
@@ -195,7 +200,8 @@ class ClientHome extends HookWidget {
                         borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
                       ),
                     ),
-                    child: Text("Rent", style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text("Rent",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
                   ),
                   Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
@@ -209,7 +215,8 @@ class ClientHome extends HookWidget {
                         borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
                       ),
                     ),
-                    child: Text("Events", style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text("Events",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
                   ),
                   Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
@@ -223,32 +230,68 @@ class ClientHome extends HookWidget {
                         borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
                       ),
                     ),
-                    child: Text("Information", style: Theme.of(context).textTheme.bodyMedium),
-                  ),
-                  Padding(padding: EdgeInsets.all(12 * CenteroTheme.getValues(context).scaleFactor)),
-                  TextButton(
-                    onPressed: () {
-                      //print("Pressed Chat Button");
-                    },
-                    style: TextButton.styleFrom(
-                      minimumSize: Size(double.infinity, CenteroTheme.getValues(context).scaleFactor),
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
-                      ),
-                    ),
-                    child: Text("Would you like to chat?", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
+                    child: Text("Information",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
                   ),
                 ],
               ),
 
             ),
-            Padding(
-                padding: EdgeInsets.all(
-                    50 * CenteroTheme.getValues(context).scaleFactor)),
           ],
         ),
         ),
+        Padding(
+            padding: EdgeInsets.all(
+                50 * CenteroTheme.getValues(context).scaleFactor)),
+        if (!onCall.value)
+            TextButton(
+            onPressed: () {
+                onCall.value = true;
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (onCall.value) {
+                    onCall.value = false;
+                    pageState.value = PageStates.call;
+                  }
+                });
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+                shape: const CircleBorder(),
+                backgroundColor: Colors.transparent,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.pan_tool,
+                    size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                    color: Colors.green,
+                  ),
+                  Positioned(
+                    right: 8 * CenteroTheme.getValues(context).scaleFactor,
+                    bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                    child: Text(
+                      "Would you \nlike to chat?",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17 * CenteroTheme.getValues(context).scaleFactor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // child: ClipRRect(
+            //   borderRadius: BorderRadius.circular(
+            //       CenteroTheme.getValues(context).borderRadius),
+            //   child: Image.asset(
+            //     "assets/centeroLogo.jpg",
+            //     width: 1.5 * CenteroTheme.getValues(context).logoSize,
+            //   ),
+            // ),
+
       ],
     );
 
@@ -257,62 +300,81 @@ class ClientHome extends HookWidget {
         children: <Widget>[
           Padding(
               padding: EdgeInsets.all(
-                  50.0 * CenteroTheme.getValues(context).scaleFactor)),
+                  CenteroTheme.getValues(context).spacer)),
           Container(
             decoration: BoxDecoration(
-              color: Colors.black12,
+              //color: Colors.black12,
+              image: DecorationImage(
+                image: AssetImage('assets/manager.jpg'),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.2),
+                  BlendMode.dstATop,
+                ),
+              ),
+
               border: Border.all(width: 1.0, color: Colors.black38),
               borderRadius: BorderRadius.all(
                 Radius.circular(CenteroTheme.getValues(context).borderRadius),
               ),
             ),
-            padding: EdgeInsets.all(
-                50.0 * CenteroTheme.getValues(context).scaleFactor),
+            // padding: EdgeInsets.all(
+            //     50.0 * CenteroTheme.getValues(context).scaleFactor),
+
             child: Column(
               children: <Widget>[
+                // Padding(
+                //     padding: EdgeInsets.all(
+                //         25 * CenteroTheme.getValues(context).scaleFactor)),
                 Padding(
                     padding: EdgeInsets.all(
-                        25 * CenteroTheme.getValues(context).scaleFactor)),
+                        CenteroTheme.getValues(context).spacer)),
                 Text(
                   "Illusion of a Volumetric Display",
                   style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                    top: 6 * CenteroTheme.getValues(context).spacer,
-                    right: 4 * CenteroTheme.getValues(context).spacer,
-                    left: 4 * CenteroTheme.getValues(context).spacer,
-                    bottom: 6 * CenteroTheme.getValues(context).spacer,
+                    top: 7 * CenteroTheme.getValues(context).spacer,
+                    right: 5 * CenteroTheme.getValues(context).spacer,
+                    left: 5 * CenteroTheme.getValues(context).spacer,
+                    bottom: 7 * CenteroTheme.getValues(context).spacer,
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    pageState.value = PageStates.callEnded;
-                  },
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
-                    shape: const CircleBorder(),
-                    backgroundColor: Colors.transparent,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.pan_tool,
-                        size: 150 * CenteroTheme.getValues(context).scaleFactor,
-                        color: Colors.green,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.all(
-                              8 * CenteroTheme.getValues(context).scaleFactor)),// Adjust the spacing between icon and text
-                      Text(
-                        "End Contact",
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
-                        ),
-                      ),
-                    ],
+              ],
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.all(
+                  .2 * CenteroTheme.getValues(context).spacer)),
+          TextButton(
+            onPressed: () {
+              pageState.value = PageStates.callEnded;
+            },
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+              shape: const CircleBorder(),
+              backgroundColor: Colors.transparent,
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.pan_tool,
+                  size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                  color: Colors.green,
+                ),
+                Positioned(
+                  right: 20 * CenteroTheme.getValues(context).scaleFactor,
+                  bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                  child: Text(
+                    "End \nContact",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
@@ -353,8 +415,8 @@ class ClientHome extends HookWidget {
                   shape: const CircleBorder(),
                   backgroundColor: Colors.transparent,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
                     Transform(
                       alignment: Alignment.center,
@@ -365,14 +427,17 @@ class ClientHome extends HookWidget {
                         color: Colors.red,
                       ),
                     ),
-                    Padding(padding: EdgeInsets.all(8 * CenteroTheme.getValues(context).scaleFactor)),
-                    Text(
-                      "Start Over",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                    Positioned(
+                      left: 25 * CenteroTheme.getValues(context).scaleFactor,
+                      bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                      child: Text(
+                        "Start \nOver",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -390,22 +455,25 @@ class ClientHome extends HookWidget {
                   shape: const CircleBorder(),
                   backgroundColor: Colors.transparent,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
                     Icon(
                       Icons.pan_tool,
                       size: 150 * CenteroTheme.getValues(context).scaleFactor,
                       color: Colors.green,
                     ),
-                    Padding(padding: EdgeInsets.all(8 * CenteroTheme.getValues(context).scaleFactor)),
-                    Text(
-                      "Call Again",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                    Positioned(
+                      right: 25 * CenteroTheme.getValues(context).scaleFactor,
+                      bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                      child: Text(
+                        "Call \nAgain",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
