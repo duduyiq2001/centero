@@ -26,13 +26,13 @@ class Footer extends StatelessWidget {
               padding: EdgeInsets.only(
                   right: 10 * CenteroTheme.getValues(context).scaleFactor)),
           Container(
-            width: 0.4 * CenteroTheme.getValues(context).logoSize,
-            height: 0.4 * CenteroTheme.getValues(context).logoSize,
+            width: 1 * CenteroTheme.getValues(context).logoSize,
+            height: .4 * CenteroTheme.getValues(context).logoSize,
             decoration: const BoxDecoration(
-              shape: BoxShape.circle,
+              //shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.contain,
-                image: AssetImage("assets/centeroBrand.jpg"),
+                image: AssetImage("assets/centeroLogo.jpg"),
               ),
             ),
           ),
