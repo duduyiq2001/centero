@@ -3,7 +3,7 @@ import "package:firebase_core/firebase_core.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:provider/provider.dart";
-import "dart:developer" as developer;
+
 import "package:centero/views/residentlogin.dart";
 import "package:centero/views/managerlogin.dart";
 import "package:centero/controllers/http/connectionservice.dart";
@@ -22,7 +22,7 @@ void main() async {
     try {
       await FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     } catch (e) {
-      developer.log(e.toString());
+      print(e.toString());
     }
   } else {
     await Firebase.initializeApp(

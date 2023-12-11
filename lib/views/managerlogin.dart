@@ -72,15 +72,12 @@ class ManagerLogin extends HookWidget {
           ElevatedButton(
             // Login button
             onPressed: () async {
-              var (response, manager) =
-                  await managerlogin(emailct.text, passwordct.text);
+              var response = await managerlogin(emailct.text, passwordct.text);
               if (response == LoginResponse.success) {
                 Navigator.pushAndRemoveUntil(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (context, _, __) => ManagerHome(
-                      manager: manager,
-                    ),
+                    pageBuilder: (context, _, __) => const ManagerHome(),
                   ),
                   (route) => false,
                 );

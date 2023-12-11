@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:intl/intl.dart";
 import "dart:convert";
-import "dart:developer" as developer;
+
 import "package:firebase_messaging/firebase_messaging.dart";
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
@@ -31,9 +31,7 @@ String getStatus(DateTime rentDueDate) {
 }
 
 class ManagerHome extends HookWidget {
-  final Manager? manager;
-
-  const ManagerHome({super.key, this.manager});
+  const ManagerHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +46,8 @@ class ManagerHome extends HookWidget {
     //set up messaging!
     // a listener for messaging from FCM!
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      developer.log("Got a message whilst in the foreground!");
-      developer.log("Message data: ${message.data}");
+      print("Got a message whilst in the foreground!");
+      print("Message data: ${message.data}");
       BuildContext? current = navigatorKey.currentState?.overlay?.context;
       var reason = message.data["reason"];
       print('reason:$reason');
@@ -58,7 +56,7 @@ class ManagerHome extends HookWidget {
         //   current,
         //   message.data.entries.first.value,
         //   () => {acceptcall(manager!.id), pageState.value = PageS},
-        //   () => {developer.log("rejected")},
+        //   () => {print("rejected")},
         // );
         var reason = message.data["reason"];
         print('reason:$reason');
@@ -74,7 +72,7 @@ class ManagerHome extends HookWidget {
       }
 
       if (message.notification != null) {
-        developer.log(
+        print(
           "Message also contained a notification: ${message.notification}",
         );
       }
@@ -255,23 +253,22 @@ class ManagerHome extends HookWidget {
           ),
         ),
         actions: <Widget>[
-          if (manager is Manager)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
-                      backgroundColor:
-                          const MaterialStatePropertyAll(Colors.white),
-                    ),
-                child: Row(
-                  children: <Widget>[
-                    Text(manager!.name),
-                    const Icon(Icons.person),
-                  ],
-                ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: ElevatedButton(
+              onPressed: () {},
+              style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                    backgroundColor:
+                        const MaterialStatePropertyAll(Colors.white),
+                  ),
+              child: Row(
+                children: <Widget>[
+                  Text("Hi manager"),
+                  const Icon(Icons.person),
+                ],
               ),
             ),
+          ),
         ],
       ),
       body: Container(

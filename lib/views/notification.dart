@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "dart:developer" as developer;
 
 void showImmediateDialog(BuildContext context, String message,
     Function acceptcallback, Function rejectcallback) {
@@ -20,7 +19,7 @@ void showImmediateDialog(BuildContext context, String message,
           TextButton(
             child: const Text("Accept"),
             onPressed: () async {
-              developer.log("Accepted");
+              print("Accepted");
               Navigator.of(context).pop(); // Dismiss the dialog
               await acceptcallback();
             },
@@ -28,7 +27,7 @@ void showImmediateDialog(BuildContext context, String message,
           TextButton(
             child: const Text("Reject"),
             onPressed: () async {
-              developer.log("Rejected");
+              print("Rejected");
               Navigator.of(context).pop();
               await rejectcallback();
               // Dismiss the dialog
@@ -58,7 +57,7 @@ void showImmediateNotif(BuildContext context, String message) {
           TextButton(
             child: const Text("Ok"),
             onPressed: () async {
-              developer.log("Ok");
+              print("Ok");
               Navigator.of(context).pop(); // Dismiss the dialog
             },
           ),

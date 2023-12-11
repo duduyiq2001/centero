@@ -46,6 +46,9 @@ async function getmanager(
       }
     }
 */
+
+    logger.log(`active managers${activeManagers.size}`);
+    logger.log(`matching managers${propertyManagers.size}`);
     if (managerToExclude) {
       for (let i = 0; i < propertyManagers.size; ++i) {
         const uid = propertyManagers.docs[i].data().uid;

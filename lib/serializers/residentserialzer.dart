@@ -1,5 +1,5 @@
 import "dart:convert";
-import "dart:developer" as developer;
+
 import "package:centero/models/resident.dart";
 
 ///serialize the resident data for authentication
@@ -22,7 +22,7 @@ Resident? residentFromData(Map<String, dynamic> data) {
       propertyname: data["propertyName"],
     );
   } catch (e) {
-    developer.log(e.toString());
+    print(e.toString());
     return null;
   }
 }

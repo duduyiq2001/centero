@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
 import "package:universal_html/html.dart" as html;
-import "dart:developer" as developer;
+
 import "package:centero/themes.dart";
 import "package:centero/views/footer.dart";
 import "package:centero/controllers/authentication/residentauthentication.dart";
@@ -34,8 +34,8 @@ class ResidentHome extends HookWidget {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the message and update state
-      developer.log("Got a message whilst in the foreground!");
-      //developer.log("Message data: ${message.data}");
+      print("Got a message whilst in the foreground!");
+      //print("Message data: ${message.data}");
       //html.window.alert("${message.data}");
       BuildContext? current = navigatorKey.currentState?.overlay?.context;
       var reason = message.data["reason"];
@@ -45,7 +45,7 @@ class ResidentHome extends HookWidget {
         //   current,
         //   message.data.entries.first.value,
         //   () => {acceptcall(manager!.id), pageState.value = PageS},
-        //   () => {developer.log("rejected")},
+        //   () => {print("rejected")},
         // );
         var reason = message.data["reason"];
         print('reason:$reason');
@@ -64,8 +64,7 @@ class ResidentHome extends HookWidget {
       // Update state using the state hook
 
       if (message.notification != null) {
-        developer.log(
-            "Message also contained a notification: ${message.notification}");
+        print("Message also contained a notification: ${message.notification}");
       }
     });
 
@@ -171,31 +170,31 @@ class ResidentHome extends HookWidget {
                   const Padding(padding: EdgeInsets.all(5.0)),
                   TextButton(
                     onPressed: () {
-                      developer.log("Pressed Submit Work Order");
+                      print("Pressed Submit Work Order");
                     },
                     child: const Text("Submit Work Order"),
                   ),
                   TextButton(
                     onPressed: () {
-                      developer.log("Pressed Reserve Amenity Button");
+                      print("Pressed Reserve Amenity Button");
                     },
                     child: const Text("Reserve Amenity"),
                   ),
                   TextButton(
                     onPressed: () {
-                      developer.log("Pressed Pay Rent Button");
+                      print("Pressed Pay Rent Button");
                     },
                     child: const Text("Pay My Rent"),
                   ),
                   TextButton(
                     onPressed: () {
-                      developer.log("Pressed Calendar of Events Button");
+                      print("Pressed Calendar of Events Button");
                     },
                     child: const Text("Calendar of Events"),
                   ),
                   TextButton(
                     onPressed: () {
-                      developer.log("Pressed Rental Information Button");
+                      print("Pressed Rental Information Button");
                     },
                     child: const Text("Rental Information"),
                   ),

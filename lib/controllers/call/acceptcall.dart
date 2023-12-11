@@ -2,7 +2,7 @@ import "package:localstorage/localstorage.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
 import "package:firebase_auth/firebase_auth.dart";
-import "dart:developer" as developer;
+
 import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:centero/main.dart";
@@ -31,13 +31,13 @@ Future<bool> acceptcall(String residentID) async {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken"
         });
-    developer.log(response.body);
+    print(response.body);
     if (response.statusCode != 200) {
-      developer.log("ERROR: ${response.body}");
+      print("ERROR: ${response.body}");
       return false;
     }
   } catch (e) {
-    developer.log(e.toString());
+    print(e.toString());
     return false;
   }
   return true;

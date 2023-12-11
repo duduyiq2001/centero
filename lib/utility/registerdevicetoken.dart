@@ -2,7 +2,7 @@ import "package:centero/main.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
 import "package:firebase_auth/firebase_auth.dart";
-import "dart:developer" as developer;
+
 import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:centero/utility/urlmanager.dart";
@@ -18,7 +18,7 @@ Future<void> registerdevicetoken(String deviceToken) async {
     throw Exception("not signed in");
   }
   try {
-    developer.log("register called");
+    print("register called");
     http.Client client = Provider.of<ConnectionService>(
       navigatorKey.currentContext!,
       listen: false,
@@ -29,9 +29,9 @@ Future<void> registerdevicetoken(String deviceToken) async {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken"
         });
-    developer.log(response.body);
+    print(response.body);
   } catch (e) {
-    developer.log(e.toString());
+    print(e.toString());
     throw Exception("request failed");
   }
 }

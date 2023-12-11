@@ -6,7 +6,7 @@ import "package:centero/main.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
 import "package:firebase_auth/firebase_auth.dart";
-import "dart:developer" as developer;
+
 import "package:provider/provider.dart";
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:localstorage/localstorage.dart";

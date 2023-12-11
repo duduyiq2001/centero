@@ -4,7 +4,7 @@ import "package:localstorage/localstorage.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
 import "package:firebase_auth/firebase_auth.dart";
-import "dart:developer" as developer;
+
 import "package:centero/controllers/http/connectionservice.dart";
 import "package:centero/main.dart";
 import "package:provider/provider.dart";
@@ -34,7 +34,7 @@ Future<void> cancellCallFromClient() async {
           "Authorization": "Bearer $access_token"
         });
     if (response.statusCode != 200) {
-      developer.log("ERROR: ${response.body}");
+      print("ERROR: ${response.body}");
       throw Exception("request failed");
     }
     return;

@@ -912,3 +912,6 @@ Temporary Items
 **key.json
 functions/lib/
 functions/data/
+web/firebase-messaging-sw.js
+lib/firebase_options.dart
+functions/firebase_options.dart

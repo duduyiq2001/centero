@@ -3,7 +3,7 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:localstorage/localstorage.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
-import "dart:developer" as developer;
+
 import "package:provider/provider.dart";
 import "package:centero/models/loginresponse.dart";
 import "package:centero/models/manager.dart";
@@ -19,7 +19,7 @@ import "package:centero/utility/urlmanager.dart";
 /// register manager device token with[registerdevicetoken]
 /// Returns [LoginResponse] for granularity of login response.
 /// control left click on those things for more details.
-Future<(LoginResponse, Manager?)> managerlogin(
+Future<LoginResponse> managerlogin(
   String email,
   String password,
 ) async {
@@ -30,11 +30,11 @@ Future<(LoginResponse, Manager?)> managerlogin(
         .signInWithEmailAndPassword(email: email, password: password);
   } on FirebaseAuthException catch (e) {
     if (e.code == "user-not-found") {
-      developer.log("No user found for that email.");
-      return (LoginResponse.signInFailed, null);
+      print("No user found for that email.");
+      return LoginResponse.signInFailed;
     } else if (e.code == "wrong-password") {
-      developer.log("Wrong password provided for that user.");
-      return (LoginResponse.signInFailed, null);
+      print("Wrong password provided for that user.");
+      return LoginResponse.signInFailed;
     }
   }
   String? id = credential?.user?.uid;
@@ -42,23 +42,18 @@ Future<(LoginResponse, Manager?)> managerlogin(
   try {
     deviceToken = await getdevicetoken();
   } catch (e) {
-    return (LoginResponse.deviceTokenFailed, null);
+    print(e);
+    return LoginResponse.deviceTokenFailed;
   }
 
   try {
     await registerdevicetoken(deviceToken);
   } catch (e) {
-    return (LoginResponse.signInFailed, null);
+    print(e);
+    return LoginResponse.signInFailed;
   }
 
-  Manager? manager;
-  try {
-    manager = dummyManagers.firstWhere((element) => element.id == id);
-  } catch (e) {
-    manager = null;
-  }
-
-  return (LoginResponse.success, manager);
+  return LoginResponse.success;
 }
 
 ///
