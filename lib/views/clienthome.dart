@@ -33,10 +33,16 @@ class ClientHome extends HookWidget {
         ),
         Center(
           child: Container(
-            width: CenteroTheme.getValues(context).logoSize,
-            height: CenteroTheme.getValues(context).logoSize,
+            width: 1.5 * CenteroTheme.getValues(context).logoSize,
+            height: 1.5 * CenteroTheme.getValues(context).logoSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
+              border: (onCall.value)
+              ? null
+              : Border.all(
+                color: Colors.green,
+                width: 15.0,
+              ),
               image: DecorationImage(
                 fit: BoxFit.fill,
                 image: AssetImage(
@@ -54,99 +60,238 @@ class ClientHome extends HookWidget {
         Center(
           child: Text(
             (onCall.value)
-                ? "$managerName will be with you in just a moment!"
-                : "Welcome to Shady Oaks Apartments",
+                //? "$managerName will be with you in just a moment!"
+                ? "Help is on the way!"
+                : "Welcome to Shady Oaks Apartments!",
             style: Theme.of(context).textTheme.headlineLarge,
           ),
         ),
         Padding(
             padding: EdgeInsets.all(
-                25.0 * CenteroTheme.getValues(context).scaleFactor)),
-        if (!onCall.value)
-          ElevatedButton(
-            onPressed: () {
-              onCall.value = true;
-              Future.delayed(const Duration(seconds: 3), () {
-                if (onCall.value) {
-                  onCall.value = false;
-                  pageState.value = PageStates.call;
-                }
-              });
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                  CenteroTheme.getValues(context).borderRadius),
-              child: Image.asset(
-                "assets/centeroLogo.jpg",
-                width: 1.5 * CenteroTheme.getValues(context).logoSize,
-              ),
-            ),
+                10.0 * CenteroTheme.getValues(context).scaleFactor)),
+
+        // if (!onCall.value)
+        //   ElevatedButton(
+        //     onPressed: () {
+        //       onCall.value = true;
+        //       Future.delayed(const Duration(seconds: 3), () {
+        //         if (onCall.value) {
+        //           onCall.value = false;
+        //           pageState.value = PageStates.call;
+        //         }
+        //       });
+        //     },
+        //     child: ClipRRect(
+        //       borderRadius: BorderRadius.circular(
+        //           CenteroTheme.getValues(context).borderRadius),
+        //       child: Image.asset(
+        //         "assets/centeroLogo.jpg",
+        //         width: 1.5 * CenteroTheme.getValues(context).logoSize,
+        //       ),
+        //     ),
+        //   ),
+        Padding(
+            padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
+        Visibility(
+          visible: !onCall.value,
+          child: Text(
+            "Do any of these items help?",
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
+        ),
+        Padding(
+            padding: EdgeInsets.all(.10 * CenteroTheme.getValues(context).spacer)),
         if (onCall.value)
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               onCall.value = false;
             },
-            child: const Text("Cancel Call"),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+              shape: const CircleBorder(),
+              backgroundColor: Colors.transparent,
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.pan_tool,
+                  size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                  color: Colors.green,
+                ),
+                Positioned(
+                  right: 25 * CenteroTheme.getValues(context).scaleFactor,
+                  bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                  child: Text(
+                    "Cancel \nContact",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17 * CenteroTheme.getValues(context).scaleFactor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
           ),
-        Padding(
-            padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        // Padding(
+        //     padding: EdgeInsets.all(CenteroTheme.getValues(context).spacer)),
+        Visibility(
+          visible: !onCall.value,
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
+              width: 1.2 * CenteroTheme.getValues(context).logoSize,
               decoration: BoxDecoration(
                 color: Colors.black12,
                 border: Border.all(width: 1.0, color: Colors.black38),
                 borderRadius: BorderRadius.all(Radius.circular(
                     8 * CenteroTheme.getValues(context).scaleFactor)),
               ),
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: <Widget>[
-                  Text(
-                    "Other Stuff",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5.0)),
+                  // Text(
+                  //   "Do these help?",
+                  //   style: Theme.of(context).textTheme.bodyMedium,
+                  // ),
+                  const Padding(padding: EdgeInsets.all(12.0)),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Submit Work Order");
+                      //print("Pressed Submit Work Order");
                     },
-                    child: const Text("Submit Work Order"),
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(double.infinity, CenteroTheme.getValues(context).scaleFactor),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
+                      ),
+                    ),
+                    child: Text("Work Order",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),
+                    ),
                   ),
+                  Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Reserve Amenity Button");
+                      //print("Pressed Reserve Amenity Button");
                     },
-                    child: const Text("Reserve Amenity"),
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(double.infinity, CenteroTheme.getValues(context).scaleFactor),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
+                      ),
+                    ),
+                    child: Text("Amenities",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
                   ),
+                  Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Pay Rent Button");
+                      //print("Pressed Pay Rent Button");
                     },
-                    child: const Text("Pay My Rent"),
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(double.infinity, CenteroTheme.getValues(context).scaleFactor),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
+                      ),
+                    ),
+                    child: Text("Rent",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
                   ),
+                  Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Calendar of Events Button");
+                      //print("Pressed Calendar of Events Button");
                     },
-                    child: const Text("Calendar of Events"),
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(double.infinity, CenteroTheme.getValues(context).scaleFactor),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
+                      ),
+                    ),
+                    child: Text("Events",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
                   ),
+                  Padding(padding: EdgeInsets.all(5 * CenteroTheme.getValues(context).scaleFactor)),
                   TextButton(
                     onPressed: () {
-                      print("Pressed Rental Information Button");
+                      //print("Pressed Rental Information Button");
                     },
-                    child: const Text("Rental Information"),
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(double.infinity, CenteroTheme.getValues(context).scaleFactor),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8 * CenteroTheme.getValues(context).scaleFactor),
+                      ),
+                    ),
+                    child: Text("Information",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white,),),
+                  ),
+                ],
+              ),
+
+            ),
+          ],
+        ),
+        ),
+        Padding(
+            padding: EdgeInsets.all(
+                50 * CenteroTheme.getValues(context).scaleFactor)),
+        if (!onCall.value)
+            TextButton(
+            onPressed: () {
+                onCall.value = true;
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (onCall.value) {
+                    onCall.value = false;
+                    pageState.value = PageStates.call;
+                  }
+                });
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+                shape: const CircleBorder(),
+                backgroundColor: Colors.transparent,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.pan_tool,
+                    size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                    color: Colors.green,
+                  ),
+                  Positioned(
+                    right: 8 * CenteroTheme.getValues(context).scaleFactor,
+                    bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                    child: Text(
+                      "Would you \nlike to chat?",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17 * CenteroTheme.getValues(context).scaleFactor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),
             ),
-            Padding(
-                padding: EdgeInsets.all(
-                    50 * CenteroTheme.getValues(context).scaleFactor)),
-          ],
-        ),
+
+            // child: ClipRRect(
+            //   borderRadius: BorderRadius.circular(
+            //       CenteroTheme.getValues(context).borderRadius),
+            //   child: Image.asset(
+            //     "assets/centeroLogo.jpg",
+            //     width: 1.5 * CenteroTheme.getValues(context).logoSize,
+            //   ),
+            // ),
+
       ],
     );
 
@@ -155,39 +300,82 @@ class ClientHome extends HookWidget {
         children: <Widget>[
           Padding(
               padding: EdgeInsets.all(
-                  50.0 * CenteroTheme.getValues(context).scaleFactor)),
+                  CenteroTheme.getValues(context).spacer)),
           Container(
             decoration: BoxDecoration(
-              color: Colors.black12,
+              //color: Colors.black12,
+              image: DecorationImage(
+                image: AssetImage('assets/manager.jpg'),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.2),
+                  BlendMode.dstATop,
+                ),
+              ),
+
               border: Border.all(width: 1.0, color: Colors.black38),
               borderRadius: BorderRadius.all(
                 Radius.circular(CenteroTheme.getValues(context).borderRadius),
               ),
             ),
-            padding: EdgeInsets.all(
-                50.0 * CenteroTheme.getValues(context).scaleFactor),
+            // padding: EdgeInsets.all(
+            //     50.0 * CenteroTheme.getValues(context).scaleFactor),
+
             child: Column(
               children: <Widget>[
+                // Padding(
+                //     padding: EdgeInsets.all(
+                //         25 * CenteroTheme.getValues(context).scaleFactor)),
                 Padding(
                     padding: EdgeInsets.all(
-                        25 * CenteroTheme.getValues(context).scaleFactor)),
+                        CenteroTheme.getValues(context).spacer)),
                 Text(
-                  "(Manager Video Feed)",
+                  "Illusion of a Volumetric Display",
                   style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                    top: 6 * CenteroTheme.getValues(context).spacer,
-                    right: 4 * CenteroTheme.getValues(context).spacer,
-                    left: 4 * CenteroTheme.getValues(context).spacer,
-                    bottom: 6 * CenteroTheme.getValues(context).spacer,
+                    top: 7 * CenteroTheme.getValues(context).spacer,
+                    right: 5 * CenteroTheme.getValues(context).spacer,
+                    left: 5 * CenteroTheme.getValues(context).spacer,
+                    bottom: 7 * CenteroTheme.getValues(context).spacer,
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    pageState.value = PageStates.callEnded;
-                  },
-                  child: const Text("End Call"),
+              ],
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.all(
+                  .2 * CenteroTheme.getValues(context).spacer)),
+          TextButton(
+            onPressed: () {
+              pageState.value = PageStates.callEnded;
+            },
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+              shape: const CircleBorder(),
+              backgroundColor: Colors.transparent,
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.pan_tool,
+                  size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                  color: Colors.green,
+                ),
+                Positioned(
+                  right: 20 * CenteroTheme.getValues(context).scaleFactor,
+                  bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                  child: Text(
+                    "End \nContact",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ],
             ),
@@ -212,38 +400,112 @@ class ClientHome extends HookWidget {
         ),
         Padding(
             padding: EdgeInsets.all(
-                50 * CenteroTheme.getValues(context).scaleFactor)),
-        ElevatedButton(
-          onPressed: () {
-            pageState.value = PageStates.call;
-          },
-          child: const Text("Call Again"),
+                25 * CenteroTheme.getValues(context).scaleFactor)),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  rated.value = false;
+                  pageState.value = PageStates.home;
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.transparent,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()..scale(-1.0, 1.0, 1.0),
+                      child: Icon(
+                        Icons.pan_tool,
+                        size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                        color: Colors.red,
+                      ),
+                    ),
+                    Positioned(
+                      left: 25 * CenteroTheme.getValues(context).scaleFactor,
+                      bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                      child: Text(
+                        "Start \nOver",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                  padding: EdgeInsets.all(
+                      10 * CenteroTheme.getValues(context).scaleFactor)),
+              TextButton(
+                onPressed: () {
+                  rated.value = false;
+                  pageState.value = PageStates.call;
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.all(20 * CenteroTheme.getValues(context).scaleFactor),
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.transparent,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      Icons.pan_tool,
+                      size: 150 * CenteroTheme.getValues(context).scaleFactor,
+                      color: Colors.green,
+                    ),
+                    Positioned(
+                      right: 25 * CenteroTheme.getValues(context).scaleFactor,
+                      bottom: 12 * CenteroTheme.getValues(context).scaleFactor,
+                      child: Text(
+                        "Call \nAgain",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20 * CenteroTheme.getValues(context).scaleFactor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         Padding(
             padding: EdgeInsets.all(
                 10 * CenteroTheme.getValues(context).scaleFactor)),
-        TextButton(
-          onPressed: () {
-            pageState.value = PageStates.home;
-          },
-          child: Text(
-            "Back to Home Screen",
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-        ),
+        // TextButton(
+        //   onPressed: () {
+        //     pageState.value = PageStates.home;
+        //   },
+        //   child: Text(
+        //     "Back to Home Screen",
+        //     style: Theme.of(context).textTheme.headlineMedium,
+        //   ),
+        // ),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
                 (!rated.value)
-                    ? "Rate this interaction"
+                    ? "How did we do?"
                     : "Thanks for your feedback!",
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
               Padding(
                   padding: EdgeInsets.all(
-                      25 * CenteroTheme.getValues(context).scaleFactor)),
+                      10 * CenteroTheme.getValues(context).scaleFactor)),
               if (!rated.value)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -254,57 +516,110 @@ class ClientHome extends HookWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(
-                            20 * CenteroTheme.getValues(context).scaleFactor),
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.red,
-                      ),
-                      child: null,
-                    ),
-                    Padding(
-                        padding: EdgeInsets.all(
-                            5 * CenteroTheme.getValues(context).scaleFactor)),
-                    ElevatedButton(
-                      onPressed: () {
-                        rated.value = true;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(
-                            20 * CenteroTheme.getValues(context).scaleFactor),
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.orange,
-                      ),
-                      child: null,
-                    ),
-                    Padding(
-                        padding: EdgeInsets.all(
-                            5 * CenteroTheme.getValues(context).scaleFactor)),
-                    ElevatedButton(
-                      onPressed: () {
-                        rated.value = true;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(
-                            20 * CenteroTheme.getValues(context).scaleFactor),
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.yellow,
-                      ),
-                      child: null,
-                    ),
-                    Padding(
-                        padding: EdgeInsets.all(
-                            5 * CenteroTheme.getValues(context).scaleFactor)),
-                    ElevatedButton(
-                      onPressed: () {
-                        rated.value = true;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(
-                            20 * CenteroTheme.getValues(context).scaleFactor),
+                            5 * CenteroTheme.getValues(context).scaleFactor),
                         shape: const CircleBorder(),
                         backgroundColor: Colors.green,
                       ),
-                      child: null,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.sentiment_very_satisfied,
+                          size: 75 * CenteroTheme.getValues(context).scaleFactor,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
+                    Padding(
+                        padding: EdgeInsets.all(
+                            2 * CenteroTheme.getValues(context).scaleFactor)),
+                    ElevatedButton(
+                      onPressed: () {
+                        rated.value = true;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(
+                            5 * CenteroTheme.getValues(context).scaleFactor),
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.lightGreen,
+                      ),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.sentiment_satisfied,
+                          size: 75 * CenteroTheme.getValues(context).scaleFactor,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.all(
+                            2 * CenteroTheme.getValues(context).scaleFactor)),
+                    ElevatedButton(
+                      onPressed: () {
+                        rated.value = true;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(
+                            5 * CenteroTheme.getValues(context).scaleFactor),
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.yellow,
+                      ),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.sentiment_neutral,
+                          size: 75 * CenteroTheme.getValues(context).scaleFactor,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.all(
+                            2 * CenteroTheme.getValues(context).scaleFactor)),
+                    ElevatedButton(
+                      onPressed: () {
+                        rated.value = true;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(
+                            5 * CenteroTheme.getValues(context).scaleFactor),
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.orange,
+                      ),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.sentiment_dissatisfied,
+                          size: 75 * CenteroTheme.getValues(context).scaleFactor,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.all(
+                            2 * CenteroTheme.getValues(context).scaleFactor)),
+                    ElevatedButton(
+                      onPressed: () {
+                        rated.value = true;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(
+                            5 * CenteroTheme.getValues(context).scaleFactor),
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.red,
+                      ),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.sentiment_very_dissatisfied,
+                          size: 75 * CenteroTheme.getValues(context).scaleFactor,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.all(
+                            2 * CenteroTheme.getValues(context).scaleFactor)),
                   ],
                 ),
               Padding(
