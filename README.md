@@ -37,3 +37,5 @@ The code is modularized as follows:
 
 - `index.ts` defines the Firebase Cloud Functions endpoints and functions.
 - The `/controllers/` directory defines controller functions for accessing and updating the Firebase Firestore database.
+## For developers: 
+please refer to https://github.com/duduyiq2001/centero/wiki/Guide-for-all-developers!
