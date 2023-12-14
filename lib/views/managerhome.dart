@@ -57,7 +57,7 @@ class ManagerHome extends HookWidget {
           ),
         ),
         Text(
-          "Incoming Call",
+          "Incoming Contact",
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         Padding(
@@ -91,7 +91,7 @@ class ManagerHome extends HookWidget {
             shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.contain,
-              image: AssetImage("assets/user.png"),
+              image: AssetImage("assets/tenant2.png"),
             ),
           ),
         ),
@@ -102,10 +102,28 @@ class ManagerHome extends HookWidget {
             pageState.value = PageStates.onCall;
           },
           child: Text(
-            "Answer",
+            "Connect",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
         ),
+        Padding(
+            padding: EdgeInsets.all(
+                9*CenteroTheme.getValues(context).spacer)),
+        Container(
+          // Align(
+          alignment: Alignment.bottomLeft,
+          child: Padding(
+            padding: EdgeInsets.only(left: 2.5* CenteroTheme.getValues(context).spacer), // Adjust the value as needed
+            child: ElevatedButton(
+              onPressed: () {},
+              child: Text(
+                "Concierge",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
+        ),
+        //),
       ],
     );
 
@@ -118,7 +136,16 @@ class ManagerHome extends HookWidget {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black12,
+              //color: Colors.black12,
+              image: DecorationImage(
+                image: AssetImage('assets/tenant.png'),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.2),
+                  BlendMode.dstATop,
+                ),
+              ),
+
               border: Border.all(width: 1, color: Colors.black38),
               borderRadius: BorderRadius.all(
                 Radius.circular(
@@ -146,7 +173,7 @@ class ManagerHome extends HookWidget {
               pageState.value = PageStates.home;
             },
             child: Text(
-              "End Call",
+              "End Contact",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
@@ -230,7 +257,16 @@ class ManagerHome extends HookWidget {
                               aspectRatio: 1.5,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.black12,
+                                  //color: Colors.black12,
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/map.png'),
+                                    fit: BoxFit.cover,
+                                    // colorFilter: ColorFilter.mode(
+                                    //   Colors.black.withOpacity(0.2),
+                                    //   BlendMode.dstATop,
+                                    // ),
+                                  ),
+
                                   border: Border.all(
                                       width: 1, color: Colors.black38),
                                   borderRadius: BorderRadius.all(
@@ -246,14 +282,14 @@ class ManagerHome extends HookWidget {
                                       CenteroTheme.getValues(context)
                                           .scaleFactor,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    "Google Map",
-                                    style: CenteroTheme.getTheme(context)
-                                        .textTheme
-                                        .headlineMedium,
-                                  ),
-                                ),
+                                // child: Center(
+                                //   child: Text(
+                                //     "Google Map",
+                                //     style: CenteroTheme.getTheme(context)
+                                //         .textTheme
+                                //         .headlineMedium,
+                                //   ),
+                                // ),
                               ),
                             ),
                           ),
@@ -272,30 +308,39 @@ class ManagerHome extends HookWidget {
                               aspectRatio: 1.5,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.black12,
-                                  border: Border.all(
-                                      width: 1, color: Colors.black38),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(
-                                      8 *
-                                          CenteroTheme.getValues(context)
-                                              .scaleFactor,
-                                    ),
+                                  //color: Colors.black12,
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/floorPlan.png'),
+                                    fit: BoxFit.cover,
+                                    // colorFilter: ColorFilter.mode(
+                                    //   Colors.black.withOpacity(0.2),
+                                    //   BlendMode.dstATop,
+                                    // ),
                                   ),
+
+                                  // border: Border.all(
+                                  //     width: 1, color: Colors.black38),
+                                  // borderRadius: BorderRadius.all(
+                                  //   Radius.circular(
+                                  //     8 *
+                                  //         CenteroTheme.getValues(context)
+                                  //             .scaleFactor,
+                                  //   ),
+                                  // ),
                                 ),
                                 padding: EdgeInsets.all(
                                   15 *
                                       CenteroTheme.getValues(context)
                                           .scaleFactor,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    "Floor Plan",
-                                    style: CenteroTheme.getTheme(context)
-                                        .textTheme
-                                        .headlineMedium,
-                                  ),
-                                ),
+                                // child: Center(
+                                //   child: Text(
+                                //     "Floor Plan",
+                                //     style: CenteroTheme.getTheme(context)
+                                //         .textTheme
+                                //         .headlineMedium,
+                                //   ),
+                                // ),
                               ),
                             ),
                           ),
@@ -307,6 +352,13 @@ class ManagerHome extends HookWidget {
                               "Unit ${resident.value.unit}",
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Concierge",
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
                         ],

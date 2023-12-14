@@ -35,3 +35,7 @@ The Firebase Cloud Functions code is contained in the /functions/src/ directory.
 The code is modularized as follows:
 - `index.ts` defines the Firebase Cloud Functions endpoints and functions.
 - The `/controllers/` directory defines controller functions for accessing and updating the Firebase Firestore database.
+
+## UML
+
+<div style = "background-color: white;"><img src = "./uml.png"></div>
