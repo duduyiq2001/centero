@@ -5,10 +5,10 @@ name: Deploy to Firebase Hosting on merge
 "on":
   push:
     branches:
-      - main
+      - mainbackup
   pull_request:
     branches:
-      - main
+      - mainbackup
 jobs:
   build_and_preview:
     name: Build Flutter (Web)
